@@ -1,0 +1,12 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/lobcom-openapi-original.yml
+summary:
+  types:
+  - http
+schemes:
+- name: basicAuth
+  type: http
+  scheme: basic
+  sources:
+  - openapi/lobcom-openapi-original.yml

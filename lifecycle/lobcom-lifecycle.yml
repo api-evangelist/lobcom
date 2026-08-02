@@ -1,0 +1,19 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.lob.com/ (Versioning and Changelog, Test and Live Environments) + status.lob.com
+versioning:
+  scheme: date-header
+  current: '1.22.0'
+  mechanism: >
+    API version is pinned per-account in the dashboard and can be overridden per-request
+    with the Lob-Version header (date-based). Breaking changes ship under a new dated version.
+  docs: https://docs.lob.com/#tag/Versioning-and-Changelog
+deprecation:
+  policy_url: https://docs.lob.com/#tag/Versioning-and-Changelog
+  sunset_header: false
+  note: Breaking changes are versioned; older pinned versions continue to function.
+status_page: https://status.lob.com/
+support:
+  help_center: https://help.lob.com/
+  email: support@lob.com
+deprecated_operations: []

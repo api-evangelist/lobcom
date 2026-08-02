@@ -1,0 +1,44 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.lob.com/ + openapi/lobcom-openapi-original.yml
+authentication:
+  style: http-basic
+  detail: >
+    API key sent as the HTTP Basic username (password blank). Secret keys (test_*/live_*)
+    have full access; publishable keys ([env]_pub) are limited to verifications and autocomplete.
+  ref: authentication/lobcom-authentication.yml
+idempotency:
+  supported: true
+  header: Idempotency-Key
+  query_param: idempotency_key
+  max_length: 256
+  scope: POST create operations
+  detail: >
+    Provide a unique Idempotency-Key header (or idempotency_key query param) on create
+    requests so retries do not create duplicate mail pieces. Keys up to 256 characters.
+pagination:
+  style: cursor
+  params: [before, after, limit]
+  extras: 'include=["total_count"] to return a total count'
+  order: reverse-chronological (newest first by date_created)
+  response_fields: [data, next_url, previous_url, count]
+versioning:
+  style: date-header
+  header: Lob-Version
+  ref: lifecycle/lobcom-lifecycle.yml
+rate_limiting:
+  headers: [ratelimit-limit, ratelimit-remaining, ratelimit-reset]
+  reset_unit: UTC epoch seconds
+  exceeded_status: 429
+  exceeded_code: rate_limit_exceeded
+error_envelope:
+  shape: '{ "error": { "code": string, "message": string, "status_code": int } }'
+  ref: errors/lobcom-problem-types.yml
+environments:
+  modes: [test, live]
+  key_prefixes: [test_, live_]
+  detail: Test-mode keys do not produce real mail or incur charges.
+  ref: sandbox/lobcom-sandbox.yml
+metadata:
+  supported: true
+  detail: Most resources accept a `metadata` object (arbitrary key/value pairs, max 500 chars/value).

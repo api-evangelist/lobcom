@@ -1,0 +1,48 @@
+generated: '2026-07-20'
+method: derived
+status: candidate
+source: openapi/lobcom-openapi-original.yml
+note: >
+  No official Lob-hosted/remote MCP server was found (docs, npm @modelcontextprotocol,
+  MCP registries as of 2026-07). This is a DERIVED candidate tool list — one tool per
+  marquee OpenAPI operation — as a starting point for a Lob MCP server. Not published by Lob.
+server:
+  name: lobcom
+  transport: http
+tools:
+  - name: create_postcard
+    description: Create and mail a postcard.
+    source_operation: openapi/lobcom-openapi-original.yml#postcard_create
+  - name: create_letter
+    description: Create and mail a letter.
+    source_operation: openapi/lobcom-openapi-original.yml#letter_create
+  - name: create_check
+    description: Create and mail a check drawn on a verified bank account.
+    source_operation: openapi/lobcom-openapi-original.yml#check_create
+  - name: create_self_mailer
+    description: Create and mail a self-mailer.
+    source_operation: openapi/lobcom-openapi-original.yml#self_mailer_create
+  - name: verify_us_address
+    description: Verify a US mailing address for deliverability.
+    source_operation: openapi/lobcom-openapi-original.yml#us_verification
+  - name: verify_intl_address
+    description: Verify an international mailing address.
+    source_operation: openapi/lobcom-openapi-original.yml#intl_verification
+  - name: autocomplete_us_address
+    description: Autocomplete a partial US address.
+    source_operation: openapi/lobcom-openapi-original.yml#autocompletion
+  - name: create_address
+    description: Create a saved address book entry.
+    source_operation: openapi/lobcom-openapi-original.yml#address_create
+  - name: create_template
+    description: Create an HTML template for mail pieces.
+    source_operation: openapi/lobcom-openapi-original.yml#create_template
+  - name: create_bank_account
+    description: Create a bank account for funding checks.
+    source_operation: openapi/lobcom-openapi-original.yml#bank_account_create
+  - name: list_postcards
+    description: List postcards.
+    source_operation: openapi/lobcom-openapi-original.yml#postcards_list
+  - name: get_credits_balance
+    description: Retrieve Lob credits balance for the account.
+    source_operation: openapi/lobcom-openapi-original.yml#get_lob_credits_balance

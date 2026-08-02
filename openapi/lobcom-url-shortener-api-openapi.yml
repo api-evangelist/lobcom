@@ -1,0 +1,986 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts URL Shortener API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: URL Shortener
+  description: "Lob's URL shortener allows you to generate unique short links, either with Lob's own domain or your own custom domains. Each custom link enables Lob to track mail individually and provide customers the relevant tracking data in their dashboard.\n\nWebhooks can be used to integrate Lob's URL Shortener scans into your omni channel marketing stratergy. See the <a href=\"#tag/Webhooks\">Webhooks</a> section of our documentation to learn how to enable the `letter.viewed`, `postcard.viewed` and `self_mailer.viewed` event notifications for your mail pieces.\n\nFurthermore, you can use our Retrieve endpoints to track the impact and engagement rate of links created. \n\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n"
+paths:
+  /domains/{domain_id}:
+    parameters:
+    - in: path
+      name: domain_id
+      required: true
+      description: Unique identifier for a domain.
+      schema:
+        type: string
+    get:
+      operationId: domain_get
+      summary: Retrieve a domain
+      description: Retrieve details for a single domain.
+      tags:
+      - URL Shortener
+      responses:
+        '200':
+          description: Returns domain related details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domain_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/domains/{domain_id}\" \\\n  -u <YOUR_LIVE_API_KEY>:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const domain = await new DomainsApi(config).get('xxxxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.domains.retrieve('xxxxxx', function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "domainsAPI = DomainsApi.new(config)\n\nbegin\n  retrievedDomain = domainsAPI.get(\"xxxxxx\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = DomainsApi(api_client)\n\ntry:\n  domain = api.get(\"xxxxxx\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\DomainsApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->get(\"xxxxxx\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "DomainsApi apiInstance = new DomainsApi(config);\n\ntry {\n  Domain response = apiInstance.get(\"xxxxxx\");\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Domain.retrieve("xxxxxx")
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "DomainsApi api = new DomainsApi(config);\n\ntry {\n  Domain response = api.get(\"xxxxxx\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nfetchedDomain, _, err := apiClient.DomainsApi.Get(context,\"xxxxxx\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+    delete:
+      operationId: domain_delete
+      summary: Delete a Domain
+      description: Delete a registered domain. This operation can only be performed if all associated links with the domain are deleted.
+      tags:
+      - URL Shortener
+      responses:
+        '200':
+          description: Returns the deleted link object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domain_delete'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /domains:
+    post:
+      operationId: domain_create
+      summary: Create Domain
+      description: Add a new custom domain that can be used to create custom links.
+      tags:
+      - URL Shortener
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/domains'
+            examples:
+              basic:
+                value:
+                  domain: lob.st
+              test:
+                value:
+                  domain: lob.st
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/domains'
+            examples:
+              basic:
+                value:
+                  domain: lob.st
+              test:
+                value:
+                  domain: lob.st
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/domains'
+            examples:
+              basic:
+                value:
+                  domain: lob.st
+              test:
+                value:
+                  domain: lob.st
+      responses:
+        '200':
+          description: Returns a domain object with details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domain_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example:
+                error:
+                  code: invalid
+                  message: domain is required
+                  status_code: 422
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/domains \\\n  -u <YOUR_LIVE_API_KEY>: \\\n  -d \"domain=lob.st\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "const domainApi = await new DomainsApi(config);\nconst domainData: DomainsWritable = {\n  domain: 'lob.st'\n}\ntry {\n  const createdDomain = await domainApi.createDomain(domainData);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.domains.create({\n  domain: 'lob.st'\n}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "domainsAPI = DomainsApi.new(config)\n\ndomainsData = DomainsWritable.new({\n  domain: \"lob.st\"\n})\n\nbegin\n  createdDomain = domainsAPI.create(domainsData)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = DomainsApi(api_client)\n\ndomains_data = DomainsWritable(\n  domain: \"lob.st\"\n)\n\ntry:\n  domain = api.create(domains_data)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\DomainsApi($config, new GuzzleHttp\\Client());\n\n$domainsData = new OpenAPI\\Client\\Model\\DomainsWritable(array(\n  'domain' => 'lob.st',\n));\n\ntry {\n    $result = $apiInstance->create($domainsData);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "DomainsWritable domain = new DomainsWritable();\ndomain.setDomain(\"lob.st\");\n\nDomainsApi apiInstance = new DomainsApi(config);\n\ntry {\n  apiInstance.create(domain);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.Domain.create(%{\n  domain: \"lob.st\"\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "DomainsWritable domain = new DomainsWritable(\n  \"lob.st\"\n)\n\nDomainsApi api = new DomainsApi(config);\n\ntry {\n  api.create(domain, null);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+    get:
+      operationId: domain_list
+      summary: List all domains
+      description: Retrieve a list of all created domains.
+      tags:
+      - URL Shortener
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/before_after'
+      - in: query
+        name: status
+        description: Filter domains by their configuration status.
+        schema:
+          type: string
+          enum:
+          - configured
+          - not_configured
+      responses:
+        '200':
+          description: Returns a list of all domains.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domains_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/domains?limit=2\" \\\n  -u <YOUR_LIVE_API_KEY>:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const domains = await new DomainsApi(config).list(2);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.domains.list({limit: 2}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "domainsApi = DomainsApi.new(config)\n\nbegin\n  domains = domainsApi.list({ limit: 2 })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = DomainsApi(api_client)\n\ntry:\n  domains = api.list(limit=2)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\DomainsApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->list(\n      2, // limit\n    );\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "DomainsApi apiInstance = new DomainsApi(config);\n\ntry {\n  DomainsList response = apiInstance.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n  );\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Domains.list(%{limit: 2})
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "DomainsApi api = new DomainsApi(config);\n\ntry {\n  DomainsList response = api.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n  );\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\nDomainsList = apiClient.DomainsApi.List(context).Execute()\nif err != nil {\n    return err\n}\n"
+        label: GO
+  /links/{link_id}:
+    parameters:
+    - in: path
+      name: link_id
+      required: true
+      description: Unique identifier for a link.
+      schema:
+        type: string
+    get:
+      operationId: links_get
+      summary: Retrieve a link
+      description: Retrieves a single shortened link.
+      tags:
+      - URL Shortener
+      responses:
+        '200':
+          description: Returns a single link.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/link_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/links/<link_id>\" \\\n  -u <YOUR_LIVE_API_KEY>:\n"
+        label: CURL
+    patch:
+      operationId: link_update
+      summary: Update a Link
+      description: Update any of the properties of a shortened link.
+      tags:
+      - URL Shortener
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/link_update'
+            examples:
+              basic:
+                value:
+                  resource_id: ltr_133
+              test:
+                value:
+                  redirect_link: ltr_133
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/link_update'
+            examples:
+              basic:
+                value:
+                  resource_id: ltr_133
+              test:
+                value:
+                  resource_id: ltr_133
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/link_update'
+            examples:
+              basic:
+                value:
+                  resource_id: ltr_133
+              test:
+                value:
+                  resource_id: ltr_133
+      responses:
+        '200':
+          description: Returns the updated link.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/link_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example:
+                error:
+                  code: invalid
+                  message: redirect_link is required
+                  status_code: 422
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/links/<link_id> \\\n  -u <YOUR_LIVE_API_KEY>: \\\n  -d \"redirect_link=https://www.lob.com\"\n"
+        label: CURL
+    delete:
+      operationId: links_delete
+      summary: Delete Link
+      description: Delete the shortened link.
+      tags:
+      - URL Shortener
+      responses:
+        '200':
+          description: Returns the deleted short link object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/link_delete_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /links:
+    post:
+      operationId: link_create
+      summary: Create Link
+      description: Given a long URL, shorten your URL either by using a custom domain or Lob's own short domain.
+      tags:
+      - URL Shortener
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/link_single'
+            examples:
+              basic:
+                value:
+                  redirect_link: https://www.lob.com
+                  slug: a1b2c3
+              test:
+                value:
+                  redirect_link: https://www.lob.com
+                  slug: a1b2c3
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/link_single'
+            examples:
+              basic:
+                value:
+                  redirect_link: https://www.lob.com
+                  domain: lob.st
+              test:
+                value:
+                  redirect_link: https://www.lob.com
+                  domain: lob.st
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/link_single'
+            examples:
+              basic:
+                value:
+                  redirect_link: https://www.lob.com
+              test:
+                value:
+                  redirect_link: https://www.lob.com
+      responses:
+        '200':
+          description: Returns a successfully created link.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/link_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example:
+                error:
+                  code: invalid
+                  message: redirect_link is required
+                  status_code: 422
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/links/shorten \\\n  -u <YOUR_LIVE_API_KEY>: \\\n  -d \"redirect_link=https://www.lob.com\"\n"
+        label: CURL
+    get:
+      operationId: links_list
+      summary: List all links
+      description: Retrieves a list of shortened links. The list is sorted by  creation date, with the most recently created appearing first.
+      tags:
+      - URL Shortener
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/before_after'
+      - $ref: '#/components/parameters/campaign_id'
+      - in: query
+        name: domain_id
+        description: Filters links by the provided domain id.
+        schema:
+          type: string
+          pattern: ^(dom)_[a-zA-Z0-9]+$
+      responses:
+        '200':
+          description: Returns the deleted link object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/links_response'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/links?limit=2\" \\\n  -u <YOUR_LIVE_API_KEY>:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const links = await new LinksApi(config).list(2);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.links.list({limit: 2}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "linksApi = LinksApi.new(config)\n\nbegin\n  links = linksApi.list({ limit: 2 })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = LinksApi(api_client)\n\ntry:\n  links = api.list(limit=2)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\LinksApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->list(\n      2, // limit\n    );\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "LinksApi apiInstance = new LinksApi(config);\n\ntry {\n  LinksList response = apiInstance.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n  );\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Links.list(%{limit: 2})
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "LinksApi api = new LinksApi(config);\n\ntry {\n  LinksList response = api.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n  );\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\nLinksList = apiClient.LinksApi.List(context).Execute()\nif err != nil {\n    return err\n}\n"
+        label: GO
+components:
+  schemas:
+    links_response:
+      allOf:
+      - $ref: '#/components/schemas/list'
+      - type: object
+        properties:
+          data:
+            type: array
+            description: List of links
+            items:
+              $ref: '#/components/schemas/link_response'
+    redirect_link:
+      type: string
+      description: The original target URL.
+    link_single:
+      type: object
+      required:
+      - redirect_link
+      properties:
+        title:
+          description: The title of the URL.
+          type: string
+        redirect_link:
+          $ref: '#/components/schemas/redirect_link'
+        domain:
+          description: The registered domain to be used for the short URL.
+          default: lob.st
+          type: string
+        slug:
+          description: The unique path for the shortened URL, if empty a unique path will be used.
+          type: string
+        metadata:
+          $ref: '#/components/schemas/metadata'
+    link_update:
+      type: object
+      required:
+      - redirect_link
+      properties:
+        title:
+          description: The title of the URL.
+          type: string
+        redirect_link:
+          $ref: '#/components/schemas/redirect_link'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+    object:
+      type: string
+      description: Value is resource type.
+    domain_response:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for a domain.
+          type: string
+        domain:
+          description: The registered domain/hostname.
+          type: string
+        error_redirect_link:
+          description: URL to redirect customers if a short link is broken or inactive.
+          type: string
+        status:
+          description: The configuration status of the domain.
+          type: string
+          enum:
+          - configured
+          - not_configured
+        created_at:
+          description: The date and time the domain was created.
+          type: string
+        updated_at:
+          description: The date and time the domain was last updated.
+          type: string
+    domain:
+      type: string
+      description: The registered domain/hostname.
+    domains:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
+          $ref: '#/components/schemas/domain'
+        error_redirect_link:
+          $ref: '#/components/schemas/error_redirect_link'
+    error_redirect_link:
+      type: string
+      description: URL to redirect customers if a short link is broken or inactive.
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type: string
+          description: Url of next page of items in list.
+          nullable: true
+        previous_url:
+          type: string
+          description: Url of previous page of items in list.
+          nullable: true
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    domains_response:
+      allOf:
+      - $ref: '#/components/schemas/list'
+      - type: object
+        properties:
+          data:
+            type: array
+            description: List of domains.
+            items:
+              $ref: '#/components/schemas/domain_response'
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
+    campaign_id:
+      title: campaign_id
+      description: Denotes resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
+      type: string
+      pattern: ^(cmp|camp)_[a-zA-Z0-9]+$
+      nullable: true
+    link_delete_response:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for a link.
+          type: string
+        deleted:
+          description: Only returned if the link was successfully deleted.
+          type: boolean
+    count:
+      type: integer
+      description: number of resources in a set
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    domain_delete:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for a domain.
+          type: string
+        deleted:
+          description: Only returned if the domain was successfully deleted.
+          type: boolean
+    link_response:
+      type: object
+      properties:
+        id:
+          description: Unique identifier prefixed with `lnk_`.
+          type: string
+        title:
+          description: The title of the URL.
+          type: string
+        domain_id:
+          description: A unique identifier for the registered domain.
+          type: string
+        redirect_link:
+          $ref: '#/components/schemas/redirect_link'
+        short_link:
+          description: The shortened URL for the associated original URL.
+          type: string
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        created_at:
+          description: The date and time the link was created.
+          type: string
+        updated_at:
+          description: The date and time the link was last updated.
+          type: string
+  parameters:
+    campaign_id:
+      in: query
+      name: campaign_id
+      required: false
+      description: Filters resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
+      schema:
+        $ref: '#/components/schemas/campaign_id'
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

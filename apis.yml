@@ -1,0 +1,767 @@
+aid: lobcom
+name: Lob.com
+description: >-
+  Lob is the direct-mail and address-verification API for developers. Its REST API lets teams
+  programmatically create and mail postcards, letters, checks, self-mailers, snap packs, booklets,
+  buckslips and cards; verify and autocomplete US and international addresses; run direct-mail and
+  USPS Informed Delivery campaigns; manage HTML templates; and track physical delivery through USPS
+  scan events surfaced over webhooks. The API is organized around REST with resource-oriented URLs,
+  HTTP Basic authentication using test_/live_ API keys, cursor pagination, Idempotency-Key support,
+  and standard rate-limit headers. Lob was surfaced as an a16z portfolio company and enriched into
+  the API Evangelist network from its public OpenAPI, docs, SDKs, and registries.
+url: https://raw.githubusercontent.com/api-evangelist/lobcom/refs/heads/main/apis.yml
+x-type: company
+x-source: vc-portfolio
+x-backed-by:
+- a16z
+x-tier: stub
+x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+specificationVersion: '0.20'
+created: '2026-07-17'
+modified: '2026-07-20'
+image: https://www.lob.com/favicon.ico
+tags:
+- Company
+- Direct Mail
+- Print
+- Address Verification
+- Mail
+- Postcards
+- Letters
+- Checks
+- Campaigns
+- USPS
+- Deliverability
+apis:
+- aid: lobcom:lobcom-accounts-api
+  name: Lob.com Accounts API
+  description: The Accounts API from Lob.com — 1 operation(s) for accounts.
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-accounts-api-openapi.yml
+- aid: lobcom:lobcom-addresses-api
+  name: Lob.com Addresses API
+  description: >-
+    To add an address to your address book, you create a new address object. You can retrieve and delete
+    individual
+
+    addresses as well as get a list of addresses. Addresses are identified by a unique random ID.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Addresses
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-addresses-api-openapi.yml
+- aid: lobcom:lobcom-bank-accounts-api
+  name: Lob.com Bank Accounts API
+  description: >-
+    Bank Accounts allow you to store your bank account securely in our system. The API provides
+
+    endpoints for creating bank accounts, deleting bank accounts, verifying bank accounts,
+
+    retrieving individual bank accounts, and retrieving a list of bank accounts.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Bank Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-bank-accounts-api-openapi.yml
+- aid: lobcom:lobcom-billing-groups-api
+  name: Lob.com Billing Groups API
+  description: >-
+    The Billing Groups API allows you to create and view labels that can be attached to certain consumption-based
+
+    usages of Letters, Checks, Postcards and Self-Mailers to customize your bill. Please check each
+
+    resource API section to learn more about how to access the Billing Groups API.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Billing Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-billing-groups-api-openapi.yml
+- aid: lobcom:lobcom-booklets-api
+  name: Lob.com Booklets API
+  description: The Booklets API from Lob.com — 2 operation(s) for booklets.
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Booklets
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-booklets-api-openapi.yml
+- aid: lobcom:lobcom-buckslip-orders-api
+  name: Lob.com Buckslip Orders API
+  description: >-
+    The Buckslip Orders endpoint allows you to easily create buckslip orders for existing buckslips.
+
+    The API provides endpoints for creating buckslip orders and listing buckslip orders for a given buckslip.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Buckslip Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-buckslip-orders-api-openapi.yml
+- aid: lobcom:lobcom-buckslips-api
+  name: Lob.com Buckslips API
+  description: >-
+    The Buckslips endpoint allows you to easily create buckslips that can later be used as add-ons for
+    Letters Campaigns. Note that a Letter Campaign with Buckslip add-on requires a minimum send quantity
+    of 5,000 letters.
+
+    The API provides endpoints for creating buckslips, retrieving individual buckslips, creating buckslip
+    orders, and retrieving a list of buckslips.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Buckslips
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-buckslips-api-openapi.yml
+- aid: lobcom:lobcom-campaigns-api
+  name: Lob.com Campaigns API
+  description: >-
+    The campaigns endpoint allows you to create and view campaigns that can be used to send multiple letters
+    or postcards.
+
+    The API provides endpoints for creating campaigns, updating campaigns, retrieving individual campaigns,
+    listing campaigns, and deleting
+
+    campaigns.
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Campaigns
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-campaigns-api-openapi.yml
+- aid: lobcom:lobcom-card-orders-api
+  name: Lob.com Card Orders API
+  description: >-
+    The card orders endpoint allows you to easily create card orders for existing cards.
+
+    The API provides endpoints for creating card orders and listing card orders for a given card.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Card Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-card-orders-api-openapi.yml
+- aid: lobcom:lobcom-cards-api
+  name: Lob.com Cards API
+  description: >-
+    The cards endpoint allows you to easily create cards that can later be affixed to Letters.
+
+    The API provides endpoints for creating cards, retrieving individual cards, creating card orders,
+    and retrieving a list of cards.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Cards
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-cards-api-openapi.yml
+- aid: lobcom:lobcom-checks-api
+  name: Lob.com Checks API
+  description: >-
+    Checks allow you to send payments via physical checks. The API provides endpoints
+
+    for creating checks, retrieving individual checks, canceling checks, and retrieving a list of checks.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Checks
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-checks-api-openapi.yml
+- aid: lobcom:lobcom-creatives-api
+  name: Lob.com Creatives API
+  description: >-
+    The creatives endpoint allows you to create and view creatives. Creatives are used to create
+
+    reusable letter and postcard templates. The API provides endpoints for creating creatives, updating
+    creatives,
+
+    retrieving individual creatives, and deleting creatives.
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Creatives
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-creatives-api-openapi.yml
+- aid: lobcom:lobcom-identity-validation-api
+  name: Lob.com Identity Validation API
+  description: >-
+    Validates whether a given name is associated with an address.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Identity Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-identity-validation-api-openapi.yml
+- aid: lobcom:lobcom-informed-delivery-campaign-api
+  name: Lob.com Informed Delivery Campaign API
+  description: >-
+    The Informed Delivery campaigns API allows you to create and view Informed Delivery campaigns.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Informed Delivery Campaign
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-informed-delivery-campaign-api-openapi.yml
+- aid: lobcom:lobcom-intl-verifications-api
+  name: Lob.com Intl Verifications API
+  description: >-
+    Address verification for non-US addresses
+
+    <br>
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+
+    ## Intl Verifications Test Env
+
+
+    When verifying international addresses, you'll likely want to test against
+
+    a wide array of addresses to ensure you're handling responses correctly.
+
+    With your test API key, requests that use specific values for `primary_line`
+
+    let you explore the responses to many types of addresses:
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">DELIVERABILITY OF SAMPLE RESPONSE</th>
+        <th style="white-space: nowrap">SET <code>primary_line</code> TO</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap">deliverable</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>deliverable_missing_info</code></td>
+        <td style="white-space: nowrap">deliverable missing info</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>undeliverable</code></td>
+        <td style="white-space: nowrap">undeliverable</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>no_match</code></td>
+        <td style="white-space: nowrap">no match</td>
+      </tr>
+    </table>
+
+
+    See the `test` request & response examples under [Intl Verification Examples](#operation/intl_verification)
+    within the
+
+    "Verify an international address section" in Intl Verifications.
+
+
+    You can rely on the response from these examples generally matching the response
+
+    you'd see in the live environment with an address of that type (excluding the `recipient` field).
+
+
+    The test API key does not perform any verification, automatic correction, or standardization
+
+    for addresses. If you wish to try these features out, use our <a href="https://lob.com/address-verification"
+    target="_blank">live demo</a>
+
+    or the free plan (see <a href="https://lob.com/pricing/address-verification" target="_blank">our pricing</a>
+    for details).
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Intl Verifications
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-intl-verifications-api-openapi.yml
+- aid: lobcom:lobcom-letters-api
+  name: Lob.com Letters API
+  description: >-
+    The letters endpoint allows you to easily print and mail letters. The API provides endpoints for
+
+    creating letters, retrieving individual letters, canceling letters, and retrieving a list of letters.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Letters
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-letters-api-openapi.yml
+- aid: lobcom:lobcom-lob-credits-api
+  name: Lob.com Lob Credits API
+  description: The Lob Credits API from Lob.com — 1 operation(s) for lob credits.
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Lob Credits
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-lob-credits-api-openapi.yml
+- aid: lobcom:lobcom-postcards-api
+  name: Lob.com Postcards API
+  description: >-
+    The postcards endpoint allows you to easily print and mail postcards. The API provides endpoints for
+    creating postcards,
+
+    retrieving individual postcards, canceling postcards, and retrieving a list of postcards.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Postcards
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-postcards-api-openapi.yml
+- aid: lobcom:lobcom-qr-codes-api
+  name: Lob.com QR Codes API
+  description: >-
+    Lob QR codes allow you to generate a QR code that is unique to each mailpiece, thereby allowing each
+    and every customers to receive a personalized link. See the Create endpoint for <a href="#tag/Letters/operation/letter_create">Letters</a>,
+    <a href="#tag/Postcards/operation/postcard_create">Postcards</a> or <a href="#tag/Self-Mailers/operation/self_mailer_create">Self
+    Mailers</a> to learn how to embed a QR code into your mail piece.
+
+
+    Webhooks can be used to integrate Lob QR code scans into your omni channel marketing strategy. See
+    the <a href="#tag/Webhooks">Webhooks</a> section of our documentation to learn how to enable the `letter.viewed`,
+    `postcard.viewed` and `self_mailer.viewed` event notifications for your mail pieces.
+
+
+    Furthermore, our QR code Analytics endpoint can be used to track the impact and engagement rate of
+    your mail sends. Lob can tell you exactly which recipients opened your mailpiece. Our Analytics endpoint
+    allows you to see exactly which recipient scanned a mailpiece, when they scanned it, and more!
+
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - QR Codes
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-qr-codes-api-openapi.yml
+- aid: lobcom:lobcom-resource-proofs-api
+  name: Lob.com Resource Proofs API
+  description: >-
+    The resource proofs endpoint allows you to create a final rendering of any template. This is best
+    practice to ensure that you are visually validating your creative before any mail pieces use the template.
+    The API provides endpoints for creating, updating, and retrieving template proofs.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Resource Proofs
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-resource-proofs-api-openapi.yml
+- aid: lobcom:lobcom-reverse-geocode-lookups-api
+  name: Lob.com Reverse Geocode Lookups API
+  description: >-
+    Find a list of zip codes associated with a valid US location via latitude and longitude. <br> <div
+    class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Reverse Geocode Lookups
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-reverse-geocode-lookups-api-openapi.yml
+- aid: lobcom:lobcom-self-mailers-api
+  name: Lob.com Self Mailers API
+  description: >-
+    The self mailer endpoint allows you to easily print and mail self mailers. The API provides endpoints
+
+    for creating self mailers, retrieving individual self mailers, canceling self mailers, and retrieving
+    a list of self mailers.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Self Mailers
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-self-mailers-api-openapi.yml
+- aid: lobcom:lobcom-snap-packs-api
+  name: Lob.com Snap Packs API
+  description: The Snap Packs API from Lob.com — 2 operation(s) for snap packs.
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Snap Packs
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-snap-packs-api-openapi.yml
+- aid: lobcom:lobcom-template-versions-api
+  name: Lob.com Template Versions API
+  description: >-
+    These API endpoints allow you to create, retrieve, update and delete versions of reusable HTML templates
+    for use with the Print & Mail API.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Template Versions
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-template-versions-api-openapi.yml
+- aid: lobcom:lobcom-templates-api
+  name: Lob.com Templates API
+  description: >-
+    These API endpoints allow you to create, retrieve, update and delete reusable HTML templates for use
+    with the Print & Mail API.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Templates
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-templates-api-openapi.yml
+- aid: lobcom:lobcom-uploads-api
+  name: Lob.com Uploads API
+  description: >-
+    The uploads endpoint allows you to upload audience files that are then associated with a given campaign.
+
+    At this time, only CSV files are allowed. The API provides endpoints for creating uploads, uploading
+    audience files,
+
+    and marking uploaded files as ready for processing. The API also provides endpoints for downloading
+    files that
+
+    describe the results, both successful and not, of the processing.
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Uploads
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-uploads-api-openapi.yml
+- aid: lobcom:lobcom-url-shortener-api
+  name: Lob.com URL Shortener API
+  description: "Lob's URL shortener allows you to generate unique short links, either with Lob's own domain\
+    \ or your own custom domains. Each custom link enables Lob to track mail individually and provide\
+    \ customers the relevant tracking data in their dashboard.\n\nWebhooks can be used to integrate Lob's\
+    \ URL Shortener scans into your omni channel marketing stratergy. See the <a href=\"#tag/Webhooks\"\
+    >Webhooks</a> section of our documentation to learn how to enable the `letter.viewed`, `postcard.viewed`\
+    \ and `self_mailer.viewed` event notifications for your mail pieces.\n\nFurthermore, you can use our\
+    \ Retrieve endpoints to track the impact and engagement rate of links created. \n\n<div class=\"back-to-top\"\
+    \ ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>"
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - URL Shortener
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-url-shortener-api-openapi.yml
+- aid: lobcom:lobcom-us-autocompletions-api
+  name: Lob.com US Autocompletions API
+  description: >-
+    Given partial address information, this endpoint returns up to 10 address suggestions. <br> <div class="back-to-top"
+    ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+    ## Autocompletion Test Env
+
+    Your test API key does not autocomplete US addresses and is used to simulate behavior. With your test
+    API key, requests with specific values for `address_prefix` return predetermined values. When `address_prefix`
+    is set to:
+
+    - `0 suggestions` - Returns no suggestions - `[PRIMARY NUMBER] s[uggestion]` - Returns a maximum of
+    ten predefined suggested addresses.
+      `[PRIMARY NUMBER]` does not have to be a valid primary number when sending a test request.
+      Each additional letter in `suggestion` reduces the number of suggestions by one (e.g.
+      `1 su` returns 9 suggested addresses). `[PRIMARY NUMBER]` does not affect the number of
+      suggestions returned.
+
+    City and state filters work as expected and filter the list of predetermined suggested addresses.
+
+    See the `test` request & response examples under [Autocomplete Examples](#operation/autocompletion)
+    within the "Autocomplete a partial address" section in US Autocompletions. <div class="back-to-top"
+    ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - US Autocompletions
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-us-autocompletions-api-openapi.yml
+- aid: lobcom:lobcom-us-verifications-api
+  name: Lob.com US Verifications API
+  description: >-
+    Validate, automatically correct, and standardize the addresses in your
+
+    address book based on USPS's <a href="https://postalpro.usps.com/certifications/cass" target="_blank">Coding
+    Accuracy Support System (CASS)</a>.
+
+    <br>
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+
+    ## US Verifications Test Env
+
+
+    When verifying US addresses, you'll likely want to test against a wide array of addresses to
+
+    ensure you're handling responses correctly. With your test API key, requests that use specific
+
+    values for `address` or `primary_line` and (if using `primary_line`) an arbitrary five digit
+
+    number for `zip_code` (e.g. "11111") let you explore the responses to many types of addresses:
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">ADDRESS TYPE FOR SAMPLE RESPONSE</th>
+        <th style="white-space: nowrap">DELIVERABILITY</th>
+        <th style="white-space: nowrap">SET <code>primary_line</code> OR <code>address</code> TO</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Commercial highrise</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>commercial highrise</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Residential highrise</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>residential highrise</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Residential house</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>residential house</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">PO Box</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>po box</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Rural route</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>rural route</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Puerty Rico address w/ urbanization</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>puerto rico</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Military address</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>military</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Department of state</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>department of state</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Generic deliverable</td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+        <td style="white-space: nowrap"><code>deliverable</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Missing a suite number</td>
+        <td style="white-space: nowrap"><code>deliverable_missing_unit</code></td>
+        <td style="white-space: nowrap"><code>missing unit</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Suite number doesn't exist</td>
+        <td style="white-space: nowrap"><code>deliverable_incorrect_unit</code></td>
+        <td style="white-space: nowrap"><code>incorrect unit</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Residential house with unnecessary suite number</td>
+        <td style="white-space: nowrap"><code>deliverable_unnecessary_unit</code></td>
+        <td style="white-space: nowrap"><code>unnecessary unit</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Undeliverable and block matched</td>
+        <td style="white-space: nowrap"><code>undeliverable</code></td>
+        <td style="white-space: nowrap"><code>undeliverable block match</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Undeliverable and no block matched</td>
+        <td style="white-space: nowrap"><code>undeliverable</code></td>
+        <td style="white-space: nowrap"><code>undeliverable no match</code></td>
+      </tr>
+    </table>
+
+
+    See the `test` request & response examples under [US Verification Examples](#operation/us_verification)
+    within the
+
+    "Verify a US or US territory address" section in US Verifications.
+
+
+    You can rely on the response from these examples generally matching the response you'd see in the
+    live environment with an
+
+    address of that type (excluding the `recipient` field).
+
+
+    The test API key does not perform any verification, automatic correction, or standardization for addresses.
+    If you wish to
+
+    try these features out, use our <a href="https://lob.com/address-verification" target="_blank">live
+    demo</a> or the free plan (see <a href="https://lob.com/pricing/address-verification" target="_blank">our
+    pricing</a> for details).
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - US Verifications
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-us-verifications-api-openapi.yml
+- aid: lobcom:lobcom-zip-lookups-api
+  name: Lob.com Zip Lookups API
+  description: >-
+    Find a list of cities, states and associated information about a US ZIP code. <div class="back-to-top"
+    ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Zip Lookups
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-zip-lookups-api-openapi.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+- FN: APIs.json
+  email: info@apis.io
+common:
+# --- identity / link properties ---
+- type: DeveloperPortal
+  url: https://docs.lob.com/
+- type: Documentation
+  url: https://docs.lob.com/
+- type: APIReference
+  url: https://docs.lob.com/
+- type: GettingStarted
+  url: https://docs.lob.com/#tag/Getting-Started
+- type: Support
+  url: https://help.lob.com/
+- type: Blog
+  url: https://www.lob.com/blog
+- type: GitHubOrganization
+  url: https://github.com/lob
+- type: Pricing
+  url: https://www.lob.com/pricing
+- type: SignUp
+  url: https://dashboard.lob.com/register
+- type: Login
+  url: https://dashboard.lob.com/login
+- type: TermsOfService
+  url: https://www.lob.com/legal/terms
+- type: PrivacyPolicy
+  url: https://www.lob.com/legal/privacy
+- type: StatusPage
+  url: https://status.lob.com/
+# --- artifacts ---
+- type: Packages
+  url: packages/lobcom-packages.yml
+- type: SDKs
+  url: packages/lobcom-packages.yml
+- type: WellKnown
+  url: well-known/lobcom-well-known.yml
+- type: MCPServer
+  url: mcp/lobcom-mcp.yml
+- type: LLMsTxt
+  url: llms/lobcom-llms.txt
+- type: Conformance
+  url: conformance/lobcom-conformance.yml
+- type: ErrorCatalog
+  url: errors/lobcom-problem-types.yml
+- type: ErrorCatalog
+  name: Error code registry
+  url: errors/lobcom-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/lobcom-lifecycle.yml
+- type: Deprecation
+  url: https://docs.lob.com/#tag/Versioning-and-Changelog
+- type: ChangeLog
+  url: changelog/lobcom-changelog.yml
+- type: Conventions
+  url: conventions/lobcom-conventions.yml
+- type: Idempotency
+  url: conventions/lobcom-conventions.yml
+- type: Sandbox
+  url: sandbox/lobcom-sandbox.yml
+- type: DataModel
+  url: data-model/lobcom-data-model.yml
+- type: Webhooks
+  url: asyncapi/lobcom-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Authentication
+  url: authentication/lobcom-authentication.yml
+- type: DomainSecurity
+  url: security/lobcom-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/lobcom-agentic-access.yml
+x-enrichment:
+  date: '2026-07-20'
+  status: enriched
+  artifacts_added: 19
+  pass: local-v1

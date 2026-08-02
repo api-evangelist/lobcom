@@ -1,0 +1,1262 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Creatives API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Creatives
+  description: 'The creatives endpoint allows you to create and view creatives. Creatives are used to create
+
+    reusable letter and postcard templates. The API provides endpoints for creating creatives, updating creatives,
+
+    retrieving individual creatives, and deleting creatives.
+
+    '
+paths:
+  /creatives:
+    post:
+      operationId: creative_create
+      summary: Create
+      description: Creates a new creative with the provided properties
+      tags:
+      - Creatives
+      parameters:
+      - $ref: '#/components/parameters/lang_spec'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/creative_writable'
+            example:
+              campaign_id: cmp_e05ee61ff80764b
+              resource_type: postcard
+              description: Our 4x6 postcard creative
+              details: {}
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/creative_writable'
+            encoding:
+              example-prop:
+                style: deepObject
+                explode: true
+            example:
+              campaign_id: cmp_e05ee61ff80764b
+              resource_type: postcard
+              description: Our 4x6 postcard creative
+              details: {}
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/creative_writable'
+            example:
+              campaign_id: cmp_e05ee61ff80764b
+              resource_type: postcard
+              description: Our 4x6 postcard creative
+              details: {}
+      responses:
+        '200':
+          description: Creative created successfully
+          content:
+            $ref: '#/components/mediaTypes/creative'
+        default:
+          $ref: '#/components/responses/creatives_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/creatives \\\n  -u <YOUR API KEY>: \\\n  -d \"campaign_id=cmp_e05ee61ff80764b\" \\\n  -d \"resource_type=postcard\" \\\n  -d \"details={}\"\n"
+      - lang: Ruby
+        source: "creativeCreate = CreativeWritable.new({\n  campaign_id: \"cmp_e05ee61ff80764b\",\n  resource_type: \"postcard\",\n  description: \"Our 4x6 postcard creative\",\n  from: \"adr_210a8d4b0b76d77b\",\n  front: \"tmpl_4aa14648113e45b\",\n  back: \"tmpl_4aa14648113e45b\",\n  details: PostcardDetailsWritable.new({\n    mail_type: \"usps_first_class\",\n  }),\n});\n\ncreativeApi = CreativesApi.new(config)\n\nbegin\n  createdCreative = creativeApi.create(creativeCreate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+  /creatives/{crv_id}:
+    parameters:
+    - in: path
+      name: crv_id
+      description: id of the creative
+      required: true
+      schema:
+        $ref: '#/components/schemas/crv_id'
+    get:
+      operationId: creative_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing creative. You need only supply the unique creative identifier that was returned upon creative creation.
+      tags:
+      - Creatives
+      responses:
+        '200':
+          description: Returns a creative object
+          content:
+            $ref: '#/components/mediaTypes/creative'
+        default:
+          $ref: '#/components/responses/creatives_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/creatives/crv_2a3b096c409b32c \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+      - lang: Ruby
+        source: "creativeApi = CreativesApi.new(config)\n\nbegin\n  retrievedCreative = creativeApi.get(\"crv_2a3b096c409b32c\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+    patch:
+      operationId: creative_update
+      summary: Update
+      description: Update the details of an existing creative. You need only supply the unique identifier that was returned upon creative creation.
+      tags:
+      - Creatives
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/creative_base'
+            example:
+              description: Test creative
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/creative_base'
+            example:
+              description: Test creative
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/creative_base'
+            example:
+              description: Test creative
+      responses:
+        '200':
+          description: Returns a creative object
+          content:
+            $ref: '#/components/mediaTypes/creative'
+        default:
+          $ref: '#/components/responses/creatives_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X PATCH https://api.lob.com/v1/creatives/crv_2a3b096c409b32c \\\n  -u <YOUR API KEY>: \\\n  -d \"description=Our updated 4x6 postcard creative\"\n"
+        label: CURL
+      - lang: Python
+        source: "creative_patch = CreativePatch(\n  description = \"Our updated 4x6 postcard creative\",\n)\n\nwith ApiClient(configuration) as api_client:\n  api = CreativesApi(api_client)\n\ntry:\n  updated_creative = api.update(\"crv_2a3b096c409b32c\", creative_patch)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: Ruby
+        source: "creativePatch = CreativePatch.new({\n  description: \"Our updated 4x6 postcard creative\",\n})\n\ncreativeApi = CreativesApi.new(config)\n\nbegin\n  updatedCreative = creativeApi.update(\"crv_2a3b096c409b32c\", creativePatch)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+components:
+  schemas:
+    address_fields_us:
+      type: object
+      required:
+      - address_line1
+      - address_city
+      - address_state
+      - address_zip
+      properties:
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 64
+        address_line2:
+          type: string
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 64
+          nullable: true
+        address_city:
+          type: string
+          maxLength: 200
+        address_state:
+          type: string
+          description: 2 letter state short-name code
+          pattern: ^[a-zA-Z]{2}$
+        address_zip:
+          type: string
+          description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+            '
+          pattern: ^\d{5}(-\d{4})?$
+    buckslip_id:
+      type: string
+      description: Unique identifier prefixed with `bck_`.
+      pattern: ^bck_[a-zA-Z0-9]+$
+    crv_id:
+      type: string
+      description: Unique identifier prefixed with `crv_`.
+      pattern: ^crv_[a-zA-Z0-9]+$
+      example: crv_2a3b096c409b32c
+    returned_resource:
+      oneOf:
+      - allOf:
+        - title: Postcard Creative
+          required:
+          - resource_type
+          - details
+          properties:
+            resource_type:
+              type: string
+              description: Mailpiece type for the creative
+              enum:
+              - postcard
+            details:
+              $ref: '#/components/schemas/returned'
+        - $ref: '#/components/schemas/creative_base'
+      - allOf:
+        - title: Letter Creative
+          required:
+          - from
+          - resource_type
+          - details
+          properties:
+            resource_type:
+              type: string
+              description: Mailpiece type for the creative
+              enum:
+              - letter
+            details:
+              $ref: '#/components/schemas/returned-3'
+        - $ref: '#/components/schemas/creative_base'
+      - allOf:
+        - title: Self Mailer Creative
+          required:
+          - resource_type
+          - details
+          properties:
+            resource_type:
+              type: string
+              description: Mailpiece type for the creative
+              enum:
+              - self_mailer
+            details:
+              $ref: '#/components/schemas/returned-4'
+        - $ref: '#/components/schemas/creative_base'
+    crv_file:
+      description: 'Notes:
+
+        - HTML merge variables should not include delimiting whitespace.
+
+        - All pages of a supplied PDF file must be sized at 8.5"x11", while supplied HTML will be rendered and trimmed to as many 8.5"x11" pages as necessary.
+
+        - For design specifications, please see our <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_template.pdf" target="_blank">PDF</a> and [HTML](#section/HTML-Examples) templates.
+
+        - If a `custom_envelope` is used, follow <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_custom_envelope.pdf" target="_blank">this template</a>.
+
+        - For domestic destinations, the file limit is 60 pages single-sided or 120 pages double-sided. For international destinations, the file limit is 6 pages single-sided or 12 pages double-sided. PDFs that surpass the file limit will error, while HTML that renders more pages than the file limit will be trimmed.
+
+        - Any letters over 6 pages single-sided or 12 pages double-sided will be placed in a <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_flat_template.pdf" target="_blank">flat envelope</a> instead of the standard double window envelope.
+
+
+        See <a href="https://lob.com/pricing/print-mail#compare" target="_blank">pricing</a> for extra costs incurred.'
+      oneOf:
+      - $ref: '#/components/schemas/tmpl_id'
+      - $ref: '#/components/schemas/local_file_path'
+    returned-3:
+      description: Properties that the letters in your Creative should have. See the `qr_code` attribute below to add a QR code to your creative.
+      properties:
+        address_placement:
+          $ref: '#/components/schemas/address_placement'
+        buckslips:
+          description: A single-element array containing an existing buckslip id in a string format. See [buckslips](#tag/Buckslips) for more information.
+          type: array
+          items:
+            $ref: '#/components/schemas/buckslip_id'
+          minItems: 0
+          maxItems: 1
+          nullable: true
+        cards:
+          description: A single-element array containing an existing card id in a string format. See [cards](#tag/Cards) for more information.
+          type: array
+          items:
+            $ref: '#/components/schemas/card_id'
+          minItems: 0
+          maxItems: 1
+          nullable: true
+        custom_envelope:
+          $ref: '#/components/schemas/returned-2'
+        color:
+          $ref: '#/components/schemas/color'
+        double_sided:
+          $ref: '#/components/schemas/double_sided'
+        extra_service:
+          $ref: '#/components/schemas/extra_service'
+        file_original_url:
+          description: The original URL of the `file` template.
+          type: string
+        mail_type:
+          $ref: '#/components/schemas/mail_type'
+    campaign_writable:
+      type: object
+      required:
+      - name
+      - schedule_type
+      - use_type
+      properties:
+        billing_group_id:
+          type: string
+          description: Unique identifier prefixed with `bg_`.
+          pattern: ^bg_[a-zA-Z0-9]+$
+          nullable: true
+        name:
+          description: Name of the campaign.
+          type: string
+        description:
+          $ref: '#/components/schemas/resource_description'
+        schedule_type:
+          $ref: '#/components/schemas/cmp_schedule_type'
+        target_delivery_date:
+          description: If `schedule_type` is `target_delivery_date`, provide a targeted delivery date for mail pieces in this campaign.
+          type: string
+          format: date-time
+          nullable: true
+        send_date:
+          description: If `schedule_type` is `scheduled_send_date`, provide a date to send this campaign.
+          type: string
+          format: date-time
+          nullable: true
+        cancel_window_campaign_minutes:
+          description: A window, in minutes, within which the campaign can be canceled.
+          type: integer
+          nullable: true
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        use_type:
+          $ref: '#/components/schemas/cmp_use_type'
+        auto_cancel_if_ncoa:
+          description: Whether or not a mail piece should be automatically canceled and not sent if the address is updated via NCOA.
+          type: boolean
+        print_speed:
+          $ref: '#/components/schemas/print_speed'
+    cmp_use_type:
+      description: The use type for each mailpiece. Can be one of marketing, operational, or null. Null use_type is only allowed if an account default use_type is selected in Account Settings. For more information on use_type, see our  [Help Center article](https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings/declaring-mail-use-type).
+      type: string
+      enum:
+      - marketing
+      - operational
+      - null
+      nullable: true
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    double_sided:
+      type: boolean
+      description: Set this attribute to `true` for double sided printing, or `false` for for single sided printing. Defaults to `true`.
+      default: true
+    object:
+      type: string
+      description: Value is resource type.
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
+    address_placement:
+      type: string
+      enum:
+      - top_first_page
+      - insert_blank_page
+      - bottom_first_page_center
+      - bottom_first_page
+      description: "Specifies the location of the address information that will show through the double-window envelope. To see how this will impact your letter design, view our letter template.\nSome values are exclusive to certain customers. Upgrade to the appropriate <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Edition</a> to gain access.\n  * `top_first_page` - (default) print address information at the top of your provided first page\n  * `insert_blank_page` - insert a blank address page at the beginning of your file (you will be charged for the extra page)\n  * `bottom_first_page_center` - **(exclusive, deprecation planned within a few months)** print address information at the bottom center of your provided first page\n  * `bottom_first_page` - **(exclusive)** print address information at the bottom of your provided first page\n"
+      default: top_first_page
+    campaign_list:
+      type: array
+      description: Array of campaigns associated with the creative ID
+      items:
+        $ref: '#/components/schemas/campaign_item'
+      example:
+      - id: cmp_ed76e33e7ac4d0bd
+        name: My postman Campaign 2
+        description: Created via postman again
+        schedule_type: immediate
+        send_date: null
+        target_delivery_date: null
+        cancel_window_campaign_minutes: null
+        metadata: {}
+        use_type: null
+        is_draft: true
+        deleted: false
+        creatives: []
+        uploads: []
+        auto_cancel_if_ncoa: false
+        date_created: '2022-07-26T20:20:25.016Z'
+        date_modified: '2022-07-26T20:20:25.016Z'
+        object: campaign
+    letter_add_on_types:
+      type: string
+      enum:
+      - buckslips
+      - cards
+      - custom_envelope
+    address_editable_us:
+      allOf:
+      - $ref: '#/components/schemas/address_fields_us'
+      - type: object
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            $ref: '#/components/schemas/company'
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_country:
+            type: string
+            enum:
+            - US
+            default: US
+          metadata:
+            $ref: '#/components/schemas/metadata'
+    self_mailer_size:
+      type: string
+      enum:
+      - 6x18_bifold
+      - 11x9_bifold
+      - 12x9_bifold
+      - 17.75x9_trifold
+      description: Specifies the size of the self mailer. The `17.75x9_trifold` size is in beta. Contact support@lob.com or your account contact to learn more.
+      default: 6x18_bifold
+    color:
+      type: boolean
+      description: Set this key to `true` if you would like to print in color. Set to `false` if you would like to print in black and white.
+    company:
+      type: string
+      description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+        '
+      maxLength: 40
+      nullable: true
+    adr_id:
+      type: string
+      description: Unique identifier prefixed with `adr_`.
+      pattern: ^adr_[a-zA-Z0-9]+$
+    postcard_size:
+      type: string
+      enum:
+      - 4x6
+      - 6x9
+      - 6x11
+      description: 'Specifies the size of the postcard. Only `4x6` postcards can be sent to international destinations.
+
+        '
+      default: 4x6
+    creative_writable:
+      oneOf:
+      - allOf:
+        - title: Postcard Creative
+          required:
+          - front
+          - back
+          - campaign_id
+          - resource_type
+          - details
+          properties:
+            resource_type:
+              type: string
+              description: Mailpiece type for the creative
+              enum:
+              - postcard
+            campaign_id:
+              $ref: '#/components/schemas/cmp_id'
+            front:
+              $ref: '#/components/schemas/crv_front'
+            back:
+              $ref: '#/components/schemas/crv_back'
+            details:
+              $ref: '#/components/schemas/writable'
+        - $ref: '#/components/schemas/creative_base'
+      - allOf:
+        - title: Letter Creative
+          required:
+          - file
+          - from
+          - campaign_id
+          - resource_type
+          - details
+          properties:
+            resource_type:
+              type: string
+              description: Mailpiece type for the creative
+              enum:
+              - letter
+            campaign_id:
+              $ref: '#/components/schemas/cmp_id'
+            details:
+              $ref: '#/components/schemas/writable-2'
+            file:
+              $ref: '#/components/schemas/crv_file'
+        - $ref: '#/components/schemas/creative_base'
+      - allOf:
+        - title: Self Mailer Creative
+          required:
+          - inside
+          - outside
+          - campaign_id
+          - resource_type
+          - details
+          properties:
+            resource_type:
+              type: string
+              description: Mailpiece type for the creative
+              enum:
+              - self_mailer
+            campaign_id:
+              $ref: '#/components/schemas/cmp_id'
+            inside:
+              $ref: '#/components/schemas/crv_inside'
+            outside:
+              $ref: '#/components/schemas/crv_outside'
+            details:
+              $ref: '#/components/schemas/writable-3'
+        - $ref: '#/components/schemas/creative_base'
+    tmpl_id:
+      type: string
+      description: Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).
+      pattern: ^tmpl_[a-zA-Z0-9]+$
+    resource_description:
+      type: string
+      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+
+        '
+      maxLength: 255
+      nullable: true
+    inline_address_us:
+      allOf:
+      - $ref: '#/components/schemas/address_editable_us'
+      - type: object
+        required:
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+    qr_code_campaigns:
+      type: object
+      description: Customize and place a QR code on all the postcards, letters or self mailers in a campaign. Redirect URLs are fully customizable i.e. they can be standard single URLs for the whole campaign, or variables can be used to customize them for each recipient. More details on customizing redirect URLs can be found in <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/adding-qr-codes#destination-url-and-redirects" target="_blank">our help center.</a>
+      required:
+      - position
+      - width
+      properties:
+        position:
+          type: string
+          enum:
+          - relative
+          description: Sets how a QR code is being positioned in the document. Together with this, you should provide one of 'top' or 'bottom', and one of 'left' or 'right'.
+        top:
+          type: string
+          description: Vertical distance (in inches) to place QR code from the top. Only allowed if "bottom" isn't provided.
+        right:
+          type: string
+          description: Horizontal distance (in inches) to place QR code from the right. Only allowed if "left" isn't provided.
+        left:
+          type: string
+          description: Horizontal distance (in inches) to place QR code from the left. Only allowed if "right" isn't provided.
+        bottom:
+          type: string
+          description: Vertical distance (in inches) to place QR code from the bottom. Only allowed if "top" isn't provided.
+        redirect_url:
+          description: 'The url to redirect the user when a QR code is scanned. The URL can be a standard URL for all recipients in the campaign or customized per recipient. To customize for each recipient, use a mustache style template with merge variables enclosed in curly braces(for example, `https://www.example.com` or `{{name}}` or `https://www.example.com?q={{name}}`). If a merge variable is used in the URL, a mapping to that merge variable should be provided in the `mergeVariableColumnMapping` property when creating an upload. If the variable is not provided/does not exist, then the templated URL will be used. More details on customizing redirect URLs can be found in <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/adding-qr-codes#destination-url-and-redirects" target="_blank">our help center.</a>.
+
+            Note: Please use unique variable names between HTML templates and Redirect URLs to avoid conflicts. For example, if you are using `{{name}}` in the HTML template, use `{{name_redirect}}` in the Redirect URL. They can still be mapped to the same column in the audience file. Failing to set or map the redirect URL when using QR codes may lead to errors in generating mail pieces.
+
+            '
+        width:
+          type: string
+          description: The size (in inches) of the QR code with a minimum of 1 inch. All QR codes are generated as a square.
+        pages:
+          type: string
+          description: Specify the pages where the QR code should be stamped in a comma separated format. Your QR code can be printed in the same position on multiple pages. For postcards, the values should either be "front", "back" (for either front or back) or "front,back" (for the QR code to be printed on both sides). For self-mailers and snap packs, the values should either be "inside", "outside" (for either inside or outside) or "inside,outside" (for the QR code to be printed on both sides). For letters and booklets, the values can be specific page numbers ("1", "3"), page number ranges such as "1-3", or a comma separated combination of both ("1,3,5-7").
+    print_speed:
+      type: string
+      enum:
+      - core
+      description: 'A string designating the mail speed type:
+
+        * `core` - 2 production business days
+
+        '
+      default: core
+      nullable: true
+    extra_service:
+      type: string
+      enum:
+      - certified
+      - certified_return_receipt
+      - registered
+      - null
+      description: "Add an extra service to your letter. Can only be non-`null` if `mail_type` isn't `usps_standard`. See <a href=\"https://www.lob.com/pricing/print-mail#compare\" target=\"_blank\">pricing</a> for extra costs incurred.\n  * `certified` - track and confirm delivery for domestic destinations. An extra sheet (1 PDF page single-sided or 2 PDF pages double-sided) is added to the beginning of your letter for address and barcode information. See here for templates: <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_certified_template.pdf\" target=\"_blank\">#10 envelope</a> and <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_certified_flat_template.pdf\" target=\"_blank\">flat envelope</a> (used for letters over 6 pages single-sided or 12 pages double-sided). You will not be charged for this extra sheet.\n  * `certified_return_receipt` - request an electronic copy of the recipient's signature to prove delivery of your certified letter\n  * `registered` - provides tracking and confirmation for international addresses\n  \nNot available for `us_legal` letter size.\n"
+      nullable: true
+    returned-4:
+      description: Properties that the self mailers in your Creative should have. See the `qr_code` attribute below to add a QR code to your creative.
+      properties:
+        mail_type:
+          $ref: '#/components/schemas/mail_type'
+        size:
+          $ref: '#/components/schemas/self_mailer_size'
+        inside_original_url:
+          description: The original URL of the `inside` template.
+          maxLength: 2083
+          minLength: 1
+          type: string
+          format: uri
+        outside_original_url:
+          description: The original URL of the `outside` template.
+          maxLength: 2083
+          minLength: 1
+          type: string
+          format: uri
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    campaign_item:
+      allOf:
+      - $ref: '#/components/schemas/campaign_writable'
+      - type: object
+        required:
+        - id
+        - name
+        - description
+        - schedule_type
+        - use_type
+        - is_draft
+        - creatives
+        - uploads
+        - auto_cancel_if_ncoa
+        - date_created
+        - date_modified
+        - object
+        properties:
+          id:
+            $ref: '#/components/schemas/cmp_id'
+          is_draft:
+            description: Whether or not the campaign is still a draft.
+            type: boolean
+            default: true
+          creatives:
+            description: An array of creatives that have been associated with this campaign.
+            type: array
+          uploads:
+            description: A single-element array containing the upload object that is assocated with this campaign.
+            type: array
+            minItems: 0
+            maxItems: 1
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - campaign
+            default: campaign
+          date_created:
+            $ref: '#/components/schemas/date_created'
+          date_modified:
+            $ref: '#/components/schemas/date_modified'
+          deleted:
+            $ref: '#/components/schemas/deleted'
+    card_id:
+      type: string
+      description: Unique identifier prefixed with `card_`.
+      pattern: ^card_[a-zA-Z0-9]+$
+    cmp_id:
+      type: string
+      title: Campaign id
+      description: Unique identifier prefixed with `cmp_`.
+      pattern: ^cmp_[a-zA-Z0-9]+$
+    from_attribute:
+      title: From
+      description: Must either be an address ID or an inline object with correct address parameters. All addresses will be standardized into uppercase without being modified by verification.
+      oneOf:
+      - $ref: '#/components/schemas/adr_id'
+      - $ref: '#/components/schemas/inline_address_us'
+    cmp_schedule_type:
+      description: How the campaign should be scheduled. Only value available today is `immediate`.
+      type: string
+      enum:
+      - immediate
+    writable:
+      description: Properties that the postcards in your Creative should have. See the `qr_code` attribute below to add a QR code to your creative.
+      required:
+      - color
+      properties:
+        mail_type:
+          $ref: '#/components/schemas/mail_type'
+        size:
+          $ref: '#/components/schemas/postcard_size'
+        qr_code:
+          $ref: '#/components/schemas/qr_code_campaigns'
+    user_provided:
+      type: string
+      description: Accepts an envelope ID for any customized envelope with available inventory. If no inventory is available for the specified ID, the letter will not be sent, and an error will be returned. If the letter has more than 6 sheets, it will be sent in a blank flat envelope. Custom envelopes may be created and ordered from the dashboard. This feature is exclusive to certain customers. Upgrade to the appropriate <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Edition</a> to gain access.
+      nullable: true
+      pattern: ^env_[a-zA-Z0-9]+$
+    creative_base:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/from_attribute'
+        description:
+          $ref: '#/components/schemas/resource_description'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+    creative:
+      allOf:
+      - $ref: '#/components/schemas/lob_base'
+      - $ref: '#/components/schemas/returned_resource'
+      - type: object
+        required:
+        - id
+        - description
+        - from
+        - resource_type
+        - details
+        - metadata
+        - template_preview_urls
+        - template_previews
+        - campaigns
+        - date_created
+        - date_modified
+        - object
+        - deleted
+        properties:
+          deleted:
+            type: boolean
+            description: Whether the resource has been deleted.
+          id:
+            $ref: '#/components/schemas/crv_id'
+          template_preview_urls:
+            title: Template Preview URLs
+            type: object
+            description: Preview URLs associated with a creative's artwork asset(s) if the creative uses HTML templates as assets. An empty object will be returned if no `template_preview`s have been generated.
+          template_previews:
+            title: Template Previews
+            type: array
+            items:
+              type: object
+            description: A list of template preview objects if the creative uses HTML template(s) as artwork asset(s). An empty array will be returned if no `template_preview`s have been generated for the creative.
+          campaigns:
+            $ref: '#/components/schemas/campaign_list'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - creative
+            default: creative
+    mail_type:
+      type: string
+      enum:
+      - usps_first_class
+      - usps_standard
+      description: 'A string designating the mail postage type:
+
+        * `usps_first_class` - (default)
+
+        * `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is
+
+        less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6`
+
+        postcards or for any postcards sent outside of the United States.
+
+        '
+      default: usps_first_class
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    crv_outside:
+      description: "The artwork to use as the outside of your self mailer creative.\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6.25\"x18.25\", 12.25\"x9.25\" or 11.25\"x9.25\" at 300 DPI, while supplied HTML template will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/6x18_sfm_bifold_template.pdf\" target=\"_blank\">6x18 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/11x9_sfm_bifold_template.pdf\" target=\"_blank\">11x9 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/12x9_sfm_bifold_template.pdf\" target=\"_blank\">12x9 bifold template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n"
+      oneOf:
+      - $ref: '#/components/schemas/tmpl_id'
+      - $ref: '#/components/schemas/local_file_path'
+    returned:
+      description: Properties that the postcards in your Creative should have. See the `qr_code` attribute below to add a QR code to your creative.
+      properties:
+        mail_type:
+          $ref: '#/components/schemas/mail_type'
+        size:
+          $ref: '#/components/schemas/postcard_size'
+        front_original_url:
+          description: The original URL of the `front` template.
+          maxLength: 2083
+          minLength: 1
+          type: string
+          format: uri
+        back_original_url:
+          description: The original URL of the `back` template.
+          maxLength: 2083
+          minLength: 1
+          type: string
+          format: uri
+    crv_back:
+      description: "The artwork to use as the back of your postcard creative.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 4.25\"x6.25\", 6.25\"x9.25\", or 6.25\"x11.25\" at 300 DPI, while supplied HTML template will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/4x6_postcard.pdf\" target=\"_blank\">4x6 template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf\" target=\"_blank\">6x9 template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x11_postcard.pdf\" target=\"_blank\">6x11 template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n"
+      oneOf:
+      - $ref: '#/components/schemas/tmpl_id'
+      - $ref: '#/components/schemas/local_file_path'
+    writable-3:
+      description: Properties that the self mailers in your Creative should have. See the `qr_code` attribute below to add a QR code to your creative.
+      required:
+      - color
+      properties:
+        mail_type:
+          $ref: '#/components/schemas/mail_type'
+        size:
+          $ref: '#/components/schemas/self_mailer_size'
+        qr_code:
+          $ref: '#/components/schemas/qr_code_campaigns'
+    crv_front:
+      description: 'The artwork to use as the front of your postcard.
+
+
+        Notes:
+
+        - HTML merge variables should not include delimiting whitespace.
+
+        - PDF, PNG, and JPGs must be sized at 4.25"x6.25", 6.25"x9.25", or 6.25"x11.25" at 300 DPI, while supplied HTML template will be rendered to the specified `size`.
+
+
+        See [here](#section/HTML-Examples) for HTML examples.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/tmpl_id'
+      - $ref: '#/components/schemas/local_file_path'
+    crv_inside:
+      description: "The artwork to use as the inside of your self mailer creative.\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6.25\"x18.25\", 12.25\"x9.25\" or 11.25\"x9.25\" at 300 DPI, while supplied HTML template will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/6x18_sfm_bifold_template.pdf\" target=\"_blank\">6x18 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/11x9_sfm_bifold_template.pdf\" target=\"_blank\">11x9 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/12x9_sfm_bifold_template.pdf\" target=\"_blank\">12x9 bifold template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n"
+      oneOf:
+      - $ref: '#/components/schemas/tmpl_id'
+      - $ref: '#/components/schemas/local_file_path'
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
+    local_file_path:
+      type: string
+      description: The path to a local file.
+      pattern: ^(?!https://)[a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    writable-2:
+      description: Properties that the letters in your Creative should have. See the `qr_code` attribute below to add a QR code to your creative.
+      required:
+      - color
+      properties:
+        address_placement:
+          $ref: '#/components/schemas/address_placement'
+        add_on_types:
+          description: An array containing the types of add-ons for the Letter Creative.
+          type: array
+          items:
+            $ref: '#/components/schemas/letter_add_on_types'
+          minItems: 0
+          maxItems: 3
+          nullable: true
+        buckslips:
+          description: A single-element array containing an existing buckslip id in a string format. See [buckslips](#tag/Buckslips) for more information. Note that buckslip letter campaigns require a minimum send quantity of 5,000 letters per campaign.
+          type: array
+          items:
+            $ref: '#/components/schemas/buckslip_id'
+          minItems: 0
+          maxItems: 1
+          nullable: true
+        cards:
+          description: A single-element array containing an existing card id in a string format. See [cards](#tag/Cards) for more information.
+          type: array
+          items:
+            $ref: '#/components/schemas/card_id'
+          minItems: 0
+          maxItems: 1
+          nullable: true
+        color:
+          $ref: '#/components/schemas/color'
+        custom_envelope:
+          $ref: '#/components/schemas/user_provided'
+        double_sided:
+          $ref: '#/components/schemas/double_sided'
+        extra_service:
+          $ref: '#/components/schemas/extra_service'
+        mail_type:
+          $ref: '#/components/schemas/mail_type'
+        qr_code:
+          $ref: '#/components/schemas/qr_code_campaigns'
+    returned-2:
+      type: object
+      description: A nested custom envelope object containing more information about the custom envelope used or `null` if a custom envelope was not used.
+      required:
+      - id
+      - url
+      - object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the custom envelope used.
+          maxLength: 40
+        url:
+          type: string
+          description: The url of the envelope asset used.
+        object:
+          type: string
+          enum:
+          - envelope
+          default: envelope
+      nullable: true
+  responses:
+    creatives_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: creative not found
+              status_code: 404
+  parameters:
+    lang_spec:
+      in: header
+      name: x-lang-output
+      required: false
+      description: '* `native` - Translate response to the native language of the country in the request
+
+        * `match` - match the response to the language in the request
+
+
+        Default response is in English.
+
+        '
+      schema:
+        type: string
+        enum:
+        - native
+        - match
+  mediaTypes:
+    creative:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/creative'
+        example:
+          id: crv_2a3b096c409b32c
+          description: Our 4x6 postcard creative
+          from: adr_210a8d4b0b76d77b
+          resource_type: postcard
+          details: {}
+          metadata: {}
+          template_preview_urls: {}
+          template_previews: []
+          campaigns: []
+          date_created: '2017-09-05T17:47:53.767Z'
+          date_modified: '2017-09-05T17:47:53.767Z'
+          object: creative
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

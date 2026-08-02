@@ -1,0 +1,26 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.lob.com/ (Test and Live Environments)
+test_live_separation:
+  modes: [test, live]
+  key_prefixes:
+    secret:
+      test: test_
+      live: live_
+    publishable:
+      pattern: "[env]_pub"
+  detail: >
+    Every account has separate Test and Live API keys. Requests made with a test key
+    (test_*) are simulated — they do not print or mail physical pieces and are not billed.
+    Live keys (live_*) create real mail and incur charges. The key prefix alone selects the mode.
+publishable_vs_secret:
+  secret: Full API access; must be kept server-side.
+  publishable: Client-safe; limited to address verification and US autocompletion endpoints.
+webhook_simulation:
+  detail: >
+    In test mode, mail tracking/delivery events can be simulated so webhook integrations
+    can be exercised end-to-end without real USPS scans.
+notes: >
+  Lob documents test-vs-live via API-key prefix rather than publishing fixed magic
+  identifiers. No fabricated test card/bank values are recorded here — only the
+  documented key-prefix mode separation.

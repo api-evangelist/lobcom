@@ -1,0 +1,33 @@
+# Lob
+
+> Lob is the direct-mail and address-verification API. Its REST API lets developers programmatically create and mail postcards, letters, checks, self-mailers, snap packs, booklets and buckslips, verify and autocomplete US and international addresses, run direct-mail campaigns, and track delivery via USPS scan events and webhooks. Base URL https://api.lob.com/v1, HTTP Basic auth with a test_/live_ API key.
+
+## APIs
+- [Lob API](https://docs.lob.com/): REST API for print & mail, address verification, and campaigns (v1.22.0)
+
+## Specs
+- [OpenAPI 3.0 (bundled)](https://raw.githubusercontent.com/lob/lob-openapi/deployment/dist/lob-api-bundled.yml): full Lob OpenAPI specification
+- [OpenAPI source repo](https://github.com/lob/lob-openapi): multi-file authored spec
+
+## Products
+- Print & Mail: postcards, letters, checks, self-mailers, snap packs, booklets, buckslips, cards
+- Address Verification: US verification, international verification, US autocompletion, reverse geocode, ZIP lookup, identity validation, bulk verification
+- Campaigns: campaigns, creatives, uploads, Informed Delivery campaigns
+- Templates: HTML templates and template versions
+- Account: addresses (address book), bank accounts, billing groups, events, webhooks
+
+## Docs
+- [Developer docs](https://docs.lob.com/)
+- [Help center](https://help.lob.com/)
+- [Changelog](https://docs.lob.com/#tag/Versioning-and-Changelog)
+- [Status](https://status.lob.com/)
+- [Pricing](https://www.lob.com/pricing)
+- [Dashboard / sign up](https://dashboard.lob.com/register)
+
+## SDKs
+- [TypeScript](https://github.com/lob/lob-typescript-sdk)
+- [Python](https://github.com/lob/lob-python)
+- [Ruby](https://github.com/lob/lob-ruby)
+- [PHP](https://github.com/lob/lob-php)
+- [Java](https://github.com/lob/lob-java)
+- [C#/.NET](https://github.com/lob/lob-dotnet)

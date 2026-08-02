@@ -1,0 +1,1745 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Addresses API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Addresses
+  description: 'To add an address to your address book, you create a new address object. You can retrieve and delete individual
+
+    addresses as well as get a list of addresses. Addresses are identified by a unique random ID.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+    '
+paths:
+  /addresses:
+    get:
+      operationId: addresses_list
+      summary: List
+      description: Returns a list of your addresses. The addresses are returned sorted by creation date, with the most recently created addresses appearing first.
+      tags:
+      - Addresses
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/before_after'
+      - $ref: '#/components/parameters/include'
+      - $ref: '#/components/parameters/date_created'
+      - $ref: '#/components/parameters/metadata'
+      responses:
+        '200':
+          $ref: '#/components/responses/all_addresses'
+        default:
+          $ref: '#/components/responses/address_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/addresses?limit=2\" \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const addresses = await new AddressesApi(config).list(2);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.addresses.list({limit: 2}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "addressesApi = AddressesApi.new(config)\n\nbegin\n  addresses = addressesApi.list({ limit: 2 })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = AddressesApi(api_client)\n\ntry:\n  addresses = api.list(limit=2)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\AddressesApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->list(\n      2, // limit\n    );\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "AddressesApi apiInstance = new AddressesApi(config);\n\ntry {\n  AddressList response = apiInstance.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n    null // metadata\n  );\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Address.list(%{limit: 2})
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "AddressesApi api = new AddressesApi(config);\n\nList<string> includeList = new List<string>();\nincludeList.Add(\"total_count\");\nDictionary<String, String> metadata = new Dictionary<String, String>();\nmetadata.Add(\"name\", \"Harry\");\nDictionary<String, DateTime> dateCreated = new Dictionary<String, DateTime>();\nDateTime dateCreatedDate = DateTime.Today.AddMonths(-1);\ndateCreated.Add(\"lt\", dateCreatedDate);\n\ntry {\n  AddressList response = api.list(\n    2, // limit\n    null, // before\n    null, // after\n    includeList, // include\n    dateCreated, // dateCreated\n    metadata // metadata\n  );\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\nAddressList = apiClient.AddressesApi.List(context).Execute()\nif err != nil {\n    return err\n}\n"
+        label: GO
+    post:
+      operationId: address_create
+      summary: Create
+      description: Creates a new address given information
+      tags:
+      - Addresses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/address_editable'
+            examples:
+              full_us:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: 210 King St
+                  address_line2: '# 6100'
+                  address_city: San Francisco
+                  address_state: CA
+                  address_zip: '94107'
+                  address_country: US
+              ncoa_us_test:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: NCOA
+                  address_line2: '#6100'
+                  address_city: San Francisco
+                  address_state: CA
+                  address_zip: '94107'
+                  address_country: US
+              full_intl:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: 370 WATER ST
+                  address_line2: ''
+                  address_city: SUMMERSIDE
+                  address_state: PRINCE EDWARD ISLAND
+                  address_zip: C1N 1C4
+                  address_country: CA
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/address_editable'
+            examples:
+              full_us:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: 210 King St
+                  address_line2: '# 6100'
+                  address_city: San Francisco
+                  address_state: CA
+                  address_zip: '94107'
+                  address_country: US
+              ncoa_us_test:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: NCOA
+                  address_line2: '# 6100'
+                  address_city: San Francisco
+                  address_state: CA
+                  address_zip: '94107'
+                  address_country: US
+              full_intl:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: 370 WATER ST
+                  address_line2: ''
+                  address_city: SUMMERSIDE
+                  address_state: PRINCE EDWARD ISLAND
+                  address_zip: C1N 1C4
+                  address_country: CA
+            encoding:
+              metadata:
+                style: deepObject
+                explode: true
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/address_editable'
+            examples:
+              full_us:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: 210 King St
+                  address_line2: '# 6100'
+                  address_city: San Francisco
+                  address_state: CA
+                  address_zip: '94107'
+                  address_country: US
+              ncoa_us_test:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: NCOA
+                  address_line2: '# 6100'
+                  address_city: San Francisco
+                  address_state: CA
+                  address_zip: '94107'
+                  address_country: US
+              full_intl:
+                value:
+                  description: Harry - Office
+                  name: Harry Zhang
+                  company: Lob
+                  email: harry@lob.com
+                  phone: '5555555555'
+                  address_line1: 370 WATER ST
+                  address_line2: ''
+                  address_city: SUMMERSIDE
+                  address_state: PRINCE EDWARD ISLAND
+                  address_zip: C1N 1C4
+                  address_country: CA
+      responses:
+        '200':
+          $ref: '#/components/responses/post_address'
+        default:
+          $ref: '#/components/responses/address_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/addresses \\\n  -u REDACTED_LOB_KEY: \\\n  -d \"description=Harry - Office\" \\\n  -d \"name=Harry Zhang\" \\\n  -d \"company=Lob\" \\\n  -d \"email=harry@lob.com\" \\\n  -d \"phone=5555555555\" \\\n  -d \"address_line1=210 King St\" \\\n  -d \"address_line2=# 6100\" \\\n  -d \"address_city=San Francisco\" \\\n  -d \"address_state=CA\" \\\n  -d \"address_zip=94107\" \\\n  -d \"address_country=US\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "const addressCreate = new AddressEditable({\n  description: 'Harry - Office',\n  name: 'Harry Zhang',\n  company: 'Lob',\n  email: 'harry@lob.com',\n  phone: '5555555555',\n  address_line1: '210 King St',\n  address_line2: '# 6100',\n  address_city: 'San Francisco',\n  address_state: 'CA',\n  address_zip: '94107',\n  address_country: 'US'\n});\n\ntry {\n  const myAddress = await new AddressesApi(config).create(addressCreate);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.addresses.create({\n  description: 'Harry - Office',\n  name: 'Harry Zhang',\n  company: 'Lob',\n  email: 'harry@lob.com',\n  phone: '5555555555',\n  address_line1: '210 King St',\n  address_line2: '# 6100',\n  address_city: 'San Francisco',\n  address_state: 'CA',\n  address_zip: '94107',\n  address_country: 'US'\n}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "addressCreate = AddressEditable.new({\n  description: \"Harry - Office\",\n  name: \"Harry Zhang\",\n  company: \"Lob\",\n  email: \"harry@lob.com\",\n  phone: \"5555555555\",\n  address_line1: \"210 King St\",\n  address_line2: \"# 6100\",\n  address_city: \"San Francisco\",\n  address_state: \"CA\",\n  address_zip: \"94107\",\n  address_country: \"US\",\n});\n\naddressApi = AddressesApi.new(config)\n\nbegin\n  createdAddress = addressApi.create(addressCreate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "address_editable = AddressEditable(\n  description = \"Harry - Office\",\n  name = \"Harry Zhang\",\n  company = \"Lob\",\n  email = \"harry@lob.com\",\n  phone = \"5555555555\",\n  address_line1 = \"210 King St\",\n  address_line2 = \"# 6100\",\n  address_city = \"San Francisco\",\n  address_state = \"CA\",\n  address_zip = \"94107\",\n  address_country = CountryExtended(\"US\"),\n)\n\nwith ApiClient(configuration) as api_client:\n  api = AddressesApi(api_client)\n\ntry:\n  created_address = api.create(address_editable)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\AddressesApi($config, new GuzzleHttp\\Client());\n\n$address_editable = new OpenAPI\\Client\\Model\\AddressEditable(\n  array(\n    \"description\"     => \"Harry - Office\",\n    \"name\"     => \"Harry Zhang\",\n    \"company\"     => \"Lob\",\n    \"email\"     => \"harry@lob.com\",\n    \"phone\"     => \"5555555555\",\n    \"address_line1\"     => \"210 King St\",\n    \"address_line2\"     => \"# 6100\",\n    \"address_city\"     => \"San Francisco\",\n    \"address_state\"     => \"CA\",\n    \"address_zip\"     => \"94107\",\n    \"address_country\"     => \"US\",\n  )\n);\n\ntry {\n    $result = $apiInstance->create($address_editable);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "AddressesApi apiInstance = new AddressesApi(config);\n\ntry {\n  AddressEditable addressEditable = new AddressEditable();\n  addressEditable.setDescription(\"Harry - Office\");\n  addressEditable.setName(\"Harry Zhang\");\n  addressEditable.setCompany(\"Lob\");\n  addressEditable.setEmail(\"harry@lob.com\");\n  addressEditable.setPhone(\"5555555555\");\n  addressEditable.setAddressLine1(\"210 King St\");\n  addressEditable.setAddressLine2(\"# 6100\");\n  addressEditable.setAddressCity(\"San Francisco\");\n  addressEditable.setAddressState(\"CA\");\n  addressEditable.setAddressZip(\"94107\");\n  addressEditable.setAddressCountry(CountryExtended.US);\n\n  Address result = apiInstance.create(addressEditable);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.Address.create(%{\n  description: \"Harry - Office\",\n  name: \"Harry Zhang\",\n  company: \"Lob\",\n  email: \"harry@lob.com\",\n  phone: \"5555555555\",\n  address_line1: \"210 King St\",\n  address_line2: \"# 6100\",\n  address_city: \"San Francisco\",\n  address_state: \"CA\",\n  address_country: \"US\",\n  address_zip: \"94107\"\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "AddressesApi api = new AddressesApi(config);\n\nAddressEditable addressEditable = new AddressEditable(\n  \"210 King St\",  // addressLine1\n  \"# 6100\",  // addressLine2\n  \"San Francisco\",  // addressCity\n  \"CA\",  // addressState\n  \"94107\",  // addressZip\n  CountryExtended.US,  // addressCountry\n  \"Harry - Office\",  // description\n  \"Harry Zhang\",  // name\n  \"Lob\",  // company\n  \"5555555555\",  // phone\n  \"harry@lob.com\" // email\n);\n\ntry {\n  Address result = api.create(addressEditable);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\n\nvar addressCreate = *lob.NewAddressEditable()\naddressCreate.SetDescription(\"Harry - Office\")\naddressCreate.SetName(\"Harry Zhang\")\naddressCreate.SetCompany(\"Lob\")\naddressCreate.SetEmail(\"harry@lob.com\")\naddressCreate.SetPhone(\"5555555555\")\naddressCreate.SetAddressLine1(\"210 King St\")\naddressCreate.SetAddressLine2(\"# 6100\")\naddressCreate.SetAddressCity(\"San Francisco\")\naddressCreate.SetAddressState(\"CA\")\naddressCreate.SetAddressZip(\"94107\")\naddressCreate.SetAddressCountry(\"US\")\n\n\n\ncreatedaddress, _, err := apiClient.AddressesApi.Create(context).AddressEditable(addressCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+  /addresses/{adr_id}:
+    parameters:
+    - in: path
+      name: adr_id
+      description: id of the address
+      required: true
+      schema:
+        $ref: '#/components/schemas/adr_id'
+    get:
+      operationId: address_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing address. You need only supply the unique identifier that was returned upon address creation.
+      tags:
+      - Addresses
+      responses:
+        '200':
+          $ref: '#/components/responses/address'
+        default:
+          $ref: '#/components/responses/address_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/addresses/adr_fa85158b26c3eb7c \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const address = await new AddressesApi(config).get('adr_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.addresses.retrieve('adr_fa85158b26c3eb7c', function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "addressApi = AddressesApi.new(config)\n\nbegin\n  retrievedAddress = addressApi.get(\"adr_fa85158b26c3eb7c\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = AddressesApi(api_client)\n\ntry:\n  address = api.get(\"adr_fa85158b26c3eb7c\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\AddressesApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->get(\"adr_fa85158b26c3eb7c\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "AddressesApi apiInstance = new AddressesApi(config);\n\ntry {\n  Address response = apiInstance.get(\"adr_fa85158b26c3eb7c\");\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Address.retrieve("adr_fa85158b26c3eb7c")
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "AddressesApi api = new AddressesApi(config);\n\ntry {\n  Address response = api.get(\"adr_fa85158b26c3eb7c\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nfetchedAddress, _, err := apiClient.AddressesApi.Get(context,\"adr_fa85158b26c3eb7c\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+    delete:
+      operationId: address_delete
+      summary: Delete
+      description: Deletes the details of an existing address. You need only supply the unique identifier that was returned upon address creation.
+      tags:
+      - Addresses
+      responses:
+        '200':
+          $ref: '#/components/responses/address_deleted'
+        default:
+          $ref: '#/components/responses/address_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X DELETE https://api.lob.com/v1/addresses/adr_43769b47aed248c2 \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const deleteAddress = await new AddressesApi(config).delete('adr_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.addresses.delete('adr_43769b47aed248c2', function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "addressApi = AddressesApi.new(config)\n\nbegin\n  deletedAddress = addressApi.delete(\"adr_43769b47aed248c2\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = AddressesApi(api_client)\n\ntry:\n  deleted_resource = api.delete(\"adr_43769b47aed248c2\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\AddressesApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->delete(\"adr_43769b47aed248c2\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "AddressesApi apiInstance = new AddressesApi(config);\n\ntry {\n    AddressDeletion response = apiInstance.delete(\"adr_43769b47aed248c2\");\n} catch (ApiException e) {\n    e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Address.delete("adr_43769b47aed248c2")
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "AddressesApi api = new AddressesApi(config);\n\ntry {\n  AddressDeletion response = api.delete(\"adr_43769b47aed248c2\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\ndeletedAddress, _, err := apiClient.AddressesApi.Delete(context, \"adr_43769b47aed248c2\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+components:
+  schemas:
+    address_fields_us:
+      type: object
+      required:
+      - address_line1
+      - address_city
+      - address_state
+      - address_zip
+      properties:
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 64
+        address_line2:
+          type: string
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 64
+          nullable: true
+        address_city:
+          type: string
+          maxLength: 200
+        address_state:
+          type: string
+          description: 2 letter state short-name code
+          pattern: ^[a-zA-Z]{2}$
+        address_zip:
+          type: string
+          description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+            '
+          pattern: ^\d{5}(-\d{4})?$
+    object:
+      type: string
+      description: Value is resource type.
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
+    country_extended:
+      type: string
+      description: Must be a 2 letter country short-name code (ISO 3166). Does not accept `US`, `AS`, `PR`, `FM`, `GU`, `MH`, `MP`, `PW`, or `VI`. For these addresses, please use the US verification API. Also does not accept `PS`, which is not currently supported.
+      enum:
+      - AD
+      - AE
+      - AF
+      - AG
+      - AI
+      - AL
+      - AN
+      - AO
+      - AQ
+      - AR
+      - AT
+      - AU
+      - AW
+      - AZ
+      - BA
+      - BB
+      - BD
+      - BE
+      - BF
+      - BG
+      - BH
+      - BI
+      - BJ
+      - BM
+      - BN
+      - BO
+      - BQ
+      - BR
+      - BS
+      - BT
+      - BW
+      - BY
+      - BZ
+      - CA
+      - CD
+      - CG
+      - CH
+      - CI
+      - CK
+      - CL
+      - CM
+      - CN
+      - CO
+      - CR
+      - CS
+      - CU
+      - CV
+      - CW
+      - CY
+      - CZ
+      - DE
+      - DJ
+      - DK
+      - DM
+      - DO
+      - DZ
+      - EC
+      - EE
+      - EG
+      - EH
+      - ER
+      - ES
+      - ET
+      - FI
+      - FJ
+      - FK
+      - FO
+      - FR
+      - GA
+      - GB
+      - GD
+      - GE
+      - GH
+      - GI
+      - GL
+      - GM
+      - GN
+      - GQ
+      - GR
+      - GS
+      - GT
+      - GW
+      - GY
+      - HK
+      - HN
+      - HR
+      - HT
+      - HU
+      - ID
+      - IE
+      - IL
+      - IN
+      - IO
+      - IQ
+      - IR
+      - IS
+      - IT
+      - JM
+      - JO
+      - JP
+      - KE
+      - KG
+      - KH
+      - KI
+      - KM
+      - KN
+      - KP
+      - KR
+      - KW
+      - KY
+      - KZ
+      - LA
+      - LB
+      - LC
+      - LI
+      - LK
+      - LR
+      - LS
+      - LT
+      - LU
+      - LV
+      - LY
+      - MA
+      - MC
+      - MD
+      - ME
+      - MG
+      - MK
+      - ML
+      - MM
+      - MN
+      - MO
+      - MR
+      - MS
+      - MT
+      - MU
+      - MV
+      - MW
+      - MX
+      - MY
+      - MZ
+      - NA
+      - NE
+      - NF
+      - NG
+      - NI
+      - NL
+      - 'NO'
+      - NP
+      - NR
+      - NU
+      - NZ
+      - OM
+      - PA
+      - PE
+      - PG
+      - PH
+      - PK
+      - PL
+      - PN
+      - PT
+      - PY
+      - QA
+      - RO
+      - RS
+      - RU
+      - RW
+      - SA
+      - SB
+      - SC
+      - SD
+      - SE
+      - SG
+      - SH
+      - SI
+      - SK
+      - SL
+      - SM
+      - SN
+      - SO
+      - SR
+      - SS
+      - ST
+      - SV
+      - SX
+      - SY
+      - SZ
+      - TC
+      - TD
+      - TG
+      - TH
+      - TJ
+      - TK
+      - TL
+      - TM
+      - TN
+      - TO
+      - TR
+      - TT
+      - TV
+      - TW
+      - TZ
+      - UA
+      - UG
+      - UY
+      - UZ
+      - VA
+      - VC
+      - VE
+      - VG
+      - VN
+      - VU
+      - WS
+      - YE
+      - ZA
+      - ZM
+      - ZW
+    address_us:
+      allOf:
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          id:
+            $ref: '#/components/schemas/adr_id'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - address
+            default: address
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+              '
+            maxLength: 40
+            nullable: true
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_line1:
+            type: string
+            description: The primary number, street name, and directional information.
+            maxLength: 64
+          address_line2:
+            type: string
+            description: An optional field containing any information which can't fit into line 1.
+            maxLength: 64
+            nullable: true
+          address_city:
+            type: string
+            maxLength: 200
+          address_state:
+            type: string
+            description: 2 letter state short-name code
+            pattern: ^[a-zA-Z]{2}$
+          address_zip:
+            type: string
+            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+              '
+            pattern: ^\d{5}(-\d{4})?$
+          address_country:
+            type: string
+            enum:
+            - UNITED STATES
+            description: Full name of country
+            minLength: 13
+            maxLength: 13
+          metadata:
+            $ref: '#/components/schemas/metadata'
+          recipient_moved:
+            type: boolean
+            description: 'Only returned for accounts on certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print &amp; Mail Editions</a>. Value is `true` if the address was altered because the recipient filed for a <a href="#tag/National-Change-of-Address">National Change of Address Linkage (NCOALink)</a>, `false` if the NCOALink check was run but no altered address was found, and `null` if the NCOALink check was not run. The NCOALink check does not happen for non-US addresses, for non-deliverable US addresses, or for addresses created before the NCOALink feature was added to your account.
+
+              '
+            nullable: true
+        example:
+          id: adr_e68217bd744d65c8
+          description: Harry - Office
+          name: HARRY ZHANG
+          company: LOB
+          phone: '5555555555'
+          email: harry@lob.com
+          address_line1: 210 KING ST STE 6100
+          address_line2: null
+          address_city: SAN FRANCISCO
+          address_state: CA
+          address_zip: 94107-1741
+          address_country: UNITED STATES
+          metadata: {}
+          recipient_moved: false
+          date_created: '2019-08-12T00:16:00.361Z'
+          date_modified: '2019-08-12T00:16:00.361Z'
+          object: address
+    address_editable_us:
+      allOf:
+      - $ref: '#/components/schemas/address_fields_us'
+      - type: object
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            $ref: '#/components/schemas/company'
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_country:
+            type: string
+            enum:
+            - US
+            default: US
+          metadata:
+            $ref: '#/components/schemas/metadata'
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    company:
+      type: string
+      description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+        '
+      maxLength: 40
+      nullable: true
+    adr_id:
+      type: string
+      description: Unique identifier prefixed with `adr_`.
+      pattern: ^adr_[a-zA-Z0-9]+$
+    resource_description:
+      type: string
+      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+
+        '
+      maxLength: 255
+      nullable: true
+    address_intl:
+      allOf:
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        - address_line1
+        - address_country
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          id:
+            $ref: '#/components/schemas/adr_id'
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            $ref: '#/components/schemas/company'
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          metadata:
+            $ref: '#/components/schemas/metadata'
+          address_line1:
+            type: string
+            maxLength: 200
+          address_line2:
+            type: string
+            maxLength: 200
+            nullable: true
+          address_city:
+            type: string
+            maxLength: 200
+            nullable: true
+          address_state:
+            description: Will be returned as a full string
+            type: string
+            maxLength: 200
+            nullable: true
+          address_zip:
+            type: string
+            description: Optional postal code.
+            maxLength: 40
+            nullable: true
+          address_country:
+            description: Full name of country
+            type: string
+            maxLength: 200
+            enum:
+            - AFGHANISTAN
+            - ALBANIA
+            - ALGERIA
+            - AMERICAN SAMOA
+            - ANDORRA
+            - ANGOLA
+            - ANGUILLA
+            - ANTARCTICA
+            - ANTIGUA AND BARBUDA
+            - ARGENTINA
+            - ARUBA
+            - AUSTRALIA
+            - AUSTRIA
+            - AZERBAIJAN
+            - BAHRAIN
+            - BANGLADESH
+            - BARBADOS
+            - BELARUS
+            - BELGIUM
+            - BELIZE
+            - BENIN
+            - BERMUDA
+            - BHUTAN
+            - BOLIVIA (PLURINATIONAL STATE OF)
+            - BONAIRE, SAINT EUSTATIUS AND SABA
+            - BOSNIA AND HERZEGOVINA
+            - BOTSWANA
+            - BRAZIL
+            - BRITISH INDIAN OCEAN TERRITORY
+            - BRITISH VIRGIN ISLANDS
+            - BRUNEI DARUSSALAM
+            - BULGARIA
+            - BURKINA FASO
+            - BURUNDI
+            - CABO VERDE
+            - CAMBODIA
+            - CAMEROON
+            - CANADA
+            - CAYMAN ISLANDS
+            - CENTRAL AFRICAN REPUBLIC
+            - CHAD
+            - CHILE
+            - CHINA
+            - COLOMBIA
+            - COMOROS
+            - CONGO
+            - CONGO, DEMOCRATIC REPUBLIC OF THE
+            - COOK ISLANDS
+            - COSTA RICA
+            - CÔTE D'IVOIRE
+            - CROATIA
+            - CUBA
+            - CURAÇAO
+            - CYPRUS
+            - CZECH REPUBLIC
+            - DENMARK
+            - DJIBOUTI
+            - DOMINICA
+            - DOMINICAN REPUBLIC
+            - ECUADOR
+            - EGYPT
+            - EL SALVADOR
+            - EQUATORIAL GUINEA
+            - ERITREA
+            - ESTONIA
+            - ESWATINI
+            - ETHIOPIA
+            - FALKLAND ISLANDS (MALVINAS)
+            - FAROE ISLANDS
+            - FIJI
+            - FINLAND
+            - FRANCE
+            - GABON
+            - GAMBIA
+            - GEORGIA
+            - GERMANY
+            - GHANA
+            - GIBRALTAR
+            - GREECE
+            - GREENLAND
+            - GRENADA
+            - GUATEMALA
+            - GUINEA
+            - GUINEA-BISSAU
+            - GUYANA
+            - HAITI
+            - HOLY SEE
+            - HONDURAS
+            - HONG KONG
+            - HUNGARY
+            - ICELAND
+            - INDIA
+            - INDONESIA
+            - IRAN (ISLAMIC REPUBLIC OF)
+            - IRAQ
+            - IRELAND
+            - ISRAEL
+            - ITALY
+            - JAMAICA
+            - JAPAN
+            - JORDAN
+            - KAZAKHSTAN
+            - KENYA
+            - KIRIBATI
+            - KOREA (DEMOCRATIC PEOPLE’S REPUBLIC OF)
+            - KOREA, REPUBLIC OF
+            - KUWAIT
+            - KYRGYZSTAN
+            - LAO PEOPLE’S DEMOCRATIC REPUBLIC
+            - LATVIA
+            - LEBANON
+            - LESOTHO
+            - LIBERIA
+            - LIBYA
+            - LIECHTENSTEIN
+            - LITHUANIA
+            - LUXEMBOURG
+            - MACAO
+            - MACEDONIA
+            - MADAGASCAR
+            - MALAWI
+            - MALAYSIA
+            - MALDIVES
+            - MALI
+            - MALTA
+            - MAURITANIA
+            - MAURITIUS
+            - MEXICO
+            - MOLDOVA, REPUBLIC OF
+            - MONACO
+            - MONGOLIA
+            - MONTENEGRO
+            - MONTSERRAT
+            - MOROCCO
+            - MOZAMBIQUE
+            - MYANMAR
+            - NAMIBIA
+            - NAURU
+            - NEPAL
+            - NETHERLAND ANTILLES
+            - NETHERLANDS
+            - NEW ZEALAND
+            - NICARAGUA
+            - NIGER
+            - NIGERIA
+            - NIUE
+            - NORFOLK ISLAND
+            - NORWAY
+            - OMAN
+            - PAKISTAN
+            - PANAMA
+            - PAPUA NEW GUINEA
+            - PARAGUAY
+            - PERU
+            - PHILIPPINES
+            - PITCAIRN
+            - POLAND
+            - PORTUGAL
+            - QATAR
+            - ROMANIA
+            - RUSSIAN FEDERATION
+            - RWANDA
+            - SAINT HELENA
+            - SAINT KITTS AND NEVIS
+            - SAINT LUCIA
+            - SAINT VINCENT AND THE GRENADINES
+            - SAMOA
+            - SAN MARINO
+            - SAO TOME AND PRINCIPE
+            - SAUDI ARABIA
+            - SENEGAL
+            - SERBIA
+            - SEYCHELLES
+            - SIERRA LEONE
+            - SINGAPORE
+            - SINT MAARTEN
+            - SLOVAKIA
+            - SLOVENIA
+            - SOLOMON ISLANDS
+            - SOMALIA
+            - SOUTH AFRICA
+            - SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS
+            - SOUTH SUDAN
+            - SPAIN
+            - SRI LANKA
+            - SUDAN
+            - SURINAME
+            - SWEDEN
+            - SWITZERLAND
+            - SYRIAN ARAB REPUBLIC
+            - TAIWAN
+            - TAJIKISTAN
+            - TANZANIA
+            - THAILAND
+            - THE BAHAMAS
+            - TIMOR-LESTE
+            - TOGO
+            - TOKELAU
+            - TONGA
+            - TRINIDAD AND TOBAGO
+            - TUNISIA
+            - TURKEY
+            - TURKMENISTAN
+            - TURKS AND CAICOS ISLANDS
+            - TUVALU
+            - UGANDA
+            - UKRAINE
+            - UNITED ARAB EMIRATES
+            - UNITED KINGDOM
+            - URUGUAY
+            - UZBEKISTAN
+            - VANUATU
+            - VENEZUELA
+            - VIET NAM
+            - WESTERN SAHARA
+            - YEMEN
+            - ZAMBIA
+            - ZIMBABWE
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - address
+            default: address
+        example:
+          id: adr_e68217bd744d65c8
+          description: Harry - Office
+          name: Harry Zhang
+          company: Lob
+          phone: '5555555555'
+          email: harry@lob.com
+          metadata: {}
+          address_line1: 370 WATER ST
+          address_line2: ''
+          address_city: SUMMERSIDE
+          address_state: PRINCE EDWARD ISLAND
+          address_zip: C1N 1C4
+          address_country: CANADA
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type: string
+          description: Url of next page of items in list.
+          nullable: true
+        previous_url:
+          type: string
+          description: Url of previous page of items in list.
+          nullable: true
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    address_editable_intl:
+      allOf:
+      - $ref: '#/components/schemas/address_fields_intl'
+      - type: object
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            $ref: '#/components/schemas/company'
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_country:
+            $ref: '#/components/schemas/country_extended'
+          metadata:
+            $ref: '#/components/schemas/metadata'
+    address_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/adr_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
+    count:
+      type: integer
+      description: number of resources in a set
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    address_fields_intl:
+      type: object
+      required:
+      - address_line1
+      - address_country
+      properties:
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 200
+        address_line2:
+          type: string
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 200
+          nullable: true
+        address_city:
+          type: string
+          maxLength: 200
+          nullable: true
+        address_state:
+          type: string
+          maxLength: 200
+          nullable: true
+        address_zip:
+          type: string
+          description: Optional postal code.
+          maxLength: 40
+          nullable: true
+    address:
+      oneOf:
+      - $ref: '#/components/schemas/address_us'
+      - $ref: '#/components/schemas/address_intl'
+    address_editable:
+      oneOf:
+      - $ref: '#/components/schemas/address_editable_us'
+      - $ref: '#/components/schemas/address_editable_intl'
+  parameters:
+    metadata:
+      in: query
+      name: metadata
+      description: Filter by metadata key-value pair`.
+      schema:
+        $ref: '#/components/schemas/metadata'
+      style: deepObject
+      explode: true
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+  headers:
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  responses:
+    post_address:
+      description: Echos the writable fields of a newly created address object.
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/address'
+          examples:
+            full_us:
+              value:
+                id: adr_d3489cd64c791ab5
+                description: Harry - Office
+                name: HARRY ZHANG
+                company: LOB
+                phone: '5555555555'
+                email: harry@lob.com
+                address_line1: 210 KING ST STE 6100
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: '94107'
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2017-09-05T17:47:53.767Z'
+                date_modified: '2017-09-05T17:47:53.767Z'
+                object: address
+            full_intl:
+              value:
+                id: adr_b9f49f464c836203
+                description: Harry - Office
+                name: HARRY ZHANG
+                company: LOB
+                phone: '5555555555'
+                email: harry@lob.com
+                address_line1: 370 WATER ST
+                address_city: SUMMERSIDE
+                address_state: PRINCE EDWARD ISLAND
+                address_zip: C1N 1C4
+                address_country: CANADA
+                metadata: {}
+                date_created: '2021-11-29T20:55:46.843Z'
+                date_modified: '2021-11-29T20:56:46.843Z'
+                object: address
+            ncoa_us_live:
+              value:
+                id: adr_d3489cd64c791ab5
+                description: Harry - Office
+                name: HARRY ZHANG
+                company: LOB
+                phone: '5555555555'
+                email: harry@lob.com
+                address_line1: ████
+                address_line2: ████
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: '94107'
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2017-09-05T17:47:53.767Z'
+                date_modified: '2017-09-05T17:47:53.767Z'
+                recipient_moved: true
+                inline: false
+                object: address
+            ncoa_us_test:
+              value:
+                id: adr_e463565030210e12
+                description: null
+                name: TEST KEYS DO NOT VERIFY ADDRESSES
+                company: null
+                phone: null
+                email: null
+                address_line1: ████
+                address_line2: ████
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: '94107'
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2019-12-05T19:39:19.932Z'
+                date_modified: '2019-12-05T19:39:19.932Z'
+                recipient_moved: true
+                inline: false
+                object: address
+    address_deleted:
+      description: Deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/address_deletion'
+          example:
+            id: adr_123456789
+            deleted: true
+    address_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: address not found
+              status_code: 404
+    address:
+      description: Returns an address object if a valid identifier was provided.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/address'
+    all_addresses:
+      description: A dictionary with a data property that contains an array of up to `limit` addresses. Each entry in the array is a separate address object. The previous and next page of address entries can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more addresses are available beyond the current set of returned results, the `next_url` field will be empty.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/list'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  description: list of addresses
+                  items:
+                    $ref: '#/components/schemas/address'
+          example:
+            data:
+            - id: adr_e68217bd744d65c8
+              description: Harry - Office
+              name: HARRY ZHANG
+              company: LOB
+              phone: '5555555555'
+              email: harry@lob.com
+              address_line1: 210 KING ST STE 6100
+              address_line2: null
+              address_city: SAN FRANCISCO
+              address_state: CA
+              address_zip: 94107-1741
+              address_country: UNITED STATES
+              metadata: {}
+              date_created: '2019-08-12T00:16:00.361Z'
+              date_modified: '2019-08-12T00:16:00.361Z'
+              object: address
+            - id: adr_asdi2y3riuasasoi
+              description: Harry - Office
+              name: Harry Zhang
+              company: Lob
+              phone: '5555555555'
+              email: harry@lob.com
+              metadata: {}
+              address_line1: 370 WATER ST
+              address_line2: ''
+              address_city: SUMMERSIDE
+              address_state: PRINCE EDWARD ISLAND
+              address_zip: C1N 1C4
+              address_country: CANADA
+              date_created: '2019-09-20T00:14:00.361Z'
+              date_modified: '2019-09-20T00:14:00.361Z'
+              object: address
+            object: list
+            next_url: https://api.lob.com/v1/addresses?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wOC0wN1QyMTo1OTo0Ni43NjRaIiwiaWRPZmZzZXQiOiJhZHJfODMwYmYwZWFiZGFhYTQwOSJ9
+            previous_url: null
+            count: 2
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

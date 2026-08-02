@@ -1,0 +1,1146 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Uploads API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Uploads
+  description: 'The uploads endpoint allows you to upload audience files that are then associated with a given campaign.
+
+    At this time, only CSV files are allowed. The API provides endpoints for creating uploads, uploading audience files,
+
+    and marking uploaded files as ready for processing. The API also provides endpoints for downloading files that
+
+    describe the results, both successful and not, of the processing.
+
+    '
+paths:
+  /uploads:
+    get:
+      operationId: uploads_list
+      summary: List
+      description: Returns a list of your uploads. Optionally, filter uploads by campaign.
+      tags:
+      - Uploads
+      parameters:
+      - required: false
+        schema:
+          $ref: '#/components/schemas/cmp_id'
+        name: campaignId
+        description: id of the campaign
+        in: query
+      responses:
+        '200':
+          $ref: '#/components/responses/all_uploads'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/uploads \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+      - lang: Ruby
+        source: "uploadsApi = UploadsApi.new(config)\n\nbegin\n  uploads = uploadsApi.list_upload({ campaign_id: \"cmp_e05ee61ff80764b\" })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+    post:
+      operationId: upload_create
+      summary: Create
+      description: Creates a new upload with the provided properties.
+      tags:
+      - Uploads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/upload_writable'
+      responses:
+        '201':
+          description: Upload created successfully
+          content:
+            $ref: '#/components/mediaTypes/upload'
+        '422':
+          $ref: '#/components/responses/upload_validation_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl --location --request POST 'https://api.lob.com/v1/uploads' \\\n--header 'Content-Type: application/json' \\\n-u YOUR_KEY_HERE: \\\n--data-raw '{\n    \"campaignId\": \"cmp_f33809b18b6f3ea8\"\n}'\n"
+        label: CURL
+      - lang: Ruby
+        source: "uploadCreate = UploadWritable.new({\n  campaign_id: \"cmp_e05ee61ff80764b\",\n});\n\nuploadApi = UploadsApi.new(config)\n\nbegin\n  createdUpload = uploadApi.create_upload(uploadCreate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+  /uploads/{upl_id}:
+    parameters:
+    - in: path
+      name: upl_id
+      description: id of the upload
+      required: true
+      schema:
+        $ref: '#/components/schemas/upl_id'
+    get:
+      operationId: upload_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing upload. You need only supply the unique upload identifier that was returned upon upload creation.
+      tags:
+      - Uploads
+      responses:
+        '200':
+          description: Returns an upload object
+          content:
+            $ref: '#/components/mediaTypes/upload'
+        '404':
+          $ref: '#/components/responses/upload_not_found'
+        '422':
+          $ref: '#/components/responses/upload_validation_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/uploads/upl_71be866e430b11e9 \\\n  -u <YOUR API KEY>: \\\n"
+        label: CURL
+      - lang: Ruby
+        source: "uploadApi = UploadsApi.new(config)\n\nbegin\n  retrievedUpload = uploadApi.get_upload(\"upl_71be866e430b11e9\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+    patch:
+      operationId: upload_update
+      summary: Update
+      description: Update the details of an existing upload. You need only supply the unique identifier that was returned upon upload creation.
+      tags:
+      - Uploads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/upload_updatable'
+      responses:
+        '200':
+          description: Returns an upload object
+          content:
+            $ref: '#/components/mediaTypes/upload'
+        '404':
+          $ref: '#/components/responses/upload_not_found'
+        '422':
+          $ref: '#/components/responses/upload_validation_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X PATCH https://api.lob.com/v1/uploads/upl_71be866e430b11e9 \\\n  -u <YOUR API KEY>: \\\n  -d \"state=Ready for Validation\"\n"
+        label: CURL
+      - lang: Python
+        source: "upload_updatable = UploadUpdatable(\n  state = UploadState(\"Ready for Validation\"),\n)\n\nwith ApiClient(configuration) as api_client:\n  api = UploadsApi(api_client)\n\ntry:\n  updated_upload = api.update_upload(\"upl_71be866e430b11e9\", upload_updatable)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: Ruby
+        source: "uploadUpdatable = UploadUpdatable.new({\n  required_address_column_mapping: RequiredAddressColumnMapping.new({\n    name: \"recipient\",\n    address_line1: \"primary line\",\n    address_city: \"city\",\n    address_state: \"state\",\n    address_zip: \"zip_code\",\n  }),\n})\n\nuploadApi = UploadsApi.new(config)\n\nbegin\n  updatedUpload = uploadApi.update_upload(\"upl_71be866e430b11e9\", uploadUpdatable)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+    delete:
+      operationId: upload_delete
+      summary: Delete
+      description: Delete an existing upload. You need only supply the unique identifier that was returned upon upload creation.
+      tags:
+      - Uploads
+      responses:
+        '204':
+          description: Successful Response
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X DELETE https://api.lob.com/v1/uploads/upl_71be866e430b11e9 \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+      - lang: Ruby
+        source: "uploadApi = UploadsApi.new(config)\n\nbegin\n  deletedUpload = uploadApi.delete_upload(\"upl_71be866e430b11e9\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+  /uploads/{upl_id}/file:
+    parameters:
+    - in: path
+      name: upl_id
+      description: ID of the upload
+      required: true
+      schema:
+        $ref: '#/components/schemas/upl_id'
+    post:
+      operationId: upload_file
+      summary: Upload file
+      description: Upload an [audience file](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/campaign-audience-guide) and associate it with an upload.
+      tags:
+      - Uploads
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/upload_file'
+        '422':
+          $ref: '#/components/responses/upload_validation_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X POST https://api.lob.com/v1/uploads/upl_71be866e430b11e9/file \\\n  -u <YOUR API KEY>: \\\n  -F file=@<YOUR FILE NAME HERE>\n"
+        label: CURL
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = UploadsApi(api_client)\n\ntry:\n  res = api.upload_file(\"upl_71be866e430b11e9\", open(\"<PATH_TO_CSV>\", \"rb\"))\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+  /uploads/{upl_id}/exports:
+    parameters:
+    - in: path
+      name: upl_id
+      description: ID of the upload
+      required: true
+      schema:
+        $ref: '#/components/schemas/upl_id'
+    post:
+      operationId: upload_export_create
+      summary: Create Export
+      description: 'Campaign Exports can help you understand exactly which records in a campaign could not be created. By initiating and retrieving an export, you will get row-by-row errors for your campaign. For a step-by-step walkthrough of creating a campaign and exporting failures, see our [Campaigns Guide](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/launch-your-first-campaign).
+
+
+        Create an export file associated with an upload.'
+      tags:
+      - Uploads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - all
+                  - failures
+                  - successes
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/upload_create_export'
+        4XX:
+          $ref: '#/components/responses/upload_export_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/uploads/upl_71be866e430b11e9/exports \\\n  -u <YOUR API KEY>: \\\n  -d \"type=failures\" \\\n"
+        label: CURL
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = UploadsApi(api_client)\n\nexport_model = ExportModel(\n  type = \"all\"\n)\n\ntry:\n  created_export = api.create_export(\"upl_71be866e430b11e9\", export_model)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: Ruby
+        source: "exportModel = ExportModel.new({\n  type: \"all\"\n})\n\nuploadsApi = UploadsApi.new(config)\n\nbegin\n  createdExport = uploadsApi.create_export(\"upl_71be866e430b11e9\", exportModel)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+  /uploads/{upl_id}/report:
+    parameters:
+    - in: path
+      name: upl_id
+      description: ID of the upload
+      required: true
+      schema:
+        $ref: '#/components/schemas/upl_id'
+    - in: query
+      required: false
+      name: status
+      description: The status of line items to filter and retrieve. By default all line items are returned.
+      schema:
+        enum:
+        - Validated
+        - Failed
+        - Processing
+        type: string
+    - in: query
+      required: false
+      name: limit
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 100
+        maximum: 100
+        example: 10
+    - $ref: '#/components/parameters/offset'
+    get:
+      operationId: report_retrieve
+      summary: Retrieve Line Item Report
+      description: 'Retrieves the line item data for each row from the csv file associated with the upload id record. NOTE: This endpoint is currently feature flagged. Please reach out to Lob''s support team if you  would like access to this API endpoint.'
+      tags:
+      - Uploads
+      responses:
+        '200':
+          description: Returns an report object
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - count
+                - offset
+                - total_count
+                properties:
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        rowNumber:
+                          title: Row Number
+                          type: number
+                          description: The row number of the csv file containing this data.
+                        status:
+                          type: string
+                          description: The processing status of line item.
+                          enum:
+                          - Validated
+                          - Failed
+                          - Processing
+                        errorMessage:
+                          type: string
+                          nullable: true
+                          description: The error message detailing the reason why processing the line item failed.
+                        mailpieceId:
+                          type: string
+                          nullable: true
+                          description: The mailpiece id created from the line item when it was validated.
+                        originalData:
+                          type: object
+                          description: Key-value pairs where each key is the column header and each value is the value of the column for the row.
+                  next_url:
+                    type: string
+                    description: Url of next page of items in list.
+                    nullable: true
+                  prev_url:
+                    type: string
+                    description: Url of previous page of items in list.
+                    nullable: true
+                  count:
+                    $ref: '#/components/schemas/count'
+                  total_count:
+                    type: integer
+                    description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+              example:
+                id: ex_6a94fe68fd151e0f8
+                dateCreated: '2021-07-06T22:51:42.838Z'
+                dateModified: '2022-07-06T22:51:42.838Z'
+                deleted: false
+                s3Url: null
+                state: in_progress
+                type: failures
+                uploadId: upl_71be866e430b11e9
+        '404':
+          $ref: '#/components/responses/upload_not_found'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/uploads/upl_71be866e430b11e9/report \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = UploadsApi(api_client)\n\ntry:\n  retrieved_report = api.get_report(\"upl_71be866e430b11e9\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: Ruby
+        source: "uploadsApi = UploadsApi.new(config)\n\nbegin\n  retrievedreport = uploadsApi.get_report(\"upl_71be866e430b11e9\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+  /uploads/{upl_id}/exports/{ex_id}:
+    parameters:
+    - in: path
+      name: upl_id
+      description: ID of the upload
+      required: true
+      schema:
+        $ref: '#/components/schemas/upl_id'
+    - in: path
+      name: ex_id
+      description: ID of the export
+      required: true
+      schema:
+        $ref: '#/components/schemas/ex_id'
+    get:
+      operationId: export_retrieve
+      summary: Retrieve Export
+      description: Retrieves the details of an existing export. You need only supply the unique export identifier that was returned upon export creation. If you try retrieving an export immediately after creating one (i.e., before we're done processing the export), you will get back an export object with `state = in_progress`.
+      tags:
+      - Uploads
+      responses:
+        '200':
+          description: Returns an export object
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - id
+                - dateCreated
+                - dateModified
+                - deleted
+                - s3Url
+                - state
+                - type
+                - uploadId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ex_id'
+                  dateCreated:
+                    type: string
+                    format: date-time
+                    description: A timestamp in ISO 8601 format of the date the export was created
+                  dateModified:
+                    type: string
+                    format: date-time
+                    description: A timestamp in ISO 8601 format of the date the export was last modified
+                  deleted:
+                    type: boolean
+                    description: Returns as `true` if the resource has been successfully deleted.
+                  s3Url:
+                    type: string
+                    description: The URL for the generated export file.
+                  state:
+                    type: string
+                    enum:
+                    - in_progress
+                    - failed
+                    - succeeded
+                    description: The state of the export file, which can be `in_progress`, `failed` or `succeeded`.
+                  type:
+                    type: string
+                    enum:
+                    - all
+                    - failures
+                    - successes
+                    description: The export file type, which can be `all`, `failures` or `successes`.
+                  uploadId:
+                    $ref: '#/components/schemas/upl_id'
+              example:
+                id: ex_6a94fe68fd151e0f8
+                dateCreated: '2021-07-06T22:51:42.838Z'
+                dateModified: '2022-07-06T22:51:42.838Z'
+                deleted: false
+                s3Url: null
+                state: in_progress
+                type: failures
+                uploadId: upl_71be866e430b11e9
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/uploads/upl_71be866e430b11e9/exports/ex_6a94fe68fd151e0f8 \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = UploadsApi(api_client)\n\ntry:\n  retrieved_export = api.get_export(\"upl_71be866e430b11e9\", \"ex_6a94fe68fd151e0f8\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: Ruby
+        source: "uploadsApi = UploadsApi.new(config)\n\nbegin\n  retrievedExport = uploadsApi.get_export(\"upl_71be866e430b11e9\", \"ex_6a94fe68fd151e0f8\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+components:
+  responses:
+    all_uploads:
+      description: An array of matching uploads. Each entry in the array is a separate upload.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/upload'
+          example:
+          - id: upl_71be866e430b11e9
+            accountId: fa9ea650fc7b31a89f92
+            campaignId: cmp_1933ad629bae1408
+            mode: test
+            failuresUrl: https://www.example.com
+            originalFilename: my_audience.csv
+            state: Draft
+            totalMailpieces: 100
+            failedMailpieces: 5
+            validatedMailpieces: 95
+            bytesProcessed: 17268
+            dateCreated: '2017-09-05T17:47:53.767Z'
+            dateModified: '2017-09-05T17:47:53.767Z'
+            requiredAddressColumnMapping:
+              name: recipient_name
+              address_line1: primary_line
+              address_city: city
+              address_state: state
+              address_zip: zip_code
+            optionalAddressColumnMapping:
+              address_line2: secondary_line
+              company: company
+              address_country: country
+            mergeVariableColumnMapping:
+              gift_code: code
+            metadata:
+              columns:
+              - recipient_name
+              - zip_code
+    upload_validation_error:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            title: HTTPValidationError
+            type: object
+            properties:
+              detail:
+                title: Detail
+                type: array
+                items:
+                  title: ValidationError
+                  required:
+                  - loc
+                  - msg
+                  - type
+                  type: object
+                  properties:
+                    loc:
+                      title: Location
+                      type: array
+                      items:
+                        anyOf:
+                        - type: string
+                        - type: integer
+                    msg:
+                      title: Message
+                      type: string
+                    type:
+                      title: Error Type
+                      type: string
+    upload_not_found:
+      description: Not Found Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: upload not found
+              status_code: 404
+    upload_export_error:
+      description: Create Export Error
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - code
+            - message
+            - errors
+            properties:
+              code:
+                description: A conventional HTTP status code
+                type: number
+                enum:
+                - 400
+                - 404
+              message:
+                description: A human-readable message with more details about the error
+                type: string
+              errors:
+                description: An array of pre-defined strings that identify an error
+                type: array
+                items:
+                  type: string
+            example:
+              code: 400
+              message: Invalid body, check 'errors' property for more info.
+              errors:
+              - type must be a string
+  schemas:
+    upload_state:
+      title: Upload State
+      enum:
+      - Preprocessing
+      - Draft
+      - Ready for Validation
+      - Validating
+      - Scheduled
+      - Cancelled
+      - Errored
+      default: Draft
+      type: string
+      description: The `state` property on the `upload` object. As the file is processed, the `state` will change from `Ready for Validation` to `Validating` and then will be either `Scheduled` (successfully processed) or `Errored` (Unsuccessfully processed).
+    optional_address_column_mapping:
+      title: Optional Address Columns
+      type: object
+      required:
+      - address_line2
+      - company
+      - address_country
+      properties:
+        address_line2:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the optional field "address_line2"
+        company:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the optional field "company"
+        address_country:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the optional field "address_country"
+      example:
+        address_line2: secondary_line
+        company: company
+        address_country: country,
+      description: The mapping of column headers in your file to Lob-optional fields for the resource created. See our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/campaign-audience-guide#optional-columns-3" target="_blank">Campaign Audience Guide</a> for additional details.
+    upload_updatable:
+      type: object
+      properties:
+        originalFilename:
+          title: Original Filename
+          type: string
+          description: Original filename provided when the upload is created.
+        requiredAddressColumnMapping:
+          $ref: '#/components/schemas/required_address_column_mapping'
+        optionalAddressColumnMapping:
+          $ref: '#/components/schemas/optional_address_column_mapping'
+        metadata:
+          $ref: '#/components/schemas/uploads_metadata'
+        mergeVariableColumnMapping:
+          $ref: '#/components/schemas/merge_variable_column_mapping'
+    upload_file:
+      type: object
+      required:
+      - message
+      - filename
+      properties:
+        message:
+          title: Message
+          enum:
+          - File uploaded successfully
+          type: string
+          default: File uploaded successfully
+        filename:
+          title: Filename
+          type: string
+    upload_create_export:
+      type: object
+      required:
+      - message
+      - exportId
+      properties:
+        message:
+          title: Message
+          enum:
+          - Export is processing
+          type: string
+          default: Export is processing
+        exportId:
+          title: Export ID
+          type: string
+          example: ex_2dafd758ed3da9c43
+    upload:
+      allOf:
+      - $ref: '#/components/schemas/upload_writable'
+      - type: object
+        required:
+        - id
+        - accountId
+        - campaignId
+        - requiredAddressColumnMapping
+        - optionalAddressColumnMapping
+        - metadata
+        - mergeVariableColumnMapping
+        - mode
+        - state
+        - totalMailpieces
+        - failedMailpieces
+        - validatedMailpieces
+        - bytesProcessed
+        - dateCreated
+        - dateModified
+        properties:
+          id:
+            $ref: '#/components/schemas/upl_id'
+          accountId:
+            title: Account ID
+            type: string
+            description: Account ID that made the request
+            example: fa9ea650fc7b31a89f92
+          mode:
+            enum:
+            - test
+            - live
+            type: string
+            description: The environment in which the mailpieces were created. Today, will only be `live`.
+          failuresUrl:
+            title: Failures URL
+            type: string
+            example: https://www.example.com
+            description: Url where your campaign mailpiece failures can be retrieved
+          originalFilename:
+            title: Original Filename
+            type: string
+            example: my_audience.csv
+            description: Filename of the upload
+          state:
+            $ref: '#/components/schemas/upload_state'
+          totalMailpieces:
+            title: Total Mailpieces
+            type: integer
+            example: 100
+            description: Total number of recipients for the campaign
+          failedMailpieces:
+            title: Failed Mailpieces
+            type: integer
+            example: 5
+            description: Number of mailpieces that failed to create
+          validatedMailpieces:
+            title: Validated Mailpieces
+            type: integer
+            example: 95
+            description: Number of mailpieces that were successfully created
+          bytesProcessed:
+            title: Bytes Processed
+            type: integer
+            example: 17268
+            description: Number of bytes processed in your CSV
+          dateCreated:
+            title: Date Created
+            type: string
+            format: date-time
+            description: A timestamp in ISO 8601 format of the date the upload was created
+          dateModified:
+            title: Date Modified
+            type: string
+            format: date-time
+            description: A timestamp in ISO 8601 format of the date the upload was last modified
+    cmp_id:
+      type: string
+      title: Campaign id
+      description: Unique identifier prefixed with `cmp_`.
+      pattern: ^cmp_[a-zA-Z0-9]+$
+    upload_writable:
+      type: object
+      required:
+      - campaignId
+      properties:
+        campaignId:
+          allOf:
+          - $ref: '#/components/schemas/cmp_id'
+          - description: Associated Campaign ID
+            type: string
+            example: cmp_1933ad629bae1408
+        requiredAddressColumnMapping:
+          $ref: '#/components/schemas/required_address_column_mapping'
+        optionalAddressColumnMapping:
+          $ref: '#/components/schemas/optional_address_column_mapping'
+        metadata:
+          $ref: '#/components/schemas/uploads_metadata'
+        mergeVariableColumnMapping:
+          $ref: '#/components/schemas/merge_variable_column_mapping'
+          description: test
+    uploads_metadata:
+      title: Metadata
+      type: object
+      required:
+      - columns
+      properties:
+        columns:
+          type: array
+          description: The list of column names from the csv file which you want associated with each of your mailpieces
+          default: []
+          items:
+            type: string
+      default:
+        columns: []
+      example:
+        columns:
+        - recipient_name
+      description: The list of column headers in your file as an array that you want as metadata associated with each mailpiece. See our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/campaign-audience-guide#required-columns-2" target="_blank">Campaign Audience Guide</a> for additional details.
+    upl_id:
+      type: string
+      description: Unique identifier prefixed with `upl_`.
+      pattern: ^upl_[a-zA-Z0-9]+$
+    required_address_column_mapping:
+      title: Required Address Columns
+      type: object
+      required:
+      - name
+      - address_line1
+      - address_city
+      - address_state
+      - address_zip
+      properties:
+        name:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the required field `name`
+        address_line1:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the required field `address_line1`
+        address_city:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the required field `address_city`
+        address_state:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the required field `address_state`
+        address_zip:
+          type: string
+          nullable: true
+          default: null
+          description: The column header from the csv file that should be mapped to the required field `address_zip`
+      example:
+        name: recipient_name
+        address_line1: primary_line
+        address_city: city
+        address_state: state
+        address_zip: zip_code
+      description: The mapping of column headers in your file to Lob-required fields for the resource created. See our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/campaign-audience-guide#required-columns-2" target="_blank">Campaign Audience Guide</a> for additional details.
+    ex_id:
+      type: string
+      description: Unique identifier prefixed with `ex_`.
+      pattern: ^ex_[a-zA-Z0-9]+$
+    merge_variable_column_mapping:
+      title: Merge Variable Mapping
+      type: object
+      nullable: true
+      default: null
+      example:
+        name: recipient_name
+        gift_code: code
+        qr_code_redirect_url: redirect_url
+      description: The mapping of column headers in your file to the merge variables present in your creative. See our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/campaign-audience-guide#step-3-map-merge-variable-data-if-applicable-7" target="_blank">Campaign Audience Guide</a> for additional details. <br />If a merge variable has the same "name" as a "key" in the `requiredAddressColumnMapping` or `optionalAddressColumnMapping` objects, then they **CANNOT** have a different value in this object. If a different value is provided, then when the campaign is processing it will get overwritten with the mapped value present in the `requiredAddressColumnMapping` or `optionalAddressColumnMapping` objects. The redirect URLs for QR codes can also be customized using this mapping. If the URL has a variable and the variable mapping existsing here, then data from the respective column in the audience file will be merged into the URL template.
+    count:
+      type: integer
+      description: number of resources in a set
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+  parameters:
+    offset:
+      in: query
+      name: offset
+      required: false
+      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
+      schema:
+        type: integer
+        default: 0
+  mediaTypes:
+    upload:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/upload'
+        example:
+          id: upl_71be866e430b11e9
+          accountId: fa9ea650fc7b31a89f92
+          campaignId: cmp_1933ad629bae1408
+          mode: live
+          failuresUrl: http://www.example.com
+          originalFilename: my_audience.csv
+          state: Draft
+          totalMailpieces: 100
+          failedMailpieces: 5
+          validatedMailpieces: 95
+          bytesProcessed: 17628
+          dateCreated: '2017-09-05T17:47:53.767Z'
+          dateModified: '2017-09-05T17:47:53.767Z'
+          requiredAddressColumnMapping:
+            name: null
+            address_line1: null
+            address_city: null
+            address_state: null
+            address_zip: null
+          optionalAddressColumnMapping:
+            address_line2: null
+            company: null
+            address_country: null
+          mergeVariableColumnMapping: null
+          metadata:
+            columns: []
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

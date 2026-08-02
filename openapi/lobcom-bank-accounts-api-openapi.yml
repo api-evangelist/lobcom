@@ -1,0 +1,1050 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Bank Accounts API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Bank Accounts
+  description: 'Bank Accounts allow you to store your bank account securely in our system. The API provides
+
+    endpoints for creating bank accounts, deleting bank accounts, verifying bank accounts,
+
+    retrieving individual bank accounts, and retrieving a list of bank accounts.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+    '
+paths:
+  /bank_accounts/{bank_id}/verify:
+    parameters:
+    - in: path
+      name: bank_id
+      description: id of the bank account to be verified
+      required: true
+      schema:
+        $ref: '#/components/schemas/bank_id'
+    post:
+      operationId: bank_account_verify
+      summary: Verify
+      description: "Verify a bank account in order to create a check.\n\nCheck the `microdeposit_type` field returned by `GET /v1/bank_accounts/:id` to determine which parameter to submit:\n- `amounts` — provide the two microdeposit amounts (in cents) that appeared\n  in the bank account statement.\n\n- `descriptor_code` — provide the 6-character code (beginning with `SM`)\n  from the bank statement descriptor of the single $0.01 microdeposit.\n\n\nSubmitting the wrong parameter type for the account's `microdeposit_type` will return an error."
+      tags:
+      - Bank Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bank_account_verify'
+            examples:
+              amounts:
+                summary: Verify with two deposit amounts
+                value:
+                  amounts:
+                  - 25
+                  - 63
+              descriptor_code:
+                summary: Verify with a statement descriptor code
+                value:
+                  descriptor_code: SMABCD
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/bank_account_verify'
+            examples:
+              amounts:
+                summary: Verify with two deposit amounts
+                value:
+                  amounts:
+                  - 25
+                  - 63
+              descriptor_code:
+                summary: Verify with a statement descriptor code
+                value:
+                  descriptor_code: SMABCD
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/bank_account_verify'
+            examples:
+              amounts:
+                summary: Verify with two deposit amounts
+                value:
+                  amounts:
+                  - 25
+                  - 63
+              descriptor_code:
+                summary: Verify with a statement descriptor code
+                value:
+                  descriptor_code: SMABCD
+      responses:
+        '200':
+          $ref: '#/components/responses/post_bank_account'
+        default:
+          $ref: '#/components/responses/bank_account_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "# Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n# microdeposit_type: amounts\ncurl https://api.lob.com/v1/bank_accounts/bank_dfceb4a2a05b57e/verify \\\n  -u REDACTED_LOB_KEY: \\\n  -d \"amounts[]=25\" \\\n  -d \"amounts[]=63\"\n\n# microdeposit_type: descriptor_code\ncurl https://api.lob.com/v1/bank_accounts/bank_dfceb4a2a05b57e/verify \\\n  -u REDACTED_LOB_KEY: \\\n  -d \"descriptor_code=SMABCD\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "// Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n// microdeposit_type: amounts\nconst verificationData = new BankAccountVerify({\n  amounts: [25, 63],\n});\n\n// microdeposit_type: descriptor_code\n// const verificationData = new BankAccountVerify({\n//   descriptor_code: 'SMABCD',\n// });\n\ntry {\n  const verifiedAccount = await new BankAccountsApi(config).verify('bank_xxxx', verificationData);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "// Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n// microdeposit_type: amounts\nLob.bankAccounts.verify('bank_dfceb4a2a05b57e', {\n  amounts: [25, 63]\n}, function (err, res) {\n  console.log(err, res);\n});\n\n// microdeposit_type: descriptor_code\n// Lob.bankAccounts.verify('bank_dfceb4a2a05b57e', {\n//   descriptor_code: 'SMABCD'\n// }, function (err, res) {\n//   console.log(err, res);\n// });\n"
+        label: NODE
+      - lang: Ruby
+        source: "# Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n# microdeposit_type: amounts\nverificationData = BankAccountVerify.new({\n  amounts: [25, 63],\n})\n\n# microdeposit_type: descriptor_code\n# verificationData = BankAccountVerify.new({\n#   descriptor_code: 'SMABCD',\n# })\n\nbankAccountsApi = BankAccountsApi.new(config)\n\nbegin\n  verifiedAccount = bankAccountsApi.verify(\"bank_dfceb4a2a05b57e\", verificationData)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "# Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n# microdeposit_type: amounts\nverification_data = BankAccountVerify(\n  amounts=[25, 63],\n)\n\n# microdeposit_type: descriptor_code\n# verification_data = BankAccountVerify(\n#   descriptor_code='SMABCD',\n# )\n\nwith ApiClient(configuration) as api_client:\n  api = BankAccountsApi(api_client)\n\ntry:\n  verified_account = api.verify(\"bank_dfceb4a2a05b57e\", verification_data)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\BankAccountsApi($config, new GuzzleHttp\\Client());\n\n// Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n// microdeposit_type: amounts\n$bankVerify = new OpenAPI\\Client\\Model\\BankAccountVerify();\n$bankVerify->setAmounts([25, 63]);\n\n// microdeposit_type: descriptor_code\n// $bankVerify = new OpenAPI\\Client\\Model\\BankAccountVerify();\n// $bankVerify->setDescriptorCode('SMABCD');\n\ntry {\n    $result = $apiInstance->verify(\n      \"bank_dfceb4a2a05b57e\", $bankVerify\n    );\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "// Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n// microdeposit_type: amounts\nBankAccountVerify verification = new BankAccountVerify();\nverification.addAmountsItem(25);\nverification.addAmountsItem(63);\n\n// microdeposit_type: descriptor_code\n// BankAccountVerify verification = new BankAccountVerify();\n// verification.setDescriptorCode(\"SMABCD\");\n\nBankAccountsApi apiInstance = new BankAccountsApi(config);\n\ntry {\n  apiInstance.verify(\"bank_dfceb4a2a05b57e\", verification);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: '# Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:
+
+
+          # microdeposit_type: amounts
+
+          Lob.BankAccount.verify("bank_dfceb4a2a05b57e", %{amounts: [25, 63]})
+
+
+          # microdeposit_type: descriptor_code
+
+          # Lob.BankAccount.verify("bank_dfceb4a2a05b57e", %{descriptor_code: "SMABCD"})
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "// Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n// microdeposit_type: amounts\nList<int> amounts = new List<int>();\namounts.Add(25);\namounts.Add(63);\nBankAccountVerify verification = new BankAccountVerify(amounts);\n\n// microdeposit_type: descriptor_code\n// BankAccountVerify verification = new BankAccountVerify();\n// verification.DescriptorCode = \"SMABCD\";\n\nBankAccountsApi api = new BankAccountsApi(config);\n\ntry {\n  BankAccount verified_account = api.verify(\"bank_dfceb4a2a05b57e\", verification);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nvar bankAccountWritable = *lob.NewBankAccountWritable(\"322271627\", \"123456789\", lob.BANKTYPEENUM_INDIVIDUAL, \"Sinead Connor\")\n\ncreatedBankAccount, _, _ := apiClient.BankAccountsApi.Create(context).BankAccountWritable(bankAccountWritable).Execute()\n\n// Check microdeposit_type from GET /v1/bank_accounts/:id to choose the right variant:\n\n// microdeposit_type: amounts\nverifyAmounts := []int32{25, 63}\nverify := *lob.NewBankAccountVerify(verifyAmounts)\n\n// microdeposit_type: descriptor_code\n// verify := *lob.NewBankAccountVerify(nil)\n// verify.DescriptorCode = lob.PtrString(\"SMABCD\")\n\nverifiedAccount, _, err := apiClient.BankAccountsApi.Verify(context, createdBankAccount.Id).BankAccountVerify(verify).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+  /bank_accounts/{bank_id}:
+    parameters:
+    - in: path
+      name: bank_id
+      description: id of the bank account
+      required: true
+      schema:
+        $ref: '#/components/schemas/bank_id'
+    get:
+      operationId: bank_account_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing bank account. You need only supply the unique bank account identifier that was returned upon bank account creation.
+      tags:
+      - Bank Accounts
+      responses:
+        '200':
+          description: Returns a bank account object
+          content:
+            $ref: '#/components/mediaTypes/bank_account'
+        default:
+          $ref: '#/components/responses/bank_account_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/bank_accounts/bank_8cad8df5354d33f \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const bankAccount = await new BankAccountsApi(config).get('bank_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.bankAccounts.retrieve('bank_8cad8df5354d33f', function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "bankAccountApi = BankAccountsApi.new(config)\n\nbegin\n  retrievedBankAccount = bankAccountApi.get(\"bank_8cad8df5354d33f\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = BankAccountsApi(api_client)\n\ntry:\n  bank_account = api.get(\"bank_8cad8df5354d33f\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\BankAccountsApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->get(\"bank_8cad8df5354d33f\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "BankAccountsApi apiInstance = new BankAccountsApi(config);\n\ntry {\n  BankAccount response = apiInstance.get(\"bank_8cad8df5354d33f\");\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.BankAccount.find("bank_8cad8df5354d33f")
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "BankAccountsApi api = new BankAccountsApi(config);\n\ntry {\n  BankAccount response = api.get(\"bank_8cad8df5354d33f\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nfetchedBankAccount, _, err := apiClient.BankAccountsApi.Get(context,\"bank_8cad8df5354d33f\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+    delete:
+      operationId: bank_account_delete
+      summary: Delete
+      description: Permanently deletes a bank account. It cannot be undone.
+      tags:
+      - Bank Accounts
+      responses:
+        '200':
+          $ref: '#/components/responses/bank_account_deleted'
+        default:
+          $ref: '#/components/responses/bank_account_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X DELETE https://api.lob.com/v1/bank_accounts/bank_3e64d9904356b20 \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const deleteBankAccount = await new BankAccountsApi(config).delete('bank_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.bankAccounts.delete('bank_3e64d9904356b20', function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "bankAccountApi = BankAccountsApi.new(config)\n\nbegin\n  deletedBankAccount = bankAccountApi.delete(\"bank_3e64d9904356b20\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = BankAccountsApi(api_client)\n\ntry:\n  deleted_resource = api.delete(\"bank_3e64d9904356b20\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\BankAccountsApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->delete(\"bank_3e64d9904356b20\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "BankAccountsApi apiInstance = new BankAccountsApi(config);\n\ntry {\n    BankAccountDeletion response = apiInstance.delete(\"bank_3e64d9904356b20\");\n} catch (ApiException e) {\n    e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.BankAccount.destroy("bank_3e64d9904356b20")
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "BankAccountsApi api = new BankAccountsApi(config);\n\ntry {\n  BankAccountDeletion response = api.delete(\"bank_3e64d9904356b20\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\ndeletedBankAccount, _, err := apiClient.BankAccountsApi.Delete(context, \"bank_3e64d9904356b20\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+  /bank_accounts:
+    get:
+      operationId: bank_accounts_list
+      summary: List
+      description: Returns a list of your bank accounts. The bank accounts are returned sorted by creation date, with the most recently created bank accounts appearing first.
+      tags:
+      - Bank Accounts
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/before_after'
+      - $ref: '#/components/parameters/include'
+      - $ref: '#/components/parameters/date_created'
+      - $ref: '#/components/parameters/metadata'
+      responses:
+        '200':
+          $ref: '#/components/responses/all_bank_accounts'
+        default:
+          $ref: '#/components/responses/bank_account_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/bank_accounts?limit=2\" \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const bankaccounts = await new BankaccountsApi(config).list(2);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.bankAccounts.list({limit: 2}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "bankAccountsApi = BankAccountsApi.new(config)\n\nbegin\n  bankAccounts = bankAccountsApi.list({ limit: 2 })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = BankAccountsApi(api_client)\n\ntry:\n  bank_accounts = api.list(limit=2)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\BankAccountsApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->list(\n      2, // limit\n    );\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "BankAccountsApi apiInstance = new BankAccountsApi(config);\n\ntry {\n  BankAccountList response = apiInstance.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n    null // metadata\n  );\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.BankAccount.list(%{limit: 2})
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "BankAccountsApi api = new BankAccountsApi(config);\n\nList<string> includeList = new List<string>();\nincludeList.Add(\"total_count\");\nDictionary<String, String> metadata = new Dictionary<String, String>();\nmetadata.Add(\"name\", \"Harry\");\nDictionary<String, DateTime> dateCreated = new Dictionary<String, DateTime>();\nDateTime dateCreatedDate = DateTime.Today.AddMonths(-1);\ndateCreated.Add(\"lt\", dateCreatedDate);\n\ntry {\n  BankAccountList response = api.list(\n    2, // limit\n    null, // before\n    null, // after\n    includeList, // include\n    dateCreated, // dateCreated\n    metadata // metadata\n  );\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\nBankAccountList = apiClient.BankAccountsApi.List(context).Execute()\nif err != nil {\n    return err\n}\n"
+        label: GO
+    post:
+      operationId: bank_account_create
+      summary: Create
+      description: Creates a new bank account with the provided properties. Bank accounts created in live mode will need to be verified via micro deposits before being able to send live checks. The deposits will appear in the bank account in 2-3 business days and have the description "VERIFICATION".
+      tags:
+      - Bank Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bank_account_base'
+            example:
+              description: Test Bank Account
+              routing_number: '322271627'
+              account_number: '123456789'
+              signatory: Jane Doe
+              account_type: individual
+              metadata:
+                spiffy: 'true'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/bank_account_base'
+            example:
+              description: Test Bank Account
+              routing_number: '322271627'
+              account_number: '123456789'
+              signatory: Jane Doe
+              account_type: individual
+              metadata:
+                spiffy: 'true'
+            encoding:
+              metadata:
+                style: deepObject
+                explode: true
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/bank_account_base'
+            example:
+              description: Test Bank Account
+              routing_number: '322271627'
+              account_number: '123456789'
+              signatory: Jane Doe
+              account_type: individual
+              metadata:
+                spiffy: 'true'
+      responses:
+        '200':
+          $ref: '#/components/responses/post_bank_account'
+        default:
+          $ref: '#/components/responses/bank_account_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/bank_accounts \\\n  -u REDACTED_LOB_KEY: \\\n  -d \"description=Test Bank Account\" \\\n  -d \"routing_number=322271627\" \\\n  -d \"account_number=123456789\" \\\n  -d \"signatory=John Doe\" \\\n  -d \"account_type=company\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "const bankAccountCreate = new BankAccountWritable({\n  description: 'Test Bank Account',\n  routing_number: '322271627',\n  account_number: '123456789',\n  signatory: 'Gomez Addams',\n  account_type: BankTypeEnum.Individual\n});\n\ntry {\n  const myBankAcount = await new BankAccountsApi(config).create(bankAccountCreate);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.bankAccounts.create({\n  description: 'Test Bank Account',\n  routing_number: 322271627,\n  account_number: 123456789,\n  signatory: 'John Doe',\n  account_type: 'company'\n}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "bankAccountCreate = BankAccountWritable.new({\n  description: \"Test Bank Account\",\n  routing_number: \"322271627\",\n  account_number: \"123456789\",\n  signatory: \"John Doe\",\n  account_type: BankTypeEnum::COMPANY,\n});\n\nbankAccountApi = BankAccountsApi.new(config)\n\nbegin\n  createdBankAccount = bankAccountApi.create(bankAccountCreate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "bank_account_writable = BankAccountWritable(\n  description = \"Test Bank Account\",\n  routing_number = \"322271627\",\n  account_number = \"123456789\",\n  signatory = \"John Doe\",\n  account_type = BankTypeEnum(\"company\"),\n)\n\nwith ApiClient(configuration) as api_client:\n  api = BankAccountsApi(api_client)\n\ntry:\n  created_bank_account = api.create(bank_account_writable)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\BankAccountsApi($config, new GuzzleHttp\\Client());\n$bank_account_writable = new OpenAPI\\Client\\Model\\BankAccountWritable(\n  array(\n    \"description\"     => \"Test Bank Account\",\n    \"routing_number\"     => \"322271627\",\n    \"account_number\"     => \"123456789\",\n    \"signatory\"     => \"John Doe\",\n    \"account_type\"     => \"company\",\n  )\n);\n\ntry {\n    $result = $apiInstance->create($bank_account_writable);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "BankAccountsApi apiInstance = new BankAccountsApi(config);\n\ntry {\n  BankAccountWritable bankAccountWritable = new BankAccountWritable();\n  bankAccountWritable.setDescription(\"Test Bank Account\");\n  bankAccountWritable.setRoutingNumber(\"322271627\");\n  bankAccountWritable.setAccountNumber(\"123456789\");\n  bankAccountWritable.setSignatory(\"John Doe\");\n  bankAccountWritable.setAccountType(BankTypeEnum.COMPANY);\n\n  BankAccount result = apiInstance.create(bankAccountWritable);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.BankAccount.create(%{\n  description: \"Test Bank Account\",\n  routing_number: \"322271627\",\n  account_number: \"123456789\",\n  signatory: \"John Doe\",\n  account_type: \"company\"\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "BankAccountsApi api = new BankAccountsApi(config);\n\nBankAccountWritable bankAccountWritable = new BankAccountWritable(\n  \"Test Bank Account\",  // description\n  \"322271627\",  // routingNumber\n  \"123456789\",  // accountNumber\n  BankTypeEnum.Company,  // accountType\n  \"John Doe\" // signatory\n);\n\ntry {\n  BankAccount result = api.create(bankAccountWritable);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\n\nvar bankAccountCreate = *lob.NewBankAccountWritable()\nbankAccountCreate.SetDescription(\"Test Bank Account\")\nbankAccountCreate.SetRoutingNumber(\"322271627\")\nbankAccountCreate.SetAccountNumber(\"123456789\")\nbankAccountCreate.SetSignatory(\"John Doe\")\nbankAccountCreate.SetAccountType(\"company\")\n\n\n\ncreatedbankAccount, _, err := apiClient.BankAccountsApi.Create(context).BankAccountWritable(bankAccountCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+components:
+  schemas:
+    bank_account_base:
+      type: object
+      required:
+      - routing_number
+      - account_number
+      - account_type
+      - signatory
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        routing_number:
+          description: Must be a <a href="https://www.frbservices.org/index.html" target="_blank">valid US routing number</a>.
+          type: string
+          minLength: 9
+          maxLength: 9
+        account_number:
+          type: string
+          maxLength: 17
+        account_type:
+          type: string
+          enum:
+          - company
+          - individual
+          description: The type of entity that holds the account.
+        signatory:
+          description: The signatory associated with your account. This name will be printed on checks created with this bank account. If you prefer to use a custom signature image on your checks instead, please create your bank account from the <a href="https://dashboard.lob.com/#/login" target="_blank">Dashboard</a>.
+          type: string
+          maxLength: 30
+        check_template:
+          type: string
+          enum:
+          - common
+          - jpm
+          description: The check template used for printing. The defualt value is `common`. If you bank with JP Morgan Chase and wish to use Positive Pay use the `jpm` template. `jpm` requires additional information to be provided.
+        fractional_routing_number:
+          type: string
+          description: The fractional routing number for your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the fractional routing number associated with your home bank institution.
+        city:
+          type: string
+          description: The city associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the city associated with your home bank institution.
+        state:
+          type: string
+          description: The state associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the state associated with your home bank institution.
+        zipcode:
+          type: string
+          description: The zipcode associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the zipcode associated with your home bank institution.
+        metadata:
+          $ref: '#/components/schemas/metadata'
+    bank_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/bank_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    object:
+      type: string
+      description: Value is resource type.
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
+    bank_id_no_description:
+      type: string
+      pattern: ^bank_[a-zA-Z0-9]+$
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    resource_description:
+      type: string
+      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+
+        '
+      maxLength: 255
+      nullable: true
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type: string
+          description: Url of next page of items in list.
+          nullable: true
+        previous_url:
+          type: string
+          description: Url of previous page of items in list.
+          nullable: true
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    bank_id:
+      allOf:
+      - $ref: '#/components/schemas/bank_id_no_description'
+      - type: string
+        description: Unique identifier prefixed with `bank_`.
+    bank_account:
+      allOf:
+      - $ref: '#/components/schemas/bank_account_base'
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            $ref: '#/components/schemas/bank_id'
+          signature_url:
+            allOf:
+            - type: string
+              nullable: true
+              description: A [signed link](#section/Asset-URLs) to the signature image.
+            - $ref: '#/components/schemas/signed_link'
+          bank_name:
+            description: The name of the bank based on the provided routing number, e.g. `JPMORGAN CHASE BANK`.
+            type: string
+          verified:
+            description: A bank account must be verified before a check can be created. More info [here](#operation/bank_account_verify).
+            type: boolean
+            default: false
+          microdeposit_type:
+            description: 'The type of microdeposit verification required for this bank account. Always present when `verified` is `false`; `null` once the account is verified. Use this value to determine which field to submit to `POST /v1/bank_accounts/:id/verify`: `amounts` (an array of two integers) or `descriptor_code` (the 6-character code from the bank statement).'
+            type: string
+            nullable: true
+            enum:
+            - amounts
+            - descriptor_code
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - bank_account
+            default: bank_account
+      example:
+        id: bank_a
+        signature_url: https://lob-assets.com/bank-accounts/asd_asdfghjkqwertyui.pdf?expires=1234567890&signature=aksdf
+        bank_name: JPMORGAN CHASE BANK
+        verified: false
+        microdeposit_type: amounts
+        object: bank_account
+        description: Test Bank Account
+        routing_number: '322271627'
+        account_number: '123456789'
+        signatory: Jane Doe
+        account_type: individual
+        metadata:
+          spiffy: 'true'
+        date_created: '2019-08-08T19:34:47.571Z'
+        date_modified: '2019-08-08T19:34:47.571Z'
+    cents:
+      type: integer
+      minimum: 1
+      maximum: 100
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    signed_link:
+      type: string
+      description: A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.
+      pattern: ^https://lob-assets.com/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
+    count:
+      type: integer
+      description: number of resources in a set
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    bank_account_verify:
+      oneOf:
+      - title: BankAccountVerifyAmounts
+        type: object
+        additionalProperties: false
+        required:
+        - amounts
+        properties:
+          amounts:
+            description: In live mode, an array containing the two microdeposit amounts (in cents) placed in the bank account. In test mode, no microdeposits will be placed, so any two integers between `1` and `100` will work.
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              $ref: '#/components/schemas/cents'
+      - title: BankAccountVerifyDescriptorCode
+        type: object
+        additionalProperties: false
+        required:
+        - descriptor_code
+        properties:
+          descriptor_code:
+            description: The 6-character code (beginning with `SM`) found in the statement descriptor of the $0.01 microdeposit placed in the bank account.
+            type: string
+            minLength: 6
+            maxLength: 6
+            pattern: ^[Ss][Mm][A-Za-z0-9]{4}$
+  parameters:
+    metadata:
+      in: query
+      name: metadata
+      description: Filter by metadata key-value pair`.
+      schema:
+        $ref: '#/components/schemas/metadata'
+      style: deepObject
+      explode: true
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+  headers:
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  responses:
+    bank_account_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: routing_number is required
+              status_code: 422
+    bank_account_deleted:
+      description: Deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/bank_deletion'
+          example:
+            id: bank_123456789
+            deleted: true
+    all_bank_accounts:
+      description: A dictionary with a data property that contains an array of up to `limit` bank_accounts. Each entry in the array is a separate bank_account. The previous and next page of bank_accounts can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more bank_accounts are available beyond the current set of returned results, the `next_url` field will be empty.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/list'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  description: list of bank_accounts
+                  items:
+                    $ref: '#/components/schemas/bank_account'
+          example:
+            data:
+            - id: bank_0e3fb07eba0b35b
+              signature_url: https://lob-assets.com/letters/asd_asdfghjklqwertyu.pdf?version=45&expires=1234567890&signature=a
+              description: Example bank account
+              metadata: {}
+              routing_number: '122100024'
+              account_number: '1234564789'
+              account_type: company
+              signatory: John Doe
+              bank_name: JPMORGAN CHASE BANK, NA
+              verified: true
+              date_created: '2019-03-30T13:13:22.200Z'
+              date_modified: '2019-03-30T13:13:23.385Z'
+              object: bank_account
+            - id: bank_eba93f7de3c02d9
+              description: Example bank account
+              metadata: {}
+              routing_number: '122100024'
+              account_number: '1234564789'
+              account_type: company
+              signatory: John Doe
+              bank_name: JPMORGAN CHASE BANK, NA
+              verified: true
+              date_created: '2019-03-30T13:11:06.809Z'
+              date_modified: '2019-03-30T13:11:07.872Z'
+              object: bank_account
+            object: list
+            next_url: https://api.lob.com/v1/bank_accounts?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wMy0zMFQxMzoxMTowNi44MDlaIiwiaWRPZmZzZXQiOiJiYW5rX2ViYTkzZjdkZTNjMDJkOSJ9
+            previous_url: null
+            count: 2
+    post_bank_account:
+      description: Returns a bank_account object
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        $ref: '#/components/mediaTypes/bank_account'
+  mediaTypes:
+    bank_account:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/bank_account'
+        example:
+          id: bank_8cad8df5354d33f
+          signature_url: https://lob-assets.com/letters/asd_asdfghjklqwertyu.pdf?version=45&expires=1234567890&signature=a
+          description: Test Bank Account
+          metadata: {}
+          routing_number: '322271627'
+          fractional_routing_number: 25-3/440
+          check_template: jpm
+          account_number: '123456789'
+          account_type: company
+          signatory: John Doe
+          bank_name: J.P. MORGAN CHASE BANK, N.A.,
+          bank_city: Columbus
+          bank_state: OH
+          bank_zip: '43240'
+          verified: true
+          microdeposit_type: null
+          date_created: '2015-11-06T19:24:24.440Z'
+          date_modified: '2015-11-06T19:24:24.440Z'
+          object: bank_account
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

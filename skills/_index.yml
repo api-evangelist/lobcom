@@ -1,0 +1,12 @@
+generated: '2026-07-20'
+method: generated
+source: openapi/lobcom-openapi-original.yml + conventions/lobcom-conventions.yml + errors/lobcom-error-codes.yml
+skills:
+  - file: lobcom-send-letter.md
+    name: Send a letter with Lob
+    api: openapi/lobcom-openapi-original.yml
+    operations: [us_verification, address_create, letter_create, letter_retrieve]
+  - file: lobcom-verify-address.md
+    name: Verify and autocomplete addresses with Lob
+    api: openapi/lobcom-openapi-original.yml
+    operations: [us_verification, intl_verification, autocompletion, zip_lookup]

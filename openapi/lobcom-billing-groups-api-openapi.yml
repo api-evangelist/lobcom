@@ -1,0 +1,719 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Billing Groups API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Billing Groups
+  description: 'The Billing Groups API allows you to create and view labels that can be attached to certain consumption-based
+
+    usages of Letters, Checks, Postcards and Self-Mailers to customize your bill. Please check each
+
+    resource API section to learn more about how to access the Billing Groups API.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+    '
+paths:
+  /billing_groups/{bg_id}:
+    parameters:
+    - in: path
+      name: bg_id
+      description: id of the billing_group
+      required: true
+      schema:
+        $ref: '#/components/schemas/bg_id'
+    get:
+      operationId: billing_group_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing billing_group. You need only supply the unique billing_group identifier that was returned upon billing_group creation.
+      tags:
+      - Billing Groups
+      responses:
+        '200':
+          description: Returns a billing_group object.
+          content:
+            $ref: '#/components/mediaTypes/billing_group'
+        default:
+          $ref: '#/components/responses/billing_group_list_error'
+      x-codeSamples:
+      - lang: Shell
+        source: 'curl https://api.lob.com/v1/billing_groups/bg_4bb02b527a72667d0 \
+
+          -u <YOUR API KEY>:
+
+          '
+      - lang: Ruby
+        source: "billingGroupApi = BillingGroupsApi.new(config)\n\nbegin\n  retrievedBillingGroup = billingGroupApi.get(\"bg_4bb02b527a72667d0\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nfetchedBillingGroup, _, err := apiClient.BillingGroupsApi.Get(context,\"bg_4bb02b527a72667d0\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+    post:
+      operationId: billing_group_update
+      summary: Update
+      description: Updates all editable attributes of the billing_group with the given id.
+      tags:
+      - Billing Groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/billing_group_base'
+            example:
+              name: Marketing Dept
+              description: Usage group used for the Marketing Dept resource sends
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/billing_group_base'
+            example:
+              name: Marketing Dept
+              description: Usage group used for the Marketing Dept resource sends
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/billing_group_base'
+            example:
+              name: Marketing Dept
+              description: Usage group used for the Marketing Dept resource sends
+      x-codeSamples:
+      - lang: Shell
+        source: 'curl https://api.lob.com/v1/billing_groups/bg_759954f540a1bfdb5 \
+
+          -u <YOUR API KEY>: \
+
+          -d "description=demo replacement" \
+
+          '
+      - lang: Ruby
+        source: "billingGroupEditable = BillingGroupEditable.new({\n  description: \"demo replacement\",\n})\n\nbgApi = BillingGroupsApi.new(config)\n\nbegin\n  updatedBillingGroup = bgApi.update(\"bg_759954f540a1bfdb5\", billingGroupEditable)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nvar bgEditable = *lob.NewBillingGroupEditable(\"Test Billing group\")\ncreatedBillingGroup, _, _ := apiClient.BillingGroupsApi.Create(context).BillingGroupEditable(suite.bgEditable).Execute()\n\nbgEditable.SetDescription(\"BG updated\")\nresp, _, err := suite.apiClient.BillingGroupsApi.Update(context, createdBillingGroup.Id).BillingGroupEditable(suite.bgEditable).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+      responses:
+        '200':
+          $ref: '#/components/responses/post_billing_group'
+        default:
+          $ref: '#/components/responses/billing_group_error'
+  /billing_groups:
+    get:
+      operationId: billing_groups_list
+      summary: List
+      description: Returns a list of your billing_groups. The billing_groups are returned sorted by creation date, with the most recently created billing_groups appearing first.
+      tags:
+      - Billing Groups
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/include'
+      - $ref: '#/components/parameters/date_created'
+      - $ref: '#/components/parameters/date_modified'
+      - in: query
+        name: sort_by
+        description: 'Sorts items by ascending or descending dates. Use either `date_created` or `date_modified`, not both.
+
+          '
+        schema:
+          allOf:
+          - type: object
+            properties:
+              date_created:
+                type: string
+                enum:
+                - asc
+                - desc
+              date_modified:
+                type: string
+                enum:
+                - asc
+                - desc
+          - oneOf:
+            - required:
+              - date_created
+            - required:
+              - date_modified
+      responses:
+        '200':
+          description: Returns a list of billing_groups.
+          content:
+            $ref: '#/components/mediaTypes/all_billing_groups'
+        default:
+          $ref: '#/components/responses/billing_group_list_error'
+      x-codeSamples:
+      - lang: Shell
+        source: 'curl -X GET "https://api.lob.com/v1/billing_groups?limit=2" \
+
+          -u <YOUR API KEY>:
+
+          '
+      - lang: Ruby
+        source: "billingGroupsApi = BillingGroupsApi.new(config)\n\nbegin\n  billingGroups = billingGroupsApi.list({ limit: 2 })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\nBillingGroupList = apiClient.BillingGroupsApi.List(context).Execute()\nif err != nil {\n    return err\n}\n"
+        label: GO
+    post:
+      operationId: billing_group_create
+      summary: Create
+      description: Creates a new billing_group with the provided properties.
+      tags:
+      - Billing Groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/billing_group_editable'
+            example:
+              name: Marketing Dept
+              description: Usage group used for the Marketing Dept resource sends
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/billing_group_editable'
+            example:
+              name: Marketing Dept
+              description: Usage group used for the Marketing Dept resource sends
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/billing_group_editable'
+            example:
+              name: Marketing Dept
+              description: Usage group used for the Marketing Dept resource sends
+      responses:
+        '200':
+          $ref: '#/components/responses/post_billing_group'
+        default:
+          $ref: '#/components/responses/billing_group_error'
+      x-codeSamples:
+      - lang: Shell
+        source: 'curl https://api.lob.com/v1/billing_groups \
+
+          -u <YOUR API KEY>: \
+
+          -d "name=Marketing Department" \
+
+          -d "description=Usage group used for the Marketing Department''s resource sends"
+
+          '
+      - lang: Ruby
+        source: "bgCreate = BillingGroupEditable.new({\n  description: \"Usage group used for the Marketing Department's resource sends\",\n  name: \"Marketing Department\",\n});\n\nbgApi = BillingGroupsApi.new(config)\n\nbegin\n  createdBillingGroup = bgApi.create(bgCreate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\n\nvar bgCreate = *lob.NewBillingGroupEditable()\nbgCreate.SetDescription(\"Usage group used for the Marketing Department's resource sends\")\nbgCreate.SetName(\"Marketing Department\")\n\n\n\ncreatedbg, _, err := apiClient.BillingGroupsApi.Create(context).BillingGroupEditable(bgCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+components:
+  parameters:
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    offset:
+      in: query
+      name: offset
+      required: false
+      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
+      schema:
+        type: integer
+        default: 0
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    date_modified:
+      in: query
+      name: date_modified
+      description: 'Filter by date modified. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+  headers:
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  schemas:
+    object:
+      type: string
+      description: Value is resource type.
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    bg_id:
+      type: string
+      description: Unique identifier prefixed with `bg_`.
+      pattern: ^bg_[a-zA-Z0-9]+$
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    billing_group_editable:
+      allOf:
+      - $ref: '#/components/schemas/billing_group_base'
+      - required:
+        - name
+    bg_description:
+      type: string
+      description: Description of the billing group.
+      maxLength: 255
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type: string
+          description: Url of next page of items in list.
+          nullable: true
+        previous_url:
+          type: string
+          description: Url of previous page of items in list.
+          nullable: true
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    billing_group_base:
+      type: object
+      properties:
+        description:
+          $ref: '#/components/schemas/bg_description'
+        name:
+          $ref: '#/components/schemas/name'
+    name:
+      type: string
+      description: Name of the billing group.
+      maxLength: 255
+    billing_group:
+      allOf:
+      - $ref: '#/components/schemas/billing_group_base'
+      - type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/bg_id'
+          date_created:
+            $ref: '#/components/schemas/date_created'
+          date_modified:
+            $ref: '#/components/schemas/date_modified'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - billing_group
+            default: billing_group
+    count:
+      type: integer
+      description: number of resources in a set
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+  responses:
+    billing_group_list_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: billing_group not found
+              status_code: 404
+    post_billing_group:
+      description: Returns a billing group object
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        $ref: '#/components/mediaTypes/billing_group'
+    billing_group_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: message about incorrect parameter
+              status_code: 422
+  mediaTypes:
+    all_billing_groups:
+      application/json:
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/list'
+          - type: object
+            properties:
+              data:
+                type: array
+                description: list of billing_groups
+                items:
+                  $ref: '#/components/schemas/billing_group'
+        example:
+          data:
+          - id: bg_d5a5a89da9106f8
+            description: Test billing_group
+            metadata: {}
+            date_created: '2019-07-27T23:49:01.511Z'
+            date_modified: '2019-07-27T23:49:01.511Z'
+            object: billing_group
+          - id: bg_59b2150ae120887
+            description: Test billing_group
+            metadata: {}
+            date_created: '2019-03-29T10:22:34.642Z'
+            date_modified: '2019-03-29T10:22:34.642Z'
+            object: billing_group
+          object: list
+          next_url: null
+          prev_url: null
+          count: 2
+    billing_group:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/billing_group'
+        example:
+          id: bg_c94e83ca2cd5121
+          name: Marketing Dept
+          description: Usage group used for the Marketing Dept resource sends
+          date_created: '2017-11-07T22:56:10.962Z'
+          date_modified: '2017-11-07T22:56:10.962Z'
+          object: billing_group
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

@@ -1,0 +1,2098 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Checks API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Checks
+  description: 'Checks allow you to send payments via physical checks. The API provides endpoints
+
+    for creating checks, retrieving individual checks, canceling checks, and retrieving a list of checks.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+    '
+paths:
+  /checks:
+    get:
+      operationId: checks_list
+      summary: List
+      description: Returns a list of your checks. The checks are returned sorted by creation date, with the most recently created checks appearing first.
+      tags:
+      - Checks
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/before_after'
+      - $ref: '#/components/parameters/include'
+      - $ref: '#/components/parameters/date_created'
+      - $ref: '#/components/parameters/metadata'
+      - $ref: '#/components/parameters/scheduled'
+      - $ref: '#/components/parameters/send_date'
+      - $ref: '#/components/parameters/mail_type'
+      - $ref: '#/components/parameters/sort_by'
+      - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          $ref: '#/components/responses/all_checks'
+        default:
+          $ref: '#/components/responses/mailpiece_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/checks?limit=2\" \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: typescript
+        source: "try {\n  const checks = await new ChecksApi(config).list(2);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.checks.list({limit: 2}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "checksApi = ChecksApi.new(config)\n\nbegin\n  checks = checksApi.list({ limit: 2 })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = ChecksApi(api_client)\n\ntry:\n  checks = api.list(limit=2)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\ChecksApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->list(\n      2, // limit\n    );\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "ChecksApi apiInstance = new ChecksApi(config);\n\ntry {\n  CheckList response = apiInstance.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n    null, // metadata\n    null, // scheduled\n    null, // sendDate\n    null, // mailType\n    null // sortBy\n  );\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Check.list(%{limit: 2})
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "ChecksApi api = new ChecksApi(config);\n\nList<string> includeList = new List<string>();\nincludeList.Add(\"total_count\");\nDictionary<String, String> metadata = new Dictionary<String, String>();\nmetadata.Add(\"name\", \"Harry\");\nDictionary<String, DateTime> dateCreated = new Dictionary<String, DateTime>();\nDateTime dateCreatedDate = DateTime.Today.AddMonths(-1);\ndateCreated.Add(\"lt\", dateCreatedDate);\nDictionary<String, String> sendDate = new Dictionary<String, String>();\nsendDate.Add(\"lt\", DateTime.Now.ToString(\"yyyy-MM-ddTHH\\\\:mm\\\\:ss.fffffffzzz\"));\nSortBy3 sortBy = new SortBy3(SortBy3.DateCreatedEnum.Asc);\n\ntry {\n  CheckList response = api.list(\n    2, // limit\n    null, // before\n    null, // after\n    includeList, // include\n    dateCreated, // dateCreated\n    metadata, // metadata\n    true, // scheduled\n    sendDate, // sendDate\n    MailType.FirstClass, // mailType\n    sortBy // sortBy\n  );\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\nCheckList = apiClient.ChecksApi.List(context).Execute()\nif err != nil {\n    return err\n}\n"
+        label: GO
+    post:
+      operationId: check_create
+      summary: Create
+      description: Creates a new check with the provided properties.
+      tags:
+      - Checks
+      parameters:
+      - $ref: '#/components/parameters/idem-header'
+      - $ref: '#/components/parameters/idem-query'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/check_editable'
+            example:
+              description: Demo Check
+              to:
+                description: Harry - Office
+                name: Harry Zhang
+                company: Lob
+                email: harry@lob.com
+                phone: '5555555555'
+                address_line1: 210 King St
+                address_line2: '# 6100'
+                address_city: San Francisco
+                address_state: CA
+                address_zip: '94107'
+                address_country: US
+              from:
+                name: Leore Avidar
+                address_line1: 210 King St
+                address_line2: '# 6100'
+                address_city: San Francisco
+                address_state: CA
+                address_zip: 94107-1741
+              bank_account: bank_8cad8df5354d33f
+              amount: 22.5
+              memo: rent
+              logo: https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png
+              check_bottom: tmpl_23668b406d5afef
+              merge_variables:
+                name: Harry
+              metadata:
+                memo: rafting trip
+              attachment: ./cool.pdf
+              send_date: '2017-11-01T00:00:00.000Z'
+              use_type: operational
+              mail_type: usps_first_class
+              check_number: 10001
+              print_speed: core
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/check_editable'
+            example:
+              description: Demo Check
+              to:
+                description: Harry - Office
+                name: Harry Zhang
+                company: Lob
+                email: harry@lob.com
+                phone: '5555555555'
+                address_line1: 210 King St
+                address_line2: '# 6100'
+                address_city: San Francisco
+                address_state: CA
+                address_zip: '94107'
+                address_country: US
+              from:
+                name: Leore Avidar
+                address_line1: 210 King St
+                address_line2: '# 6100'
+                address_city: San Francisco
+                address_state: CA
+                address_zip: 94107-1741
+              bank_account: bank_8cad8df5354d33f
+              amount: 22.5
+              memo: rent
+              logo: https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png
+              check_bottom: tmpl_23668b406d5afef
+              merge_variables:
+                name: Harry
+              metadata:
+                memo: rafting trip
+              attachment: ./cool.pdf
+              send_date: '2017-11-01T00:00:00.000Z'
+              mail_type: usps_first_class
+              check_number: 10001
+              print_speed: core
+            encoding:
+              to:
+                style: deepObject
+                explode: true
+              from:
+                style: deepObject
+                explode: true
+              merge_variables:
+                style: deepObject
+                explode: true
+              metadata:
+                style: deepObject
+                explode: true
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/check_editable'
+            example:
+              description: Demo Check
+              to:
+                description: Harry - Office
+                name: Harry Zhang
+                company: Lob
+                email: harry@lob.com
+                phone: '5555555555'
+                address_line1: 210 King St
+                address_line2: '# 6100'
+                address_city: San Francisco
+                address_state: CA
+                address_zip: '94107'
+                address_country: US
+              from:
+                name: Leore Avidar
+                address_line1: 210 King St
+                address_line2: '# 6100'
+                address_city: San Francisco
+                address_state: CA
+                address_zip: 94107-1741
+              bank_account: bank_8cad8df5354d33f
+              amount: 22.5
+              memo: rent
+              logo: https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png
+              check_bottom: tmpl_23668b406d5afef
+              merge_variables:
+                name: Harry
+              metadata:
+                memo: rafting trip
+              attachment: ./cool.pdf
+              send_date: '2017-11-01T00:00:00.000Z'
+              use_type: operational
+              mail_type: usps_first_class
+              check_number: 10001
+              print_speed: core
+            encoding:
+              logo:
+                contentType: image/png, image/jpeg
+      responses:
+        '200':
+          $ref: '#/components/responses/post_check'
+        default:
+          $ref: '#/components/responses/mailpiece_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/checks \\\n  -u REDACTED_LOB_KEY: \\\n  -d 'description=Demo Check' \\\n  -d 'to[name]=Harry Zhang' \\\n  -d 'to[address_line1]=210 King St' \\\n  -d 'to[address_line2]=# 6100' \\\n  -d 'to[address_city]=San Francisco' \\\n  -d 'to[address_state]=CA' \\\n  -d 'to[address_zip]=94107' \\\n  -d 'from=adr_210a8d4b0b76d77b' \\\n  -d 'bank_account=bank_8cad8df5354d33f' \\\n  -d 'amount=22.50' \\\n  -d 'use_type=operational' \\\n  -d 'memo=rent' \\\n  --data-urlencode 'logo=https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png' \\\n  --data-urlencode 'check_bottom=<h1 style=\"padding-top:4in;\">Demo Check for {{name}}</h1>' \\\n  -d 'merge_variables[name]=Harry' \\\n  -d 'print_speed=core'\n"
+        label: CURL
+      - lang: Typescript
+        source: "const checkCreate = new CheckEditable({\nto: new AddressEditable({\n  name: 'Harry Zhang',\n  address_line1: '210 King St',\n  address_line2: '# 6100',\n  address_city: 'San Francisco',\n  address_state: 'CA',\n  address_zip: '94107',\n}),\nfrom: 'adr_xxxx',\nbank_account: 'bank_xxxx',\namount: 100,\nuse_type: 'operational',\nprint_speed: 'core'\n});\n\ntry {\n  const myCheck = await new ChecksApi(config).create(checkCreate);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.checks.create({\n  description: 'Demo Check',\n  bank_account: 'bank_8cad8df5354d33f',\n  to: {\n    name: 'Harry Zhang',\n    address_line1: '210 King St',\n    address_line2: '# 6100',\n    address_city: 'San Francisco',\n    address_state: 'CA',\n    address_zip: '94107'\n  },\n  from: 'adr_210a8d4b0b76d77b',\n  amount: 22.50,\n  use_type: 'operational', \n  memo: 'rent',\n  logo: 'https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png',\n  check_bottom: '<h1 style=\"padding-top:4in;\">Demo Check for {{name}}</h1>',\n  merge_variables: {\n    name: 'Harry'\n  },\n  print_speed: 'core'\n}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "checkCreate = CheckEditable.new({\n  description: \"Demo Check\",\n  bank_account: \"bank_8cad8df5354d33f\",\n  amount: 22.5,\n  memo: \"rent\",\n  logo: \"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png\",\n  check_bottom: \"<h1 style='padding-top:4in;'>Demo Check for {{name}}</h1>\",\n  from: \"adr_210a8d4b0b76d77b\",\n  to: AddressDomestic.new({\n    name: \"Harry Zhang\",\n    address_line1: \"210 King St\",\n    address_line2: \"# 6100\",\n    address_city: \"San Francisco\",\n    address_state: \"CA\",\n    address_zip: \"94107\",\n  }),\n  merge_variables: {\n    name: \"Harry\"\n  },\n  use_type: \"operational\",\n  print_speed: \"core\"\n});\n\ncheckApi = ChecksApi.new(config)\n\nbegin\n  createdCheck = checkApi.create(checkCreate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "check_editable = CheckEditable(\n  description = \"Demo Check\",\n  bank_account = \"bank_8cad8df5354d33f\",\n  amount = 22.5,\n  memo = \"rent\",\n  logo = \"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png\",\n  check_bottom = \"<h1 style='padding-top:4in;'>Demo Check for {{name}}</h1>\",\n  _from = \"adr_210a8d4b0b76d77b\",\n  to = AddressDomestic(\n    name = \"Harry Zhang\",\n    address_line1 = \"210 King St\",\n    address_line2 = \"# 6100\",\n    address_city = \"San Francisco\",\n    address_state = \"CA\",\n    address_zip = \"94107\",\n  ),\n  merge_variables = MergeVariables(\n    name = \"Harry\",\n  ),\n  use_type = \"operational\",\n  print_speed = \"core\"\n)\n\nwith ApiClient(configuration) as api_client:\n  api = ChecksApi(api_client)\n\ntry:\n  created_check = api.create(check_editable)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$to = new OpenAPI\\Client\\Model\\AddressEditable(\n  array(\n    \"name\"     => \"Harry Zhang\",\n    \"address_line1\"     => \"210 King St\",\n    \"address_line2\"     => \"# 6100\",\n    \"address_city\"     => \"San Francisco\",\n    \"address_state\"     => \"CA\",\n    \"address_zip\"     => \"94107\",\n  )\n);\n\n$merge_variables = new stdClass;\n$merge_variables->name = \"Harry\";\n\n$use_type = \"operational\";\n\n$apiInstance = new OpenAPI\\Client\\Api\\ChecksApi($config, new GuzzleHttp\\Client());\n$check_editable = new OpenAPI\\Client\\Model\\CheckEditable(\n  array(\n    \"description\"     => \"Demo Check\",\n    \"bank_account\"     => \"bank_8cad8df5354d33f\",\n    \"amount\"     => \"22.5\",\n    \"memo\"     => \"rent\",\n    \"logo\"     => \"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png\",\n    \"check_bottom\"     => \"<h1 style='padding-top:4in;'>Demo Check for {{name}}</h1>\",\n    \"from\"     => \"adr_210a8d4b0b76d77b\",\n    \"to\"     => $to,\n    \"merge_variables\"     => $merge_variables,\n    \"use_type\" => $use_type,\n    \"print_speed\" => \"core\"\n  )\n);\n\ntry {\n    $result = $apiInstance->create($check_editable);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "Map<String, String> merge_variables = new HashMap<String, String>();\nmerge_variables.put(\"name\", \"Harry\");\n\nChecksApi apiInstance = new ChecksApi(config);\n\nAddressEditable to = new AddressEditable();\nto.setName(\"Harry Zhang\");\nto.setAddressLine1(\"210 King St\");\nto.setAddressLine2(\"# 6100\");\nto.setAddressCity(\"San Francisco\");\nto.setAddressState(\"CA\");\nto.setAddressZip(\"94107\");\n\ntry {\n  CheckEditable checkEditable = new CheckEditable();\n  checkEditable.setDescription(\"Demo Check\");\n  checkEditable.setBankAccount(\"bank_8cad8df5354d33f\");\n  checkEditable.setAmount(22.5f);\n  checkEditable.setMemo(\"rent\");\n  checkEditable.setLogo(\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png\");\n  checkEditable.setCheckBottom(\"<h1 style='padding-top:4in;'>Demo Check for {{name}}</h1>\");\n  checkEditable.setFrom(\"adr_210a8d4b0b76d77b\");\n  checkEditable.setTo(to);\n  checkEditable.setMergeVariables(merge_variables);\n  checkEditable.setUseType(\"operational\");\n  checkEditable.setPrintSpeed(\"core\");\n\n  Check result = apiInstance.create(checkEditable, null);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.Check.create(%{\n  description: 'Demo Check',\n  bank_account: 'bank_8cad8df5354d33f',\n  to: %{\n    name: 'Harry Zhang',\n    address_line1: '210 King St',\n    address_line2: '# 6100',\n    address_city: 'San Francisco',\n    address_state: 'CA',\n    address_zip: '94107'\n  },\n  from: 'adr_210a8d4b0b76d77b',\n  amount: 22.50,\n  memo: 'rent',\n  logo: 'https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png',\n  check_bottom: '<h1 style=\"padding-top:4in;\">Demo Check for {{name}}</h1>',\n  merge_variables: %{\n    name: 'Harry'\n  },\n  use_type: 'operational',\n  print_speed: 'core'\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "Dictionary<string, string> mergeVariables = new Dictionary<string, string>();\nmergeVariables.Add(\"name\", \"Harry\");\n\nChecksApi api = new ChecksApi(config);\n\nAddressEditable to = new AddressEditable(\n  \"210 King St\",  // addressLine1\n  \"# 6100\",  // addressLine2\n  \"San Francisco\",  // addressCity\n  \"CA\",  // addressState\n  \"94107\",  // addressZip\n  default(CountryExtended),  // addressCounty\n  \"\",  // description\n  \"Harry Zhang\" // name\n);\n\nCheckEditable checkEditable = new CheckEditable(\n  \"adr_249af768103d2810\",  // from\n  to.ToJson(),  // to\n  \"bank_8cad8df5354d33f\",  // bank_account\n  22.5f,  // amount\n  \"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png\",  // logo\n  \"<h1 style='padding-top:4in;'>Demo Check for {{name}}</h1>\",  // checkBottom\n  default(string),  // attachment\n  \"Demo Check\",  // description\n  default(Dictionary<string, string>),  // metadata\n  mergeVariables,  // mergeVariables\n  default(DateTime),  // sendDate\n  CheckEditable.MailTypeEnum.UspsFirstClass,  // mailType\n  \"rent\", // memo\n  \"operational\", // use_type\n  \"core\" // print_speed\n);\n\ntry {\n  Check result = api.create(checkEditable, null);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nvar to = *lob.NewAddressEditable()\nto.SetAddressLine1(\"210 King St\")\nto.SetAddressLine2(\"# 6100\")\nto.SetAddressCity(\"San Francisco\")\nto.SetAddressState(\"CA\")\nto.SetAddressZip(\"94107\")\nto.SetAddressCountry(lob.COUNTRYEXTENDED_US)\nto.SetDescription(\"\")\nto.SetName(\"Harry Zhang\")\n\nvar checkCreate = *lob.NewCheckEditable()\ncheckCreate.SetDescription(\"Demo Check\")\ncheckCreate.SetBankAccount(\"bank_8cad8df5354d33f\")\ncheckCreate.SetAmount(22.5)\ncheckCreate.SetMemo(\"rent\")\ncheckCreate.SetLogo(\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png\")\ncheckCreate.SetCheckBottom(\"<h1 style='padding-top:4in;'>Demo Check for {{name}}</h1>\")\ncheckCreate.SetFrom(\"adr_210a8d4b0b76d77b\")\ncheckCreate.SetTo(to)\ncheckCreate.SetPrintSpeed(\"core\")\n\n\ncreatedcheck, _, err := apiClient.ChecksApi.Create(context).CheckEditable(checkCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+  /checks/{chk_id}:
+    parameters:
+    - in: path
+      name: chk_id
+      description: id of the check
+      required: true
+      schema:
+        $ref: '#/components/schemas/chk_id'
+    get:
+      operationId: check_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing check. You need only supply the unique check identifier that was returned upon check creation.
+      tags:
+      - Checks
+      responses:
+        '200':
+          description: Returns a check object
+          content:
+            $ref: '#/components/mediaTypes/check'
+        default:
+          $ref: '#/components/responses/mailpiece_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/checks/chk_534f10783683daa0 \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const check = await new ChecksApi(config).get('chk_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.checks.retrieve('chk_534f10783683daa0', function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "checkApi = ChecksApi.new(config)\n\nbegin\n  retrievedCheck = checkApi.get(\"chk_534f10783683daa0\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = ChecksApi(api_client)\n\ntry:\n  check = api.get(\"chk_534f10783683daa0\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\ChecksApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->get(\"chk_534f10783683daa0\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "ChecksApi apiInstance = new ChecksApi(config);\n\ntry {\n  Check response = apiInstance.get(\"chk_534f10783683daa0\");\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Check.find("chk_534f10783683daa0")
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "ChecksApi api = new ChecksApi(config);\n\ntry {\n  Check response = api.get(\"chk_534f10783683daa0\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nfetchedCheck, _, err := apiClient.ChecksApi.Get(context,\"chk_534f10783683daa0\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+    delete:
+      operationId: check_cancel
+      summary: Cancel
+      description: Completely removes a check from production. This can only be done if the check has a `send_date` and the `send_date` has not yet passed. If the check is successfully canceled, you will not be charged for it. Read more on [cancellation windows](#section/Cancellation-Windows) and [scheduling](#section/Scheduled-Mailings). Scheduling and cancellation is a premium feature. Upgrade to the appropriate <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Edition</a> to gain access.
+      tags:
+      - Checks
+      responses:
+        '200':
+          $ref: '#/components/responses/check_canceled'
+        default:
+          $ref: '#/components/responses/mailpiece_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X DELETE https://api.lob.com/v1/checks/chk_534f10783683daa0 \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const deleteCheck = await new ChecksApi(config).cancel('chk_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.checks.cancel('chk_534f10783683daa0', function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "checkApi = ChecksApi.new(config)\n\nbegin\n  deletedCheck = checkApi.cancel(\"chk_534f10783683daa0\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = ChecksApi(api_client)\n\ntry:\n  deleted_resource = api.cancel(\"chk_534f10783683daa0\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\ChecksApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->cancel(\"chk_534f10783683daa0\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "ChecksApi apiInstance = new ChecksApi(config);\n\ntry {\n    CheckDeletion response = apiInstance.cancel(\"chk_534f10783683daa0\");\n} catch (ApiException e) {\n    e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'Lob.Check.destroy("chk_534f10783683daa0")
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "ChecksApi api = new ChecksApi(config);\n\ntry {\n  CheckDeletion response = api.cancel(\"chk_534f10783683daa0\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\ndeletedCheck, _, err := apiClient.ChecksApi.Cancel(context, \"chk_534f10783683daa0\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+components:
+  schemas:
+    bank_account_base:
+      type: object
+      required:
+      - routing_number
+      - account_number
+      - account_type
+      - signatory
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        routing_number:
+          description: Must be a <a href="https://www.frbservices.org/index.html" target="_blank">valid US routing number</a>.
+          type: string
+          minLength: 9
+          maxLength: 9
+        account_number:
+          type: string
+          maxLength: 17
+        account_type:
+          type: string
+          enum:
+          - company
+          - individual
+          description: The type of entity that holds the account.
+        signatory:
+          description: The signatory associated with your account. This name will be printed on checks created with this bank account. If you prefer to use a custom signature image on your checks instead, please create your bank account from the <a href="https://dashboard.lob.com/#/login" target="_blank">Dashboard</a>.
+          type: string
+          maxLength: 30
+        check_template:
+          type: string
+          enum:
+          - common
+          - jpm
+          description: The check template used for printing. The defualt value is `common`. If you bank with JP Morgan Chase and wish to use Positive Pay use the `jpm` template. `jpm` requires additional information to be provided.
+        fractional_routing_number:
+          type: string
+          description: The fractional routing number for your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the fractional routing number associated with your home bank institution.
+        city:
+          type: string
+          description: The city associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the city associated with your home bank institution.
+        state:
+          type: string
+          description: The state associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the state associated with your home bank institution.
+        zipcode:
+          type: string
+          description: The zipcode associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the zipcode associated with your home bank institution.
+        metadata:
+          $ref: '#/components/schemas/metadata'
+    address_fields_us:
+      type: object
+      required:
+      - address_line1
+      - address_city
+      - address_state
+      - address_zip
+      properties:
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 64
+        address_line2:
+          type: string
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 64
+          nullable: true
+        address_city:
+          type: string
+          maxLength: 200
+        address_state:
+          type: string
+          description: 2 letter state short-name code
+          pattern: ^[a-zA-Z]{2}$
+        address_zip:
+          type: string
+          description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+            '
+          pattern: ^\d{5}(-\d{4})?$
+    remote_file_url:
+      type: string
+      description: 'The location of a remote file. Remote URLs have a 5 MB file size limit and must be downloaded within 40 seconds.
+
+        '
+      pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+    status:
+      type: string
+      enum:
+      - processed
+      - rendered
+      - failed
+      description: 'A string describing the PDF render status:
+
+        * `processed` - the rendering process is currently in progress.
+
+        * `rendered` - a PDF has been successfully rendered of the mailpiece.
+
+        * `failed` - one or more issues has caused the rendering process to fail.
+
+        '
+    editable_no_mailtype:
+      type: object
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        merge_variables:
+          $ref: '#/components/schemas/merge_variables'
+        send_date:
+          $ref: '#/components/schemas/send_date'
+    failure_reason_error:
+      type: object
+      description: Failure error details
+      properties:
+        url:
+          type: string
+          description: Failed URL of asset
+          nullable: true
+        host:
+          type: string
+          description: URL host
+          nullable: true
+        path:
+          type: string
+          description: URL path
+          nullable: true
+        protocol:
+          type: string
+          description: Network protocol
+          nullable: true
+        remediation:
+          type: string
+          description: Instructions on how to resolve the error
+          nullable: true
+        error_type:
+          type: string
+          description: HTTP response status code message or service defined error
+          nullable: true
+        status_code:
+          type: number
+          description: HTTP response status codes if the error is asset related
+          nullable: true
+    send_date:
+      type: string
+      description: A timestamp in ISO 8601 format which specifies a date after the current time and up to 180 days in the future to send the letter off for production. Setting a send date overrides the default [cancellation window](#section/Cancellation-Windows) applied to the mailpiece. Until the `send_date` has passed, the mailpiece can be canceled. If a date in the format `2017-11-01` is passed, it will evaluate to midnight UTC of that date (`2017-11-01T00:00:00.000Z`). If a datetime is passed, that exact time will be used. A `send_date` passed with no time zone will default to UTC, while a `send_date` passed with a time zone will be converted to UTC.
+      anyOf:
+      - format: date-time
+      - format: date
+    object:
+      type: string
+      description: Value is resource type.
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    check_base:
+      allOf:
+      - $ref: '#/components/schemas/editable_no_mailtype'
+      - type: object
+        properties:
+          mail_type:
+            description: Checks must be sent `usps_first_class`
+            type: string
+            enum:
+            - usps_first_class
+            default: usps_first_class
+          memo:
+            description: Text to include on the memo line of the check.
+            type: string
+            maxLength: 40
+            nullable: true
+          check_number:
+            description: 'An integer that designates the check number.
+
+              If `check_number` is not provided, checks created from a new `bank_account` will start at `10000` and increment with each check created with the `bank_account`.
+
+              A provided `check_number` overrides the defaults. Subsequent checks created with the same `bank_account` will increment from the provided check number.'
+            type: integer
+            minimum: 1
+            maximum: 500000000
+          message:
+            description: Max of 400 characters to be included at the bottom of the check page.
+            type: string
+            maxLength: 400
+          use_type:
+            $ref: '#/components/schemas/chk_use_type'
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
+    evnt_id:
+      type: string
+      description: Unique identifier prefixed with `evnt_`.
+      pattern: ^evnt_[a-zA-Z0-9]+$
+    failure_reason:
+      type: object
+      description: An object describing the reason for failure if the resource failed to render.
+      properties:
+        remediation:
+          type: string
+          description: Instructions on how to resolve the error
+        failure_reason:
+          type: string
+          description: Reason failure occurred
+        errors:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/failure_reason_error'
+    address_us:
+      allOf:
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          id:
+            $ref: '#/components/schemas/adr_id'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - address
+            default: address
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+              '
+            maxLength: 40
+            nullable: true
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_line1:
+            type: string
+            description: The primary number, street name, and directional information.
+            maxLength: 64
+          address_line2:
+            type: string
+            description: An optional field containing any information which can't fit into line 1.
+            maxLength: 64
+            nullable: true
+          address_city:
+            type: string
+            maxLength: 200
+          address_state:
+            type: string
+            description: 2 letter state short-name code
+            pattern: ^[a-zA-Z]{2}$
+          address_zip:
+            type: string
+            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+              '
+            pattern: ^\d{5}(-\d{4})?$
+          address_country:
+            type: string
+            enum:
+            - UNITED STATES
+            description: Full name of country
+            minLength: 13
+            maxLength: 13
+          metadata:
+            $ref: '#/components/schemas/metadata'
+          recipient_moved:
+            type: boolean
+            description: 'Only returned for accounts on certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print &amp; Mail Editions</a>. Value is `true` if the address was altered because the recipient filed for a <a href="#tag/National-Change-of-Address">National Change of Address Linkage (NCOALink)</a>, `false` if the NCOALink check was run but no altered address was found, and `null` if the NCOALink check was not run. The NCOALink check does not happen for non-US addresses, for non-deliverable US addresses, or for addresses created before the NCOALink feature was added to your account.
+
+              '
+            nullable: true
+        example:
+          id: adr_e68217bd744d65c8
+          description: Harry - Office
+          name: HARRY ZHANG
+          company: LOB
+          phone: '5555555555'
+          email: harry@lob.com
+          address_line1: 210 KING ST STE 6100
+          address_line2: null
+          address_city: SAN FRANCISCO
+          address_state: CA
+          address_zip: 94107-1741
+          address_country: UNITED STATES
+          metadata: {}
+          recipient_moved: false
+          date_created: '2019-08-12T00:16:00.361Z'
+          date_modified: '2019-08-12T00:16:00.361Z'
+          object: address
+    tracking_event_normal:
+      allOf:
+      - $ref: '#/components/schemas/tracking_event_base'
+      - type: object
+        required:
+        - type
+        - name
+        properties:
+          type:
+            description: non-Certified postcards, self mailers, letters, checks and snap packs
+            type: string
+            enum:
+            - normal
+          name:
+            type: string
+            enum:
+            - Mailed
+            - In Transit
+            - In Local Area
+            - Processed for Delivery
+            - Delivered
+            - Re-Routed
+            - Returned to Sender
+            - International Exit
+            description: "Name of tracking event (for normal postcards, self mailers, letters, checks and snap packs):\n\n  * `Mailed` - The mailpiece has been handed off to and accepted by USPS\n    and is en route. <a href=\"https://help.lob.com/print-and-mail/getting-data-and-results/tracking-your-mail#mailed-tracking-events-4\" target=\"_blank\">More about\n    Mailed.</a>\n    Note this data is only available in Enterprise editions of\n    Lob. <a href=\"https://lob.com/support/contact#contact\" target=\"_blank\">Contact Sales</a> if\n    you want access to this feature.\n\n  * `In Transit` - The mailpiece is being processed at the entry/origin facility.\n\n  * `In Local Area` - The mailpiece is being processed at the destination facility.\n\n  * `Processed for Delivery` - The mailpiece has been greenlit for\n    delivery at the recipient's nearest postal facility. The mailpiece\n    should reach the mailbox within 1 business day of this tracking\n    event.\n\n  * `Delivered` - The mail piece has been delivered to \n    the recipient’s address. The final scan is generated when the mail \n    carrier's GPS unit leaves the delivery area.\n\n  * `Re-Routed` - The mailpiece is re-routed due to recipient change of\n    address, address errors, or USPS relabeling of barcode/ID tag\n    area.\n\n  * `Returned to Sender` - The mailpiece is being returned to sender due\n    to barcode, ID tag area, or address errors.\n  \n  * `International Exit` - The mail piece has been processed to \n    ship to a destination abroad. This is typically the last \n    scan a US-originated international mail piece will receive \n    from the USPS.\n\n<a href=\"https://help.lob.com/print-and-mail/getting-data-and-results/tracking-your-mail#mailed-tracking-events-4\" target=\"_blank\">More about tracking</a>\n"
+          details:
+            description: Will be `null` for `type=normal` events
+            type: object
+            enum:
+            - null
+            nullable: true
+          location:
+            type: string
+            description: 'The zip code in which the scan event occurred. Null for `Mailed` events.
+
+              '
+            nullable: true
+    bank_id_no_description:
+      type: string
+      pattern: ^bank_[a-zA-Z0-9]+$
+    address_editable_us:
+      allOf:
+      - $ref: '#/components/schemas/address_fields_us'
+      - type: object
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            $ref: '#/components/schemas/company'
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_country:
+            type: string
+            enum:
+            - US
+            default: US
+          metadata:
+            $ref: '#/components/schemas/metadata'
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    company:
+      type: string
+      description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+        '
+      maxLength: 40
+      nullable: true
+    adr_id:
+      type: string
+      description: Unique identifier prefixed with `adr_`.
+      pattern: ^adr_[a-zA-Z0-9]+$
+    merge_variables:
+      type: object
+      description: 'You can input a merge variable payload object to your template or QR code redirect URLs to render dynamic content. For example, if you have a template like: `{{variable_name}}`, pass in `{"variable_name": "Harry"}` to render `Harry`. `merge_variables` must be an object. Any type of value is accepted as long as the object is valid JSON; you can use `strings`, `numbers`, `booleans`, `arrays`, `objects`, or `null`. The max length of the object is 25,000 characters. If you call `JSON.stringify` on your object, it can be no longer than 25,000 characters. Your variable names cannot contain any whitespace or any of the following special characters: `!`, `"`, `#`, `%`, `&`, `''`, `(`, `)`, `*`, `+`, `,`, `/`, `;`, `<`, `=`, `>`, `@`, `[`, `\`, `]`, `^`, `` ` ``, `{`, `|`, `}`, `~`. More instructions can be found in <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/dynamic-personalization#using-html-and-merge-variables-10" target="_blank">our guide to using html and merge variables</a>. Depending on your <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Merge Variable strictness</a> setting, if you define variables in your HTML but do not pass them here, you will either receive an error or the variable will render as an empty string. These settings only apply on HTML templates and not on QR code redirect URLs.'
+      maxLength: 25000
+      nullable: true
+    vrsn_id:
+      type: string
+      description: Unique identifier prefixed with `vrsn_`.
+      pattern: ^vrsn_[a-zA-Z0-9]+$
+    tmpl_id:
+      type: string
+      description: Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).
+      pattern: ^tmpl_[a-zA-Z0-9]+$
+    resource_description:
+      type: string
+      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+
+        '
+      maxLength: 255
+      nullable: true
+    inline_address_us:
+      allOf:
+      - $ref: '#/components/schemas/address_editable_us'
+      - type: object
+        required:
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+    inline_address_us_chk:
+      allOf:
+      - type: object
+        required:
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            $ref: '#/components/schemas/company'
+          address_line1:
+            type: string
+            description: The primary number, street name, and directional information.
+            maxLength: 50
+          address_line2:
+            type: string
+            description: An optional field for address unit information. Total string sum of this plus `address_line1` may not exceed 50 characters.
+            maxLength: 50
+            nullable: true
+          address_city:
+            type: string
+            maxLength: 200
+          address_state:
+            type: string
+            description: 2 letter state short-name code
+            pattern: ^[a-zA-Z]{2}$
+          address_zip:
+            type: string
+            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+              '
+            pattern: ^\d{5}(-\d{4})?$
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_country:
+            type: string
+            enum:
+            - US
+            default: US
+          metadata:
+            $ref: '#/components/schemas/metadata'
+    tracking_event_base:
+      type: object
+      description: As mail pieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes these mail scans to generate tracking events.
+      required:
+      - id
+      - date_created
+      - date_modified
+      - object
+      properties:
+        id:
+          $ref: '#/components/schemas/evnt_id'
+        time:
+          type: string
+          format: date-time
+          description: A timestamp in ISO 8601 format of the date USPS registered the event.
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        object:
+          allOf:
+          - $ref: '#/components/schemas/object'
+          - type: string
+            enum:
+            - tracking_event
+            default: tracking_event
+    print_speed:
+      type: string
+      enum:
+      - core
+      description: 'A string designating the mail speed type:
+
+        * `core` - 2 production business days
+
+        '
+      default: core
+      nullable: true
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type: string
+          description: Url of next page of items in list.
+          nullable: true
+        previous_url:
+          type: string
+          description: Url of previous page of items in list.
+          nullable: true
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    check_editable:
+      oneOf:
+      - title: words at check bottom
+        allOf:
+        - required:
+          - message
+        - $ref: '#/components/schemas/check_editable_props'
+      - title: image at check bottom
+        allOf:
+        - required:
+          - check_bottom
+        - $ref: '#/components/schemas/check_editable_props'
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    bank_id:
+      allOf:
+      - $ref: '#/components/schemas/bank_id_no_description'
+      - type: string
+        description: Unique identifier prefixed with `bank_`.
+    thumbnail:
+      type: object
+      properties:
+        small:
+          $ref: '#/components/schemas/signed_link'
+        medium:
+          $ref: '#/components/schemas/signed_link'
+        large:
+          $ref: '#/components/schemas/signed_link'
+    bank_account:
+      allOf:
+      - $ref: '#/components/schemas/bank_account_base'
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            $ref: '#/components/schemas/bank_id'
+          signature_url:
+            allOf:
+            - type: string
+              nullable: true
+              description: A [signed link](#section/Asset-URLs) to the signature image.
+            - $ref: '#/components/schemas/signed_link'
+          bank_name:
+            description: The name of the bank based on the provided routing number, e.g. `JPMORGAN CHASE BANK`.
+            type: string
+          verified:
+            description: A bank account must be verified before a check can be created. More info [here](#operation/bank_account_verify).
+            type: boolean
+            default: false
+          microdeposit_type:
+            description: 'The type of microdeposit verification required for this bank account. Always present when `verified` is `false`; `null` once the account is verified. Use this value to determine which field to submit to `POST /v1/bank_accounts/:id/verify`: `amounts` (an array of two integers) or `descriptor_code` (the 6-character code from the bank statement).'
+            type: string
+            nullable: true
+            enum:
+            - amounts
+            - descriptor_code
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - bank_account
+            default: bank_account
+      example:
+        id: bank_a
+        signature_url: https://lob-assets.com/bank-accounts/asd_asdfghjkqwertyui.pdf?expires=1234567890&signature=aksdf
+        bank_name: JPMORGAN CHASE BANK
+        verified: false
+        microdeposit_type: amounts
+        object: bank_account
+        description: Test Bank Account
+        routing_number: '322271627'
+        account_number: '123456789'
+        signatory: Jane Doe
+        account_type: individual
+        metadata:
+          spiffy: 'true'
+        date_created: '2019-08-08T19:34:47.571Z'
+        date_modified: '2019-08-08T19:34:47.571Z'
+    check:
+      allOf:
+      - $ref: '#/components/schemas/check_base'
+      - $ref: '#/components/schemas/from_us'
+      - type: object
+        required:
+        - bank_account
+        - id
+        - amount
+        - to
+        - url
+        - carrier
+        - date_created
+        - date_modified
+        - use_type
+        properties:
+          id:
+            $ref: '#/components/schemas/chk_id'
+          amount:
+            description: The payment amount to be sent in US dollars.
+            type: number
+            format: float
+            multipleOf: 0.01
+            maximum: 999999.99
+          bank_account:
+            $ref: '#/components/schemas/bank_account'
+          check_bottom_template_id:
+            allOf:
+            - description: The unique ID of the HTML template used for the check bottom.
+            - $ref: '#/components/schemas/tmpl_id'
+          attachment_template_id:
+            allOf:
+            - description: The unique ID of the HTML template used for the attachment.
+            - $ref: '#/components/schemas/tmpl_id'
+          check_bottom_template_version_id:
+            allOf:
+            - description: The unique ID of the specific version of the HTML template used for the check bottom.
+              type: string
+            - $ref: '#/components/schemas/vrsn_id'
+          attachment_template_version_id:
+            allOf:
+            - description: The unique ID of the specific version of the HTML template used for the attachment.
+              type: string
+            - $ref: '#/components/schemas/vrsn_id'
+          url:
+            $ref: '#/components/schemas/signed_link'
+          to:
+            $ref: '#/components/schemas/to_address_us_chk'
+          carrier:
+            type: string
+            enum:
+            - USPS
+            default: USPS
+          thumbnails:
+            type: array
+            items:
+              $ref: '#/components/schemas/thumbnail'
+          expected_delivery_date:
+            $ref: '#/components/schemas/expected_delivery_date'
+          tracking_events:
+            description: An array of tracking_event objects ordered by ascending `time`. Will not be populated for checks created in test mode.
+            type: array
+            items:
+              $ref: '#/components/schemas/tracking_event_normal'
+            nullable: true
+          use_type:
+            $ref: '#/components/schemas/chk_use_type'
+          status:
+            $ref: '#/components/schemas/status'
+          failure_reason:
+            type: object
+            nullable: true
+            allOf:
+            - $ref: '#/components/schemas/failure_reason'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - check
+            default: check
+          date_created:
+            $ref: '#/components/schemas/date_created'
+          date_modified:
+            $ref: '#/components/schemas/date_modified'
+          deleted:
+            $ref: '#/components/schemas/deleted'
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    mail_type:
+      type: string
+      enum:
+      - usps_first_class
+      - usps_standard
+      description: 'A string designating the mail postage type:
+
+        * `usps_first_class` - (default)
+
+        * `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is
+
+        less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6`
+
+        postcards or for any postcards sent outside of the United States.
+
+        '
+      default: usps_first_class
+    chk_id:
+      type: string
+      description: Unique identifier prefixed with `chk_`.
+      pattern: ^chk_[a-zA-Z0-9]+$
+    check_input_to:
+      type: object
+      properties:
+        to:
+          description: Must either be an address ID or an inline object with correct address parameters. Checks cannot be sent internationally (`address_country` must be `US`). The total string of the sum of `address_line1` and `address_line2` must be no longer than 50 characters combined. If an object is used, an address will be created, corrected, and standardized for free whenever possible using our US Address Verification engine, and returned back with an ID. Depending on your <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Edition</a>, addresses may also be run through [National Change of Address (NCOALink)](#tag/National-Change-of-Address). If an address used does not meet your account’s <a href="https://dashboard.lob.com/#/settings/account" target="_blank">US Mail Strictness Setting</a>, the request will fail. <a href="https://help.lob.com/print-and-mail/all-about-addresses" target="_blank">More about verification of mailing addresses</a>
+          oneOf:
+          - $ref: '#/components/schemas/adr_id'
+          - $ref: '#/components/schemas/inline_address_us_chk'
+    chk_use_type:
+      description: TThe use type for each mailpiece. Can be one of marketing, operational, or null. Null use_type is only allowed if an account default use_type is selected in Account Settings. For more information on use_type, see our  [Help Center article](https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings/declaring-mail-use-type).
+      type: string
+      enum:
+      - marketing
+      - operational
+      - null
+      nullable: true
+    html_string:
+      type: string
+      description: An HTML string of under 10,000 characters.
+      maxLength: 10000
+      pattern: <
+    from_us:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/address_us'
+    check_editable_props:
+      allOf:
+      - $ref: '#/components/schemas/check_base'
+      - $ref: '#/components/schemas/check_input_to'
+      - type: object
+        required:
+        - bank_account
+        - to
+        - from
+        - amount
+        - use_type
+        properties:
+          from:
+            description: Must either be an address ID or an inline object with correct address parameters. Must either be an address ID or an inline object with correct address parameters. All addresses will be standardized into uppercase without being modified by verification.
+            oneOf:
+            - $ref: '#/components/schemas/adr_id'
+            - $ref: '#/components/schemas/inline_address_us'
+          bank_account:
+            allOf:
+            - $ref: '#/components/schemas/bank_id_no_description'
+            - type: string
+              description: The id for a verified bank account.
+          amount:
+            description: The payment amount to be sent in US dollars. Amounts will be rounded to two decimal places.
+            type: number
+            format: float
+            maximum: 999999.99
+          logo:
+            description: "Accepts a remote URL or local file upload to an image to print (in grayscale) in the upper-left corner of your check. Image requirements:\n\n  * RGB or CMYK\n\n  * square\n\n  * minimum size: 100px x 100px\n\n  * transparent backgrond\n\n  * `png` or `jpg`"
+            oneOf:
+            - type: string
+              pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(png|jpg)$
+            - type: string
+              pattern: ^(?!https://)[a-zA-Z0-9@:%._+~#=/]{1,256}.(png|jpg)$
+          check_bottom:
+            $ref: '#/components/schemas/check_bottom'
+          attachment:
+            description: 'A document to include with the check.
+
+
+              Notes:
+
+              - HTML merge variables should not include delimiting whitespace.
+
+              - All pages of PDF, PNG, and JPGs must be sized at 8.5"x11" at 300 DPI, while supplied HTML will be rendered and trimmed to as many 8.5"x11" pages as necessary.
+
+              - If a PDF is provided, it must be 6 pages or fewer.
+
+              - The attachment will be printed double-sided in black & white and will be included in the envelope after the check page.
+
+              - Please follow these <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/check_attachment_template.pdf" target="_blank">design guidelines</a>.
+
+
+              See <a href="https://lob.com/pricing/print-mail#compare" target="_blank">pricing</a> for extra costs incurred. Need more help? Consult our [HTML examples](#section/HTML-Examples).'
+            oneOf:
+            - $ref: '#/components/schemas/html_string'
+            - $ref: '#/components/schemas/tmpl_id'
+            - $ref: '#/components/schemas/remote_file_url'
+            - $ref: '#/components/schemas/local_file_path'
+          billing_group_id:
+            $ref: '#/components/schemas/billing_group_id'
+          use_type:
+            $ref: '#/components/schemas/chk_use_type'
+          print_speed:
+            $ref: '#/components/schemas/print_speed'
+    signed_link:
+      type: string
+      description: A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.
+      pattern: ^https://lob-assets.com/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+
+    check_bottom:
+      description: 'The artwork to use on the bottom of the check page.
+
+
+        Notes:
+
+        - HTML merge variables should not include delimiting whitespace.
+
+        - PDF, PNG, and JPGs must be sized at 8.5"x11" at 300 DPI, while supplied HTML will be rendered and trimmed to fit on a 8.5"x11" page.
+
+        - The check bottom will always be printed in black & white.
+
+        - Must conform to <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/check_bottom_template.pdf" target="_blank">this template</a>.
+
+
+        Need more help? Consult our [HTML examples](#section/HTML-Examples).'
+      oneOf:
+      - $ref: '#/components/schemas/html_string'
+      - $ref: '#/components/schemas/tmpl_id'
+      - $ref: '#/components/schemas/remote_file_url'
+      - $ref: '#/components/schemas/local_file_path'
+    to_address_us_chk:
+      allOf:
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          id:
+            $ref: '#/components/schemas/adr_id'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - address
+            default: address
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+            nullable: true
+          company:
+            type: string
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+              '
+            maxLength: 40
+            nullable: true
+          phone:
+            type: string
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+            nullable: true
+          email:
+            type: string
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+            nullable: true
+          address_line1:
+            type: string
+            description: The primary number, street name, and directional information.
+            maxLength: 50
+          address_line2:
+            type: string
+            description: An optional field containing any information which can't fit into line 1.
+            maxLength: 50
+            nullable: true
+          address_city:
+            type: string
+            maxLength: 200
+          address_state:
+            type: string
+            description: 2 letter state short-name code
+            pattern: ^[a-zA-Z]{2}$
+          address_zip:
+            type: string
+            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+              '
+            pattern: ^\d{5}(-\d{4})?$
+          address_country:
+            type: string
+            enum:
+            - UNITED STATES
+            description: Full name of country
+            minLength: 13
+            maxLength: 13
+          metadata:
+            $ref: '#/components/schemas/metadata'
+          recipient_moved:
+            type: boolean
+            description: 'Only returned for accounts on certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print &amp; Mail Editions</a>. Value is `true` if the address was altered because the recipient filed for a <a href="#tag/National-Change-of-Address">National Change of Address Linkage (NCOALink)</a>, `false` if the NCOALink check was run but no altered address was found, and `null` if the NCOALink check was not run. The NCOALink check does not happen for non-US addresses, for non-deliverable US addresses, or for addresses created before the NCOALink feature was added to your account.
+
+              '
+            nullable: true
+        example:
+          id: adr_e68217bd744d65c8
+          description: Harry - Office
+          name: HARRY ZHANG
+          company: LOB
+          phone: '5555555555'
+          email: harry@lob.com
+          address_line1: 210 KING ST STE 6100
+          address_line2: null
+          address_city: SAN FRANCISCO
+          address_state: CA
+          address_zip: 94107-1741
+          address_country: UNITED STATES
+          metadata: {}
+          recipient_moved: false
+          date_created: '2019-08-12T00:16:00.361Z'
+          date_modified: '2019-08-12T00:16:00.361Z'
+          object: address
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
+    local_file_path:
+      type: string
+      description: The path to a local file.
+      pattern: ^(?!https://)[a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+    count:
+      type: integer
+      description: number of resources in a set
+    expected_delivery_date:
+      type: string
+      description: A date in YYYY-MM-DD format of the mailpiece's expected delivery date based on its `send_date`.
+      format: date
+    check_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/chk_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    billing_group_id:
+      type: string
+      description: An optional string with the billing group ID to tag your usage with. Is used for billing purposes. Requires special activation to use. See <a href="#tag/Billing-Groups">Billing Group API</a> for more information.
+  parameters:
+    mail_type:
+      in: query
+      name: mail_type
+      description: 'A string designating the mail postage type: * `usps_first_class` - (default) * `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6` postcards or for any postcards sent outside of the United States.
+
+        '
+      schema:
+        $ref: '#/components/schemas/mail_type'
+    metadata:
+      in: query
+      name: metadata
+      description: Filter by metadata key-value pair`.
+      schema:
+        $ref: '#/components/schemas/metadata'
+      style: deepObject
+      explode: true
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    sort_by:
+      in: query
+      name: sort_by
+      description: 'Sorts items by ascending or descending dates. Use either `date_created` or `send_date`, not both.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            date_created:
+              type: string
+              enum:
+              - asc
+              - desc
+            send_date:
+              type: string
+              enum:
+              - asc
+              - desc
+        - oneOf:
+          - required:
+            - date_created
+          - required:
+            - send_date
+    idem-header:
+      in: header
+      name: Idempotency-Key
+      required: false
+      description: 'A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12" target="_blank">implementation guide</a>.
+
+        '
+      schema:
+        type: string
+        maxLength: 256
+        example: 026e7634-24d7-486c-a0bb-4a17fd0eebc5
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+    status:
+      in: query
+      name: status
+      description: 'A string describing the render status:
+
+        * `processed` - the rendering process is currently underway.
+
+        * `rendered` - the rendering process has completed successfully.
+
+        * `failed` - the rendering process has failed.
+
+        '
+      schema:
+        $ref: '#/components/schemas/status'
+    idem-query:
+      in: query
+      name: idempotency_key
+      required: false
+      description: 'A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12" target="_blank">implementation guide</a>.
+
+        '
+      schema:
+        type: string
+        maxLength: 256
+        example: 026e7634-24d7-486c-a0bb-4a17fd0eebc5
+    send_date:
+      in: query
+      name: send_date
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.
+
+        '
+      schema:
+        $ref: '#/components/schemas/send_date'
+    scheduled:
+      in: query
+      name: scheduled
+      description: '* `true` - only return orders (past or future) where `send_date` is
+
+        greater than `date_created`
+
+        * `false` - only return orders where `send_date` is equal to `date_created`
+
+        '
+      schema:
+        type: boolean
+  responses:
+    mailpiece_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: to address not found
+              status_code: 404
+    post_check:
+      description: Returns a check object
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        $ref: '#/components/mediaTypes/check'
+    check_canceled:
+      description: Deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/check_deletion'
+          example:
+            id: chk_123456789
+            deleted: true
+    all_checks:
+      description: A dictionary with a data property that contains an array of up to `limit` checks. Each entry in the array is a separate check. The previous and next page of checks can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more checks are available beyond the current set of returned results, the `next_url` field will be empty.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/list'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  description: list of checks
+                  items:
+                    $ref: '#/components/schemas/check'
+          example:
+            data:
+            - id: chk_0176bf6197100185
+              description: Demo Check
+              metadata: {}
+              check_number: 12559
+              memo: rent
+              amount: 22.5
+              url: https://lob-assets.com/checks/chk_0176bf6197100185.pdf?version=v1&expires=1568239682&signature=aqKV5lmg_ktxzyl-qEwIf8-7DbvcguLO0LrfFcyMrUDDt6hxX_da0MEEpElxKR876VUaZrpHq_i_ayDWrsK3BA
+              to:
+                id: adr_bae820679f3f536b
+                description: Harry - Office
+                name: HARRY ZHANG
+                company: LOB
+                email: harry@lob.com
+                phone: '5555555555'
+                address_line1: 210 KING ST STE 6100
+                address_line2: ''
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: 94107-1741
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2018-12-08T03:08:43.446Z'
+                date_modified: '2018-12-08T03:08:43.446Z'
+                object: address
+                recipient_moved: false
+              from:
+                id: adr_210a8d4b0b76d77b
+                name: LEORE AVIDAR
+                address_line1: 210 KING ST STE 6100
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: 94107-1741
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2018-12-08T03:01:07.651Z'
+                date_modified: '2018-12-08T03:01:07.651Z'
+                object: address
+              bank_account:
+                id: bank_8cad8df5354d33f
+                description: Test Bank Account
+                metadata: {}
+                routing_number: '322271627'
+                account_number: '123456789'
+                account_type: individual
+                signatory: John Doe
+                bank_name: J.P. MORGAN CHASE BANK, N.A.
+                verified: true
+                date_created: '2015-11-06T19:24:24.440Z'
+                date_modified: '2015-11-06T19:41:28.312Z'
+                object: bank_account
+                signature_url: https://lob-assets.com/bank-accounts/asd_asdfghjkqwertyui.pdf?expires=1234567890&signature=aksdf
+              carrier: USPS
+              tracking_events: []
+              thumbnails:
+              - small: https://lob-assets.com/checks/chk_0176bf6197100185_thumb_small_1.png?version=v1&expires=1568239682&signature=T8DfMm_mxJJzIPgm8I0lvYY4Z6I8aFjsGsrEAicEqw8Ei_FaOtiGQKGeY16rdugAt8lmS_iX0lveBoG2RgWDDw
+                medium: https://lob-assets.com/checks/chk_0176bf6197100185_thumb_medium_1.png?version=v1&expires=1568239682&signature=-iJD7C58xOCD8eQ01StqSlw9WbDymL0Ygze9twfTs9s17zQppr2Zx363_Z4bP3ATHNhF3osjHuAxIasI2Wf6DQ
+                large: https://lob-assets.com/checks/chk_0176bf6197100185_thumb_large_1.png?version=v1&expires=1568239682&signature=VJlOkVDPKZThstdd632r3Grm2WhoyPkC-pffpcePTw1i1NkpAObDSRaItKMOQgeWkAcUud3SH0tYcVOadaNiCw
+              - small: https://lob-assets.com/checks/chk_0176bf6197100185_thumb_small_2.png?version=v1&expires=1568239682&signature=XpCkOjy2zIKXkuc0s-UAYGNwpD_pgt7c9FKTDUCYbyqXupAg1MV1l2tdqevr0L0LT5FJqrGZH9khD5QRMQTkAA
+                medium: https://lob-assets.com/checks/chk_0176bf6197100185_thumb_medium_2.png?version=v1&expires=1568239682&signature=sdgnJMzusEfndu7dNmk37eKc0AV7Hmqev6TQAqkCESs5pg7j6dDTsp7v4pnDvhsj8d7SIMcahl1aGiysoom0CA
+                large: https://lob-assets.com/checks/chk_0176bf6197100185_thumb_large_2.png?version=v1&expires=1568239682&signature=ybe8ovBh8Gf-AWKGRs4CB4XkU-erPVbY66umXARhTiJG2Dg1QlyCb9WmBXWt0tBCwD5NGMl20mHeAgHwecLxBA
+              expected_delivery_date: '2019-08-16'
+              mail_type: usps_first_class
+              date_created: '2019-08-08T19:34:47.571Z'
+              date_modified: '2019-08-08T19:34:49.612Z'
+              send_date: '2019-08-08'
+              message: pancakes are good
+              object: check
+              check_bottom_template_id: tmpl_a
+              attachment_template_id: tmpl_a
+              check_bottom_template_version_id: vrsn_a
+              attachment_template_version_id: vrsn_a
+              merge_variables: {}
+              use_type: operational
+              deleted: true
+            - id: chk_92b9a6714bc0557c
+              description: Demo Check
+              metadata: {}
+              check_number: 12558
+              memo: rent
+              amount: 22.5
+              url: https://lob-assets.com/checks/chk_92b9a6714bc0557c.pdf?version=v1&expires=1568239682&signature=jCct5PvzU58Iz2pSo58nf6rgsMRcJfMbUWThmm6lztFl5Vn2Y204b9h7gvw0vJvkDK2ThfaYqaUbWc0KzTpvAg
+              to:
+                id: adr_bae820679f3f536b
+                name: HARRY ZHANG
+                address_line1: 210 KING ST STE 6100
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: 94107-1741
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2018-12-08T03:08:43.446Z'
+                date_modified: '2018-12-08T03:08:43.446Z'
+                object: address
+              from:
+                id: adr_210a8d4b0b76d77b
+                name: LEORE AVIDAR
+                address_line1: 210 KING ST STE 6100
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: 94107-1741
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2018-12-08T03:01:07.651Z'
+                date_modified: '2018-12-08T03:01:07.651Z'
+                object: address
+              bank_account:
+                id: bank_8cad8df5354d33f
+                description: Test Bank Account
+                metadata: {}
+                routing_number: '322271627'
+                account_number: '123456789'
+                account_type: individual
+                signatory: John Doe
+                bank_name: J.P. MORGAN CHASE BANK, N.A.
+                verified: true
+                date_created: '2015-11-06T19:24:24.440Z'
+                date_modified: '2015-11-06T19:41:28.312Z'
+                object: bank_account
+              carrier: USPS
+              tracking_events: []
+              thumbnails:
+              - small: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_small_1.png?version=v1&expires=1568239682&signature=ublquO_xAdvAkAwGJuOjgZQwcz7c3Ao4NHWHeDVTBEBjcrQr8LavxWEwUc1KU105Zex3SajRQLd6hqJOrDl0Bw
+                medium: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_medium_1.png?version=v1&expires=1568239682&signature=vHyuOtsanX4HnY_0LNft6ZJ8C67JnbI8ZVCjA2d9nR0Rd6lCl0Nk1s6BAhefbBkzecX9Yp0B8NWN9Q5v1Z4ICw
+                large: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_large_1.png?version=v1&expires=1568239682&signature=SzCLKJ5m_TKJPLlL9PMw-zW9wo5mVYEK1jCtHwWRwwEaNU2v4Aehy-YHtus3TFJIt8RD2M-0Y3MtCxHwhqSABg
+              - small: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_small_2.png?version=v1&expires=1568239682&signature=iElagODaOCkF_lCUxIw-lK50GhEU1ar_odmslCazZqD4Fsd_rQLx3M4Q5HzYWp4evfzuCoFvk4oAQVuIAaguAw
+                medium: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_medium_2.png?version=v1&expires=1568239682&signature=2vwvm_QsfmdtkAa-_F4uk-0yeUPRascyhfwOr-OX1ya9i_8gdFQAxMTrP-FfNBVSYFXeknFm6IUPJHggfgeiBg
+                large: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_large_2.png?version=v1&expires=1568239682&signature=NQf7tP9F4rP66S16hQ8duFpZSbTjaGBGK61Sr3H5D4CWtRyaPdoQlIpT2Jw-eKRcuYRkDEtQse_oWtL5gPqXDQ
+              - small: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_small_3.png?version=v1&expires=1568239682&signature=dbjFd44H9TyZsc3d0fqKon5e0GqZ6GA1dT26MH6WnoX8lrQor2CA6sZJ5qmu0Z4SAFlMKAzb-twqN7faLjEbDQ
+                medium: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_medium_3.png?version=v1&expires=1568239682&signature=vSgwVs7T9E6KKBK7XU-6jRL9i0jvgTqvNxkdRARFf0UNlryJFm8l_t_x5mPH0sCTFZcLp7ouRaR5hhdHC6vZBQ
+                large: https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_large_3.png?version=v1&expires=1568239682&signature=If4tXlN13WYy7JDPpFkWw0HAQpYNJHqi2UstiPHxUA_8IAj6vXORb-22acI124Pd1bR1QSjBHAW1gbiJ0kjiAQ
+              merge_variables: null
+              expected_delivery_date: '2019-08-16'
+              mail_type: usps_first_class
+              date_created: '2019-08-08T19:34:27.802Z'
+              date_modified: '2019-08-08T19:34:30.582Z'
+              send_date: '2019-08-08T19:34:27.802Z'
+              use_type: operational
+              object: check
+            object: list
+            next_url: https://api.lob.com/v1/checks?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wOC0wOFQxOTozNDoyNy44MDJaIiwiaWRPZmZzZXQiOiJjaGtfOTJiOWE2NzE0YmMwNTU3YyJ9
+            previous_url: null
+            count: 2
+  headers:
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  mediaTypes:
+    check:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/check'
+        example:
+          id: chk_534f10783683daa0
+          description: Demo Check
+          metadata: {}
+          check_number: 10062
+          memo: rent
+          amount: 22.5
+          url: https://lob-assets.com/checks/chk_534f10783683daa0.pdf?expires=1540372221&signature=Ty3IV2bGPEoQfrdraYHlNYTaarnHLXb
+          to:
+            id: adr_bae820679f3f536b
+            description: Harry - Office
+            name: HARRY ZHANG
+            company: LOB
+            email: harry@lob.com
+            phone: '5555555555'
+            address_line1: 210 KING ST STE 6100
+            address_line2: ''
+            address_city: SAN FRANCISCO
+            address_state: CA
+            address_zip: 94107-1741
+            address_country: UNITED STATES
+            metadata: {}
+            date_created: '2018-12-08T03:08:43.446Z'
+            date_modified: '2018-12-08T03:08:43.446Z'
+            object: address
+            recipient_moved: false
+          from:
+            id: adr_b8fb5acf3a2b55db
+            name: LEORE AVIDAR
+            address_line1: 210 KING ST STE 6100
+            address_city: SAN FRANCISCO
+            address_state: CA
+            address_zip: 94107-1741
+            address_country: UNITED STATES
+            metadata: {}
+            date_created: '2017-09-05T17:47:53.767Z'
+            date_modified: '2017-09-05T17:47:53.767Z'
+            object: address
+          bank_account:
+            id: bank_8cad8df5354d33f
+            description: Test Bank Account
+            metadata: {}
+            routing_number: '322271627'
+            account_number: '123456789'
+            signatory: John Doe
+            bank_name: J.P. MORGAN CHASE BANK, N.A.
+            verified: true
+            account_type: company
+            date_created: '2015-11-06T19:24:24.440Z'
+            date_modified: '2015-11-06T19:41:28.312Z'
+            object: bank_account
+            signature_url: https://lob-assets.com/bank-accounts/asd_asdfghjkqwertyui.pdf?expires=1234567890&signature=aksdf
+          carrier: USPS
+          tracking_events: []
+          thumbnails:
+          - small: https://lob-assets.com/checks/chk_534f10783683daa0_thumb_small_1.png?expires=1540372221&signature=ShhPpH74wYkNiAj7Il9B6q8ZKkzlGd4
+            medium: https://lob-assets.com/checks/chk_534f10783683daa0_thumb_medium_1.png?expires=1540372221&signature=tmIOq6aAyKgzAECp7STj1rvJuMS5Svd
+            large: https://lob-assets.com/checks/chk_534f10783683daa0_thumb_large_1.png?expires=1540372221&signature=04nLEwE9d2qgQJNgJYWSOgPnU0FZbEv
+          merge_variables:
+            name: Harry
+          expected_delivery_date: '2017-09-12'
+          mail_type: usps_first_class
+          date_created: '2017-09-05T17:47:53.896Z'
+          date_modified: '2017-09-05T17:47:53.896Z'
+          send_date: '2017-09-05T17:47:53.896Z'
+          object: check
+          message: pancakes are good
+          check_bottom_template_id: tmpl_a
+          attachment_template_id: tmpl_a
+          check_bottom_template_version_id: vrsn_a
+          attachment_template_version_id: vrsn_a
+          use_type: operational
+          sla: '2'
+          deleted: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

@@ -1,0 +1,24 @@
+generated: '2026-07-20'
+method: searched
+source: live probes of Lob hosts
+hosts:
+  - host: https://api.lob.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+  - host: https://www.lob.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+notes: >
+  No /.well-known/ discovery documents are published on api.lob.com or www.lob.com.
+  A security contact is exposed instead via the lob.com CAA iodef record
+  (mailto:security@lob.com) — see security/lobcom-domain-security.yml.

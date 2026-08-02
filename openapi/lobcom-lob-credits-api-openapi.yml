@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Lob Credits API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Lob Credits
+paths:
+  /accounts:
+    get:
+      operationId: get_lob_credits_balance
+      summary: Get Lob Credits Balance
+      description: Returns the account's current balance of Lob Credits.
+      tags:
+      - Lob Credits
+      responses:
+        '200':
+          description: Returns a lob_credits_balance object.
+          content:
+            $ref: '#/components/mediaTypes/lob_credits_balance'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/accounts/credits_balance \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+components:
+  mediaTypes:
+    lob_credits_balance:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/lob_credits_balance'
+        examples:
+          empty:
+            value:
+              balance: 0
+          negative:
+            value:
+              balance: -1234.56
+          positive:
+            value:
+              balance: 1000
+  schemas:
+    lob_credits_balance:
+      type: object
+      required:
+      - balance
+      properties:
+        balance:
+          type: number
+          description: Account's current balance of Lob Credits. Can be positive, negative, or zero.
+          example: 1000
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

@@ -1,0 +1,12 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.lob.com/#tag/Versioning-and-Changelog
+scheme: date-based versions pinned per account via the Lob-Version header
+current_version: '1.22.0'
+docs: https://docs.lob.com/#tag/Versioning-and-Changelog
+note: >
+  Lob maintains a dated changelog in its API reference. Versions are date-stamped and
+  pinned per account; breaking changes ship under a new dated version while older pinned
+  versions keep working. The spec bundle reports API version 1.22.0. A full dated entry
+  list was not machine-harvested in this pass — the live changelog is the source of truth.
+entries: []

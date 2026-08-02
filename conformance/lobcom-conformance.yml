@@ -1,0 +1,34 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/lobcom-openapi-original.yml + https://docs.lob.com/
+standards:
+  - id: openapi-3.0
+    conforms: true
+    evidence: openapi 3.0.3 spec published at github.com/lob/lob-openapi
+  - id: rest
+    conforms: true
+    evidence: resource-oriented URLs, standard HTTP verbs and status codes
+  - id: http-basic-auth
+    conforms: true
+    evidence: components.securitySchemes.basicAuth (http basic; API key as username)
+  - id: idempotency
+    conforms: true
+    evidence: Idempotency-Key header / idempotency_key query param on create operations
+  - id: cursor-pagination
+    conforms: true
+    evidence: before/after cursor query params on list operations
+  - id: rfc6585-rate-limiting
+    conforms: true
+    evidence: ratelimit-limit / ratelimit-remaining / ratelimit-reset response headers, 429 rate_limit_exceeded
+  - id: webhooks
+    conforms: true
+    evidence: documented event catalog + webhook delivery with HMAC signature verification
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: uses a custom error envelope {error:{code,message,status_code}}, not application/problem+json
+  - id: oauth2
+    conforms: false
+    evidence: no oauth2 security scheme; API-key (HTTP Basic) auth only
+  - id: usps-move-update
+    conforms: true
+    evidence: NCOALink (National Change of Address) support for address book

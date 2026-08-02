@@ -1,0 +1,1035 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Templates API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Templates
+  description: 'These API endpoints allow you to create, retrieve, update and delete reusable HTML templates for use with the Print & Mail API.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+    '
+paths:
+  /templates/{tmpl_id}:
+    parameters:
+    - in: path
+      name: tmpl_id
+      description: id of the template
+      required: true
+      schema:
+        $ref: '#/components/schemas/tmpl_id'
+    get:
+      operationId: template_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing template. You need only supply the unique template identifier that was returned upon template creation.
+      tags:
+      - Templates
+      responses:
+        '200':
+          description: Returns a template object
+          content:
+            $ref: '#/components/mediaTypes/template'
+        default:
+          $ref: '#/components/responses/template_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/templates/tmpl_c94e83ca2cd5121 \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const Template = await new TemplatesApi(config).get('tmpl_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: NODE
+      - lang: Ruby
+        source: "templateApi = TemplatesApi.new(config)\n\nbegin\n  retrievedTemplate = templateApi.get(\"tmpl_c94e83ca2cd5121\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = TemplatesApi(api_client)\n\ntry:\n  template = api.get(\"tmpl_c94e83ca2cd5121\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\TemplatesApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->get(\"tmpl_c94e83ca2cd5121\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "TemplatesApi apiInstance = new TemplatesApi(config);\n\ntry {\n  Template response = apiInstance.get(\"tmpl_c94e83ca2cd5121\");\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "TemplatesApi api = new TemplatesApi(config);\n\ntry {\n  Template response = api.get(\"tmpl_c94e83ca2cd5121\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nfetchedTemplate, _, err := apiClient.TemplatesApi.Get(context,\"tmpl_c94e83ca2cd5121\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+    post:
+      operationId: template_update
+      summary: Update
+      description: Updates the description and/or published version of the template with the given id. To update the template's html, create a new version of the template.
+      tags:
+      - Templates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/template_update'
+            example:
+              description: Updated Example
+              published_version: vrsn_a
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/template_update'
+            example:
+              description: Updated Example
+              published_version: vrsn_a
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/template_update'
+            example:
+              description: Updated Example
+              published_version: vrsn_a
+      responses:
+        '200':
+          description: Returns the updated template object
+          headers:
+            ratelimit-limit:
+              $ref: '#/components/headers/ratelimit-limit'
+            ratelimit-remaining:
+              $ref: '#/components/headers/ratelimit-remaining'
+            ratelimit-reset:
+              $ref: '#/components/headers/ratelimit-reset'
+          content:
+            $ref: '#/components/mediaTypes/template'
+        default:
+          $ref: '#/components/responses/template_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/templates/tmpl_c94e83ca2cd5121 \\\n  -u REDACTED_LOB_KEY: \\\n  -d \"description=Updated description\" \\\n  -d \"published_version=vrsn_362184d96d9b0c9\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "const Templates = new TemplatesApi(config);\n\ntry {\n  const updateData = new TemplateUpdate ({\n    description: 'updated template',\n    published_version: 'vrsn_xxxx'\n});\n  const updateTemplate = await Templates.update('tmpl_xxxx', updateData);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: NODE
+      - lang: Ruby
+        source: "templateUpdate = TemplateUpdate.new({\n  description: \"updated template\",\n  published_version: \"vrsn_362184d96d9b0c9\",\n})\n\ntemplateApi = TemplatesApi.new(config)\n\nbegin\n  updatedTemplate = templateApi.update(\"tmpl_c94e83ca2cd5121\", templateUpdate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = TemplatesApi(api_client)\n\nupdate_data = TemplateUpdate(\n  description = \"updated template\",\n  published_version = \"vrsn_362184d96d9b0c9\"\n)\n\ntry:\n  update_template = api.update(\"tmpl_c94e83ca2cd5121\", update_data)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\TemplatesApi($config, new GuzzleHttp\\Client());\n\n$templateUpdate = new OpenAPI\\Client\\Model\\TemplateUpdate(array(\n    \"description\" =>  \"Updated description\",\n    \"published_version\" =>  \"vrsn_362184d96d9b0c9\"\n));\n\ntry {\n    $result = $apiInstance->update(\"tmpl_c94e83ca2cd5121\", $templateUpdate);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "TemplatesApi apiInstance = new TemplatesApi(config);\nTemplateUpdate update = new TemplateUpdate();\n\nupdate.setDescription(\"update template\");\nupdate.setPublishedVersion(\"vrsn_362184d96d9b0c9\";\n\ntry {\n  apiInstance.update(\"tmpl_c94e83ca2cd5121\", update);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "TemplatesApi api = new TemplatesApi(config);\nTemplateUpdate update = new TemplateUpdate(\"update template\", \"vrsn_362184d96d9b0c9\");\n\ntry {\n  api.update(\"tmpl_c94e83ca2cd5121\", update);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nvar templateWritable = *lob.NewTemplateWritable(\"<html>Updated HTML for Template 1/html>\")\ncreatedTemplate, _, _ := apiClient.TemplatesApi.Create(context).TemplateWritable(templateWritable).Execute()\n\ntemplateWritable.SetDescription(\"Template updated\")\nresp, _, err := apiClient.TemplatesApi.Update(context, createdTemplate.Id).TemplateWritable(templateWritable).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+    delete:
+      operationId: template_delete
+      summary: Delete
+      description: Permanently deletes a template. Deleting a template also deletes its associated versions. Deleted templates can not be used to create postcard, letter, or check resources.
+      tags:
+      - Templates
+      responses:
+        '200':
+          $ref: '#/components/responses/template_deleted'
+        default:
+          $ref: '#/components/responses/template_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X DELETE https://api.lob.com/v1/templates/tmpl_df934eeda694203 \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const deleteTemplate = await new TemplatesApi(config).delete('tmpl_xxxx');\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: NODE
+      - lang: Ruby
+        source: "templateApi = TemplatesApi.new(config)\n\nbegin\n  deletedTemplate = templateApi.delete(\"tmpl_df934eeda694203\")\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = TemplatesApi(api_client)\n\ntry:\n  deleted_resource = api.delete(\"tmpl_df934eeda694203\")\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\TemplatesApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->delete(\"tmpl_df934eeda694203\");\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "TemplatesApi apiInstance = new TemplatesApi(config);\n\ntry {\n    TemplateDeletion response = apiInstance.delete(\"tmpl_df934eeda694203\");\n} catch (ApiException e) {\n    e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "TemplatesApi api = new TemplatesApi(config);\n\ntry {\n  TemplateDeletion response = api.delete(\"tmpl_df934eeda694203\");\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\ndeletedTemplate, _, err := apiClient.TemplatesApi.Delete(context, \"tmpl_df934eeda694203\").Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+  /templates:
+    get:
+      operationId: templates_list
+      summary: List
+      description: Returns a list of your templates. The templates are returned sorted by creation date, with the most recently created templates appearing first.
+      tags:
+      - Templates
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/before_after'
+      - $ref: '#/components/parameters/include'
+      - $ref: '#/components/parameters/date_created'
+      - $ref: '#/components/parameters/metadata'
+      responses:
+        '200':
+          $ref: '#/components/responses/all_templates'
+        default:
+          $ref: '#/components/responses/template_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X GET \"https://api.lob.com/v1/templates?limit=2\" \\\n  -u REDACTED_LOB_KEY:\n"
+        label: CURL
+      - lang: Typescript
+        source: "try {\n  const templates = await new TemplatesApi(config).list(2);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: NODE
+      - lang: Ruby
+        source: "templatesApi = TemplatesApi.new(config)\n\nbegin\n  templates = templatesApi.list({ limit: 2 })\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = TemplatesApi(api_client)\n\ntry:\n  templates = api.list(limit=2)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\TemplatesApi($config, new GuzzleHttp\\Client());\n\ntry {\n    $result = $apiInstance->list(\n      2, // limit\n    );\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "TemplatesApi apiInstance = new TemplatesApi(config);\n\ntry {\n  List response = apiInstance.list(\n    2, // limit\n    null, // before\n    null, // after\n    null, // include\n    null, // dateCreated\n    null, // metadata\n    null // size\n  );\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "TemplatesApi api = new TemplatesApi(config);\n\nList<string> includeList = new List<string>();\nincludeList.Add(\"total_count\");\nDictionary<String, String> metadata = new Dictionary<String, String>();\nmetadata.Add(\"name\", \"Harry\");\nDictionary<String, DateTime> dateCreated = new Dictionary<String, DateTime>();\nDateTime dateCreatedDate = DateTime.Today.AddMonths(-1);\ndateCreated.Add(\"lt\", dateCreatedDate);\n\ntry {\n  TemplateList response = api.list(\n    2, // limit\n    null, // before\n    null, // after\n    includeList, // include\n    dateCreated, // dateCreated\n    metadata // metadata\n  );\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\nTemplateList = apiClient.TemplatesApi.List(context).Execute()\nif err != nil {\n    return err\n}\n"
+        label: GO
+    post:
+      operationId: create_template
+      summary: Create
+      description: Creates a new template for use with the Print & Mail API. In Live mode, you can only have as many non-deleted templates as allotted in your current <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Edition</a>. If you attempt to create a template past your limit, you will receive a `403` error. There is no limit in Test mode.
+      tags:
+      - Templates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/template_writable'
+            example:
+              description: demo
+              html: <html>HTML for {{name}}</html>
+              metadata:
+                spiffy: 'true'
+              engine: handlebars
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/template_writable'
+            example:
+              description: demo
+              html: <html>HTML for {{name}}</html>
+              metadata:
+                spiffy: 'true'
+              engine: handlebars
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/template_writable'
+            example:
+              description: demo
+              html: <html>HTML for {{name}}</html>
+              metadata:
+                spiffy: 'true'
+              engine: handlebars
+      responses:
+        '200':
+          description: Returns a template object
+          headers:
+            ratelimit-limit:
+              $ref: '#/components/headers/ratelimit-limit'
+            ratelimit-remaining:
+              $ref: '#/components/headers/ratelimit-remaining'
+            ratelimit-reset:
+              $ref: '#/components/headers/ratelimit-reset'
+          content:
+            $ref: '#/components/mediaTypes/template'
+        default:
+          $ref: '#/components/responses/template_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/templates \\\n  -u REDACTED_LOB_KEY: \\\n  -d \"description=Test Template\" \\\n  --data-urlencode \"html=<html>HTML for {{name}}</html>\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "const templateCreate = new TemplateWritable({\n  description: 'Newer Template',\n  html: '<html>Updated HTML for {{name}}</html>'\n});\n\ntry {\n  const myTemplate = await new TemplatesApi(config).create(templateCreate);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: NODE
+      - lang: Ruby
+        source: "templateCreate = TemplateWritable.new({\n  description: \"Test Template\",\n  html: \"<html>HTML for {{name}}</html>\",\n});\n\ntemplateApi = TemplatesApi.new(config)\n\nbegin\n  createdTemplate = templateApi.create(templateCreate)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "template_writable = TemplateWritable(\n  description = \"Test Template\",\n  html = \"<html>HTML for {{name}}</html>\",\n)\n\nwith ApiClient(configuration) as api_client:\n  api = TemplatesApi(api_client)\n\ntry:\n  created_template = api.create(template_writable)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\TemplatesApi($config, new GuzzleHttp\\Client());\n$template_writable = new OpenAPI\\Client\\Model\\TemplateWritable(\n  array(\n    \"description\"     => \"Test Template\",\n    \"html\"     => \"<html>HTML for {{name}}</html>\",\n  )\n);\n\ntry {\n    $result = $apiInstance->create($template_writable);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "TemplatesApi apiInstance = new TemplatesApi(config);\n\ntry {\n  TemplateWritable  = new TemplateWritable();\n  .set(\"Test Template\");\n  .set(\"<html>HTML for {{name}}</html>\");\n\n  Template result = apiInstance.create();\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: 'This feature is not currently supported by this library.
+
+          '
+        label: ELIXIR
+      - lang: CSharp
+        source: "TemplatesApi api = new TemplatesApi(config);\n\nTemplateWritable templateWritable = new TemplateWritable(\n  \"Test Template\",  // description\n  \"<html>HTML for {{name}}</html>\" // html\n);\n\ntry {\n  Template result = api.create(templateWritable);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+      - lang: Go
+        source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\n\nvar templateCreate = *lob.NewTemplateWritable()\ntemplateCreate.SetDescription(\"Test Template\")\ntemplateCreate.SetHtml(\"<html>HTML for {{name}}</html>\")\n\n\n\ncreatedtemplate, _, err := apiClient.TemplatesApi.Create(context).TemplateWritable(templateCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
+        label: GO
+components:
+  parameters:
+    metadata:
+      in: query
+      name: metadata
+      description: Filter by metadata key-value pair`.
+      schema:
+        $ref: '#/components/schemas/metadata'
+      style: deepObject
+      explode: true
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+  headers:
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  schemas:
+    object:
+      type: string
+      description: Value is resource type.
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    tmpl_id:
+      type: string
+      description: Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).
+      pattern: ^tmpl_[a-zA-Z0-9]+$
+    vrsn_id:
+      type: string
+      description: Unique identifier prefixed with `vrsn_`.
+      pattern: ^vrsn_[a-zA-Z0-9]+$
+    template_update:
+      type: object
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        published_version:
+          allOf:
+          - description: The ID of the published version of a template you'd like to update. The published version is the one that will be used in any Print & Mail API requests that reference the specified template. Will err if the referenced `published_version` has been deleted or does not exist.
+            type: string
+          - $ref: '#/components/schemas/vrsn_id'
+    resource_description:
+      type: string
+      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+
+        '
+      maxLength: 255
+      nullable: true
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type: string
+          description: Url of next page of items in list.
+          nullable: true
+        previous_url:
+          type: string
+          description: Url of previous page of items in list.
+          nullable: true
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    engine:
+      type: string
+      description: "The engine used to combine HTML template with merge variables.\n  * `legacy` - Lob's original engine\n  * `handlebars`\n"
+      enum:
+      - legacy
+      - handlebars
+      nullable: true
+      default: legacy
+    template_version_writable:
+      type: object
+      required:
+      - html
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        html:
+          $ref: '#/components/schemas/template_html'
+        engine:
+          $ref: '#/components/schemas/engine'
+        required_vars:
+          $ref: '#/components/schemas/template_required_vars'
+    template_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/tmpl_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    template:
+      type: object
+      required:
+      - id
+      - versions
+      - published_version
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        id:
+          $ref: '#/components/schemas/tmpl_id'
+        versions:
+          type: array
+          description: An array of all non-deleted [version objects](#tag/Template-Versions) associated with the template.
+          items:
+            $ref: '#/components/schemas/template_version'
+        published_version:
+          allOf:
+          - description: The template's currently published version. This version will be used in any Print & Mail API requests that reference the specified template.
+          - $ref: '#/components/schemas/template_version'
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - template
+          default: template
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    template_version:
+      allOf:
+      - $ref: '#/components/schemas/template_version_writable'
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            $ref: '#/components/schemas/vrsn_id'
+          suggest_json_editor:
+            type: boolean
+            description: 'Used by frontend, true if the template uses advanced features.
+
+              '
+          merge_variables:
+            type: object
+            description: 'Object representing the keys of every merge variable present in the template. It has one key named ''keys'', and its value is an array of strings.
+
+              '
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - version
+            default: version
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    template_required_vars:
+      type: array
+      items:
+        type: string
+      description: 'An array of required variables to be used in a template. Only available for `handlebars` templates.
+
+        '
+    template_html:
+      type: string
+      description: 'An HTML string of less than 100,000 characters to be used as the `published_version` of this template. See [here](#section/HTML-Examples) for guidance on designing HTML templates. Please see endpoint specific documentation for any other product-specific HTML details:
+
+        - [Postcards](#operation/postcard_create) - `front` and `back`
+
+        - [Self Mailers](#operation/self_mailer_create) - `inside` and `outside`
+
+        - [Letters](#operation/letter_create) - `file`
+
+        - [Checks](#operation/check_create) - `check_bottom` and `attachment`
+
+        - [Cards](#operation/card_create) - `front` and `back`
+
+
+        If there is a syntax error with your variable names within your HTML, then an error will be thrown, e.g. using a `{{#users}}` opening tag without the corresponding closing tag `{{/users}}`.
+
+        '
+      maxLength: 100000
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
+    template_writable:
+      type: object
+      required:
+      - html
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        html:
+          $ref: '#/components/schemas/template_html'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        engine:
+          $ref: '#/components/schemas/engine'
+        required_vars:
+          $ref: '#/components/schemas/template_required_vars'
+    count:
+      type: integer
+      description: number of resources in a set
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+  responses:
+    all_templates:
+      description: A dictionary with a data property that contains an array of up to `limit` templates. Each entry in the array is a separate template. The previous and next page of templates can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more templates are available beyond the current set of returned results, the `next_url` field will be empty.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/list'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  description: list of templates
+                  items:
+                    $ref: '#/components/schemas/template'
+          example:
+            data:
+            - id: tmpl_d5a5a89da9106f8
+              description: Test Template
+              versions:
+              - id: vrsn_232a02fb8224791
+                suggest_json_editor: true
+                description: Test Template
+                engine: legacy
+                html: 'HTML for '
+                date_created: '2019-07-27T23:49:01.512Z'
+                date_modified: '2019-07-27T23:49:01.512Z'
+                object: version
+              published_version:
+                id: vrsn_232a02fb8224791
+                suggest_json_editor: false
+                description: Test Template
+                engine: handlebars
+                html: 'HTML for '
+                date_created: '2019-07-27T23:49:01.512Z'
+                date_modified: '2019-07-27T23:49:01.512Z'
+                object: version
+              metadata: {}
+              date_created: '2019-07-27T23:49:01.511Z'
+              date_modified: '2019-07-27T23:49:01.511Z'
+              object: template
+            - id: tmpl_59b2150ae120887
+              description: Test Template
+              versions:
+              - id: vrsn_2a7eb63ccb795b9
+                description: Test Template
+                html: 'HTML for '
+                date_created: '2019-03-29T10:22:34.643Z'
+                date_modified: '2019-03-29T10:22:34.643Z'
+                object: version
+              published_version:
+                id: vrsn_2a7eb63ccb795b9
+                description: Test Template
+                html: 'HTML for '
+                date_created: '2019-03-29T10:22:34.643Z'
+                date_modified: '2019-03-29T10:22:34.643Z'
+                object: version
+              metadata: {}
+              date_created: '2019-03-29T10:22:34.642Z'
+              date_modified: '2019-03-29T10:22:34.642Z'
+              object: template
+            object: list
+            previous_url: null
+            next_url: https://api.lob.com/v1/templates?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wMy0yOVQxMDoyMjozNC42NDJaIiwiaWRPZmZzZXQiOiJ0bXBsXzU5YjIxNTBhZTEyMDg4NyJ9
+            count: 2
+    template_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: html is required
+              status_code: 422
+    template_deleted:
+      description: Deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/template_deletion'
+          example:
+            value:
+              id: tmpl_123456789
+              deleted: true
+  mediaTypes:
+    template:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/template'
+        example:
+          id: tmpl_c94e83ca2cd5121
+          description: Test Template
+          versions:
+          - id: vrsn_362184d96d9b0c9
+            suggest_json_editor: true
+            description: Test Template
+            engine: legacy
+            html: <html>HTML for {{name}}</html>
+            date_created: '2017-11-07T22:56:10.962Z'
+            date_modified: '2017-11-07T22:56:10.962Z'
+            object: version
+          published_version:
+            id: vrsn_362184d96d9b0c9
+            suggest_json_editor: false
+            description: Test Template
+            engine: handlebars
+            html: <html>HTML for {{name}}</html>
+            date_created: '2017-11-07T22:56:10.962Z'
+            date_modified: '2017-11-07T22:56:10.962Z'
+            object: version
+          metadata: {}
+          date_created: '2017-11-07T22:56:10.962Z'
+          date_modified: '2017-11-07T22:56:10.962Z'
+          object: template
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

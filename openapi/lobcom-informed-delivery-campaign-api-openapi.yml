@@ -1,0 +1,734 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Informed Delivery Campaign API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Informed Delivery Campaign
+  description: 'The Informed Delivery campaigns API allows you to create and view Informed Delivery campaigns.
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+
+    '
+paths:
+  /informed_delivery_campaigns:
+    get:
+      operationId: informed_delivery_campaign_list
+      summary: List
+      description: List Informed Delivery campaigns
+      tags:
+      - Informed Delivery Campaign
+      responses:
+        '200':
+          $ref: '#/components/responses/all_informed_delivery_campaigns'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/informed_delivery_campaign \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+    post:
+      operationId: informed_delivery_campaign_create
+      summary: Create
+      description: Creates a new Informed Delivery campaign
+      tags:
+      - Informed Delivery Campaign
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/create'
+      responses:
+        '200':
+          description: Creative created successfully
+          content:
+            $ref: '#/components/mediaTypes/informed_delivery_campaign'
+        '422':
+          $ref: '#/components/responses/writeable_422'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl --request POST \\\n  --url https://api.lob.com/v1/informed_delivery_campaigns \\\n  -u <YOUR API KEY>: \\\n  --header 'Content-Type: multipart/form-data' \\\n  --form ride_along_url=https://www.lob.com \\\n  --form 'ride_along_image=@/path/to/ride_along.jpg' \\\n  --form quantity=2 \\\n  --form start_date=2024-01-01 \\\n  --form status=pending_approval\n"
+        label: CURL
+  /informed_delivery_campaigns/{usps_campaign_id}:
+    parameters:
+    - in: path
+      name: usps_campaign_id
+      description: usps_campaign_id of the Informed Delivery campaign
+      required: true
+      schema:
+        $ref: '#/components/schemas/usps_campaign_id'
+    get:
+      operationId: informed_delivery_campaign_retrieve
+      summary: Retrieve
+      description: Retrieves the details of an existing Informed Delivery campaign. You need only supply the `usps_campaign_id` returned in the campaign creation request.
+      tags:
+      - Informed Delivery Campaign
+      responses:
+        '200':
+          description: Returns a informed delivery campaign object
+          content:
+            $ref: '#/components/mediaTypes/informed_delivery_campaign'
+        '404':
+          $ref: '#/components/responses/404'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/informed_delivery_campaign/1200772869 \\\n  -u <YOUR API KEY>:\n"
+        label: CURL
+    patch:
+      operationId: informed_delivery_campaign_update
+      summary: Update
+      description: Update the details of an existing Informed Delivery campaign.<br> **NOTE:** you can only update a campaign in the `pending_approval` status.
+      tags:
+      - Informed Delivery Campaign
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/update'
+      responses:
+        '200':
+          description: Returns an Informed Delivery campaign object
+          content:
+            $ref: '#/components/mediaTypes/informed_delivery_campaign'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/writeable_422'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl -X PATCH https://api.lob.com/v1/creatives/crv_2a3b096c409b32c \\\n  -u <YOUR API KEY>: \\\n  -d '{\"status\":\"approved\"}'\n"
+        label: CURL
+components:
+  schemas:
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    create:
+      allOf:
+      - $ref: '#/components/schemas/writable_base'
+      - type: object
+        required:
+        - quantity
+        - ride_along_image
+        - ride_along_url
+        - start_date
+        properties:
+          status:
+            type: string
+            enum:
+            - pending_approval
+            description: 'If setting a campaign to `pending_approval` the Informed Delivery campaign will not be active, and you can not send mail using it.
+
+              It will be editable in this status however, and changes can be made until `approved`.
+
+              **NOTE** that the default status is `approved` which makes the campaign active, but un-editable.
+
+              '
+    response:
+      allOf:
+      - $ref: '#/components/schemas/common'
+      - type: object
+        required:
+        - id
+        - object
+        - account_id
+        - quantity
+        - usps_campaign_id
+        - usps_title
+        - start_date
+        - end_date
+        - start_serial
+        - end_serial
+        - ride_along_url
+        - ride_along_image_s3_link
+        - representative_image_s3_link
+        - status
+        - date_created
+        - date_modified
+        - mode
+        - lob_campaign_id
+        - deleted
+        - campaign_code
+        - brand_name
+        - service_request_number
+        properties:
+          id:
+            $ref: '#/components/schemas/infd_id'
+          object:
+            type: string
+            description: Value is the resource type.
+            enum:
+            - informed_delivery_campaign
+          account_id:
+            type: string
+            description: Your Lob account id.
+          usps_campaign_id:
+            $ref: '#/components/schemas/usps_campaign_id'
+          end_date:
+            type: string
+            format: date-time
+            description: A timestamp in ISO 8601 format of the date the campaign ends.
+          start_serial:
+            type: integer
+            nullable: true
+            description: 'The first serial number in the range of serial numbers for this campaign.
+
+              Only non-null when campaign is approved.
+
+              '
+          end_serial:
+            type: integer
+            nullable: true
+            description: 'The last serial number in the range of serial numbers for this campaign.
+
+              Only non-null when campaign is approved.
+
+              '
+          ride_along_image_s3_link:
+            type: string
+            description: A URL link to the campaigns ride along image.
+          representative_image_s3_link:
+            type: string
+            nullable: true
+            description: A URL link to the campaigns representative image.
+          date_created:
+            $ref: '#/components/schemas/date_created'
+          date_modified:
+            $ref: '#/components/schemas/date_modified'
+          mode:
+            type: string
+            description: The mode of the Informed Delivery campaign. This is set by the API token you used to create the campaign.
+            enum:
+            - live
+            - test
+          deleted:
+            type: boolean
+            description: Whether the resource has been deleted.
+          campaign_code:
+            type: string
+            description: The campaign code associated with the Informed Delivery campaign.
+          service_request_number:
+            type: string
+            nullable: true
+            description: The USPS promotion service request number used to create this campaign (if there was one used).
+    count:
+      type: integer
+      description: number of resources in a set
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    update:
+      allOf:
+      - $ref: '#/components/schemas/writable_base'
+      - type: object
+        properties:
+          status:
+            type: string
+            enum:
+            - approved
+            description: 'After setting an Informed Delivery campaign to “approved” said campaign will activate, and you can start sending mail using it.
+
+              You will no longer be able to edit an Informed Delivery campaign in this status.
+
+              '
+    infd_id:
+      type: string
+      description: Unique identifier prefixed with `infd_`.
+      pattern: ^infd_[a-zA-Z0-9]+$
+      example: infd_23g423g4234g342
+    object:
+      type: string
+      description: Value is resource type.
+    usps_campaign_id:
+      type: string
+      description: A numberical string up to 12 characters long.
+      pattern: ^[0-9]+$
+      example: '1200772869'
+    writable_base:
+      allOf:
+      - $ref: '#/components/schemas/common'
+      - type: object
+        properties:
+          ride_along_image:
+            type: object
+            description: JPG Image. Maximum file size is 200 KBs. Maximum pixel size is 300 pixels wide x 200 pixels high
+          representative_image:
+            type: object
+            description: JPG Image. Maximum file size is 200 KBs. Maximum pixel size is 300 pixels wide x 200 pixels high
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type: string
+          description: Url of next page of items in list.
+          nullable: true
+        previous_url:
+          type: string
+          description: Url of previous page of items in list.
+          nullable: true
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    common:
+      allOf:
+      - type: object
+        properties:
+          quantity:
+            type: integer
+            minimum: 2
+            maximum: 10000000
+            description: 'The number of mail pieces that will be part of this Informed Delivery campaign. USPS requires that IMB Codes are in sequence, so any mail pieces sent beyond this quantity will be rejected.
+
+              '
+          status:
+            type: string
+          ride_along_url:
+            type: string
+            minLength: 10
+            maxLength: 255
+            pattern: ^https:\/\/.{5,247}$
+            description: 'To qualify as part of a promotion, the base domain must match the domain used to register the promotion.
+
+              I.e. If the promo was registered with https://lob.com then you could use any variation of https://lob.com such as
+
+              https://lob.com/promotions/promo_123
+
+              '
+          start_date:
+            type: string
+            format: date
+            description: 'The first date that mail can be handed off to USPS and still included in the informed delivery campaign.
+
+              The start date must be at least two days in the future. The end date will be automatically calculated to be 45 days from the start.
+
+              For Target Delivery Date, recommended to set the start date to the earliest possible date (2 days from now).
+
+              '
+          brand_name:
+            type: string
+            description: The brand name you would like included in the informed delivery email. Will default to the “company” on the users account.
+          usps_title:
+            type: string
+            description: Unique title for the campaign. One will be auto generated if not provided.
+          lob_campaign_id:
+            type: string
+            pattern: ^cmp_[a-zA-Z0-9]+$
+            nullable: true
+            description: 'When sending as part of Lob’s campaign workflow, include the lob_campaign_id as part of the request to associate this Informed Delivery campaign with the Lob campaign
+
+              '
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+  responses:
+    writeable_422:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: quantity must be greater than or equal to 2
+              status_code: 422
+    all_informed_delivery_campaigns:
+      description: A dictionary with a data property that contains an array of up to `limit` Informed Delivery campaigns. Each entry in the array is a separate campaign. The previous and next page of campaigns can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively. If no more campaigns are available beyond the current set of returned results, the `next_url` field will be empty.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/list'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  description: list of Informed Delivery campaigns
+                  items:
+                    $ref: '#/components/schemas/response'
+          example:
+            data:
+            - id: infd_234g5324g324g23
+              object: informed_delivery_campaign
+              account_id: xxxxxxxxxxxxxxxxxxxx
+              quantity: 20
+              usps_campaign_id: '1234567890'
+              usps_title: 'Campaign: 1a1a1a1a-9657-423b-b3c7-2'
+              start_date: '2024-08-31T00:00:00.000Z'
+              end_date: '2024-10-15T00:00:00.000Z'
+              start_serial: 3183487
+              end_serial: 3183506
+              ride_along_url: https://www.lob.com
+              ride_along_image_s3_link: https://lob-assets.com/informed-delivery/infd_234g5324g324g23_ride_along.jpg
+              representative_image_s3_link: null
+              status: approved
+              date_created: '2024-08-30T23:30:02.980Z'
+              date_modified: '2024-08-30T23:30:05.027Z'
+              mode: live
+              lob_campaign_id: null
+              deleted: false
+              campaign_code: 1a1a1a1a-9657-423b-b3c7-2+Code
+              brand_name: Lob
+              service_request_number: null
+            - id: infd_23g23g234g23g42
+              object: informed_delivery_campaign
+              account_id: xxxxxxxxxxxxxxxxxxxx
+              quantity: 5
+              usps_campaign_id: '23452345'
+              usps_title: 'Campaign: 133d228e-f9e9-4056-aaea-f'
+              start_date: '2024-08-31T00:00:00.000Z'
+              end_date: '2024-10-15T00:00:00.000Z'
+              start_serial: null
+              end_serial: null
+              ride_along_url: https://www.lob.com
+              ride_along_image_s3_link: https://lob-assets.com/informed-delivery/infd_23g23g234g23g42_ride_along.jpg
+              representative_image_s3_link: null
+              status: pending_approval
+              date_created: '2024-08-30T23:30:02.980Z'
+              date_modified: '2024-09-30T23:30:05.027Z'
+              mode: live
+              lob_campaign_id: null
+              deleted: false
+              campaign_code: 133d228e-f9e9-4056-aaea-f+Code
+              brand_name: Lob
+              service_request_number: null
+            object: list
+            next_url: null
+            previous_url: null
+            count: 2
+    '404':
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: informed delivery campaign not found
+              status_code: 404
+  mediaTypes:
+    informed_delivery_campaign:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/response'
+        example:
+          id: infd_234g5324g324g23
+          object: informed_delivery_campaign
+          account_id: xxxxxxxxxxxxxxxxxxxx
+          quantity: 20
+          usps_campaign_id: '1234567890'
+          usps_title: 'Campaign: 1a1a1a1a-9657-423b-b3c7-2'
+          start_date: '2024-08-31T00:00:00.000Z'
+          end_date: '2024-10-15T00:00:00.000Z'
+          start_serial: 3183487
+          end_serial: 3183506
+          ride_along_url: https://www.lob.com
+          ride_along_image_s3_link: https://lob-assets.com/informed-delivery/infd_234g5324g324g23_ride_along.jpg
+          representative_image_s3_link: null
+          status: approved
+          date_created: '2024-08-30T23:30:02.980Z'
+          date_modified: '2024-08-30T23:30:05.027Z'
+          mode: live
+          lob_campaign_id: null
+          deleted: false
+          campaign_code: 1a1a1a1a-9657-423b-b3c7-2+Code
+          brand_name: Lob
+          service_request_number: null
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

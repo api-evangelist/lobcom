@@ -1,0 +1,1131 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts Intl Verifications API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Intl Verifications
+  description: "Address verification for non-US addresses\n<br>\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n\n## Intl Verifications Test Env\n\nWhen verifying international addresses, you'll likely want to test against\na wide array of addresses to ensure you're handling responses correctly.\nWith your test API key, requests that use specific values for `primary_line`\nlet you explore the responses to many types of addresses:\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">DELIVERABILITY OF SAMPLE RESPONSE</th>\n    <th style=\"white-space: nowrap\">SET <code>primary_line</code> TO</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\">deliverable</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>deliverable_missing_info</code></td>\n    <td style=\"white-space: nowrap\">deliverable missing info</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>undeliverable</code></td>\n    <td style=\"white-space: nowrap\">undeliverable</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>no_match</code></td>\n    <td style=\"white-space: nowrap\">no match</td>\n  </tr>\n</table>\n\nSee the `test` request & response examples under [Intl Verification Examples](#operation/intl_verification) within the\n\"Verify an international address section\" in Intl Verifications.\n\nYou can rely on the response from these examples generally matching the response\nyou'd see in the live environment with an address of that type (excluding the `recipient` field).\n\nThe test API key does not perform any verification, automatic correction, or standardization\nfor addresses. If you wish to try these features out, use our <a href=\"https://lob.com/address-verification\" target=\"_blank\">live demo</a>\nor the free plan (see <a href=\"https://lob.com/pricing/address-verification\" target=\"_blank\">our pricing</a> for details).\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n"
+paths:
+  /bulk/intl_verifications:
+    post:
+      operationId: bulk_intl_verifications
+      summary: Bulk Verify
+      description: Verify a list of international (except US or US territories) address _with a live API key_. Requests to this endpoint with a test API key will return a dummy response based on the primary line you input.
+      tags:
+      - Intl Verifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intl_verifications_payload'
+            example:
+              addresses:
+              - recipient: John Doe
+                primary_line: 370 Water St
+                secondary_line: ''
+                city: Summerside
+                state: Prince Edwards Island
+                postal_code: C1N 1C4
+                country: CA
+              - recipient: Jane Doe
+                primary_line: UL. DOLSKAYA 1
+                secondary_line: ''
+                city: MOSCOW
+                state: MOSCOW G
+                postal_code: '115569'
+                country: RU
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/intl_verifications_payload'
+            example:
+              addresses:
+              - recipient: John Doe
+                primary_line: 370 Water St
+                secondary_line: ''
+                city: Summerside
+                state: Prince Edwards Island
+                postal_code: C1N 1C4
+                country: CA
+              - recipient: Jane Doe
+                primary_line: UL. DOLSKAYA 1
+                secondary_line: ''
+                city: MOSCOW
+                state: MOSCOW G
+                postal_code: '115569'
+                country: RU
+      responses:
+        '200':
+          $ref: '#/components/responses/bulk_intl_verifications'
+        default:
+          $ref: '#/components/responses/intl_verifications_error'
+      x-codeSamples:
+      - lang: Shell
+        source: 'curl https://api.lob.com/v1/bulk/intl_verifications \
+
+          -u <YOUR LIVE API KEY>: \
+
+          --header ''Content-Type: application/x-www-form-urlencoded'' \
+
+          --data-urlencode ''addresses[0][primary_line]=370 WATER ST'' \
+
+          --data-urlencode ''addresses[0][postal_code]=C1N 1C4'' \
+
+          --data-urlencode ''addresses[0][country]=CA''
+
+          '
+        label: CURL
+      - lang: Typescript
+        source: "const IntlVerifications = new IntlVerificationsApi(av_config);\nlet verificationData1: IntlVerificationWritable = {\n    primary_line: '370 WATER ST',\n    postal_code: 'C1N 1C4',\n    country: CountryExtended.Ca\n};\nconst verificationData2: IntlVerificationWritable = {\n    primary_line: '012 PLACEHOLDER ST',\n    postal_code: 'F0O 8A2',\n    country: CountryExtended.Ca\n};\nlet addressList = new IntlVerificationsPayload({\n    addresses: [verificationData1, verificationData2]\n});\n\ntry {\n  const bulkVerified = await IntlVerifications.verifyBulk(addressList);\n\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.bulkIntlVerifications.verify({\n  addresses: [{\n    primary_line: '370 Water St',\n    secondary_line: '',\n    city: 'Summerside',\n    state: 'Prince Edward Island',\n    postal_code: 'C1N 1C4',\n    country: 'CA'\n  }]\n}), function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "intlVerificationsApi = IntlVerificationsApi.new(config)\n\nverificationData0 = MultipleComponentsIntl.new({\n  primary_line: \"35 Tower Hill\",\n  city: \"London\",\n  postal_code: \"EC3N 4DR\",\n  country: \"GB\",\n})\n\nverificationData1 = MultipleComponentsIntl.new({\n  primary_line: \"370 Water St\",\n  city: \"Summerside\",\n  state: \"Prince Edward Island\",\n  postal_code: \"C1N 1C4\",\n  country: \"CA\",\n})\n\n\naddressList = IntlVerificationsPayload.new({\n  addresses: [\n    verificationData0,\n    verificationData1,\n  ],\n})\n\nbegin\n  bulkVerifiedAddrs = intlVerificationsApi.verifyBulk(addressList)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = IntlVerificationsApi(api_client)\n\nverification_data_0 = MultipleComponentsIntl(\n  primary_line = \"35 Tower Hill\",\n  city = \"London\",\n  postal_code = \"EC3N 4DR\",\n  country = CountryExtended(\"GB\"),\n)\n\nverification_data_1 = MultipleComponentsIntl(\n  primary_line = \"370 Water St\",\n  city = \"Summerside\",\n  state = \"Prince Edward Island\",\n  postal_code = \"C1N 1C4\",\n  country = CountryExtended(\"CA\"),\n)\n\n\naddress_list = IntlVerificationsPayload(\n  addresses = [\n    verification_data_0,\n    verification_data_1,\n  ],\n)\n\ntry:\n  bulk_verified = api.verifyBulk(address_list)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$verificationData0 = new OpenAPI\\Client\\Model\\MultipleComponentsIntl(array(\n  'primary_line'     => '35 Tower Hill',\n  'city'     => 'London',\n  'postal_code'     => 'EC3N 4DR',\n  'country'     => 'GB',\n));\n\n$verificationData1 = new OpenAPI\\Client\\Model\\MultipleComponentsIntl(array(\n  'primary_line'     => '370 Water St',\n  'city'     => 'Summerside',\n  'state'     => 'Prince Edward Island',\n  'postal_code'     => 'C1N 1C4',\n  'country'     => 'CA',\n));\n\n$addressList = new OpenAPI\\Client\\Model\\IntlVerificationsPayload(array(\n  'addresses'     => [\n    $verificationData0,\n    $verificationData1,\n  ]\n));\n\ntry {\n    $result = $apiInstance->verifyBulk($addressList);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "List<IntlVerification.RequestBuilder> addresses = new ArrayList<IntlVerification.RequestBuilder>();\naddresses.add(new IntlVerification.RequestBuilder()\n        .setPrimaryLine(\"370 Water St\")\n        .setCity(\"Summerside\")\n        .setState(\"Prince Edward Island\")\n        .setPostalCode(\"C1N 1C4\")\n        .setCountry(\"CA\"));\nLobResponse<BulkIntlVerification> response = new BulkIntlVerification.RequestBuilder()\n        .setAddresses(addresses)\n        .verify();\nBulkIntlVerification bulkIntlVerification = response.getResponseBody();\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.BulkIntlVerification.verify.verify(\n%{addresses:[\n    {\n      primary_line: '370 Water St',\n      secondary_line: '',\n      city: 'Summerside',\n      state: 'Prince Edward Island',\n      postal_code: 'C1N 1C4',\n      country: 'CA'\n    }\n  ]\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "List<MultipleComponentsIntl> addresses = new List<MultipleComponentsIntl>();\nMultipleComponentsIntl bulkAddress0 = new MultipleComponentsIntl(\n  null,  // recipient\n  \"35 Tower Hill\",  // primaryLine\n  null,  // secondaryLine\n  \"London\",  // city\n  null,  // state\n  \"EC3N 4DR\",  // postalCode\n  CountryExtended.GB // country\n);\naddresses.Add(bulkAddress0);\n\nMultipleComponentsIntl bulkAddress1 = new MultipleComponentsIntl(\n  null,  // recipient\n  \"370 Water St\",  // primaryLine\n  null,  // secondaryLine\n  \"Summerside\",  // city\n  \"Prince Edward Island\",  // state\n  \"C1N 1C4\",  // postalCode\n  CountryExtended.CA // country\n);\naddresses.Add(bulkAddress1);\n\nIntlVerificationsPayload bulkVerify = new IntlVerificationsPayload(addresses);\n\nIntlVerificationsApi api = new IntlVerificationsApi(config);\n\ntry {\n  IntlVerifications bulkVerifyResponse = api.verifyBulk(bulkVerify);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+  /intl_verifications:
+    post:
+      operationId: intl_verification
+      summary: Single Verify
+      description: Verify an international (except US or US territories) address _with a live API key_. Requests to this endpoint with a test API key will return a dummy response based on the primary line you input.
+      tags:
+      - Intl Verifications
+      parameters:
+      - $ref: '#/components/parameters/lang_spec'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/intl_verification_writable'
+            examples:
+              basic:
+                value:
+                  recipient: Harry Zhang
+                  primary_line: 370 Water St
+                  secondary_line: ''
+                  city: Summerside
+                  state: Prince Edward Island
+                  postal code: C1N 1C4
+                  country: CA
+              full_payload:
+                value:
+                  recipient: Harry Zhang
+                  primary_line: 370 Water St
+                  secondary_line: ''
+                  city: Summerside
+                  state: Prince Edward Island
+                  postal code: C1N 1C4
+                  country: CA
+              single_line:
+                value:
+                  address: 370 Water St C1N 1C4
+                  country: CA
+              test:
+                value:
+                  primary_line: deliverable
+                  country: CA
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/intl_verification_writable'
+            examples:
+              basic:
+                value:
+                  recipient: Harry Zhang
+                  primary_line: 370 Water St
+                  secondary_line: ''
+                  city: Summerside
+                  state: Prince Edward Island
+                  postal code: C1N 1C4
+                  country: CA
+              full_payload:
+                value:
+                  recipient: Harry Zhang
+                  primary_line: 370 Water St
+                  secondary_line: ''
+                  city: Summerside
+                  state: Prince Edward Island
+                  postal code: C1N 1C4
+                  country: CA
+              single_line:
+                value:
+                  address: 370 Water St C1N 1C4
+                  country: CA
+              test:
+                value:
+                  primary_line: deliverable
+                  country: CA
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/intl_verification_writable'
+            examples:
+              basic:
+                value:
+                  recipient: Harry Zhang
+                  primary_line: 370 Water St
+                  secondary_line: ''
+                  city: Summerside
+                  state: Prince Edward Island
+                  postal code: C1N 1C4
+                  country: CA
+              full_payload:
+                value:
+                  recipient: Harry Zhang
+                  primary_line: 370 Water St
+                  secondary_line: ''
+                  city: Summerside
+                  state: Prince Edward Island
+                  postal code: C1N 1C4
+                  country: CA
+              single_line:
+                value:
+                  address: 370 Water St C1N 1C4
+                  country: CA
+              test:
+                value:
+                  primary_line: deliverable
+                  country: CA
+      responses:
+        '200':
+          $ref: '#/components/responses/intl_verifications'
+        default:
+          $ref: '#/components/responses/intl_verifications_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/intl_verifications \\\n  -u <YOUR_LIVE_API_KEY>: \\\n  -d \"primary_line=370 Water St\" \\\n  -d \"city=Summerside\" \\\n  -d \"state=Prince Edward Island\" \\\n  -d \"postal_code=C1N 1C4\" \\\n  -d \"country=CA\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "const IntlVerifications = new IntlVerificationsApi(av_config);\nlet verificationData1: IntlVerificationWritable = {\n  primary_line: '370 WATER ST',\n  postal_code: 'C1N 1C4',\n  country: CountryExtended.Ca\n};\n\ntry {\n  const singleVerified = await IntlVerifications.verifySingle(verificationData1);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.intlVerifications.verify({\n  primary_line: '370 Water St',\n  city: 'Summerside',\n  state: 'Prince Edward Island',\n  postal_code: 'C1N 1C4',\n  country: 'CA'\n}, function (err, res) {\n  console.log (err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "intlVerificationsApi = IntlVerificationsApi.new(config)\n\nverificationData = IntlVerificationWritable.new({\n  primary_line: \"370 Water St\",\n  city: \"Summerside\",\n  state: \"Prince Edward Island\",\n  postal_code: \"C1N 1C4\",\n  country: CountryExtended::CA,\n})\n\nbegin\n  verifiedAddr = intlVerificationsApi.verifySingle(verificationData)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = IntlVerificationsApi(api_client)\nverification_data_1 = IntlVerificationWritable(\n  primary_line = \"370 Water St\",\n  city = \"Summerside\",\n  state = \"Prince Edward Island\",\n  postal_code = \"C1N 1C4\",\n  country = CountryExtended(\"CA\"),\n)\n\ntry:\n  single_verified = api.verifySingle(verification_data_1)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\IntlVerificationsApi($config, new GuzzleHttp\\Client());\n\n$verificationData = new OpenAPI\\Client\\Model\\IntlVerificationWritable(array(\n  'primary_line'     => '370 Water St',\n  'city'     => 'Summerside',\n  'state'     => 'Prince Edward Island',\n  'postal_code'     => 'C1N 1C4',\n  'country'     => 'CA',\n));\n\ntry {\n    $result = $apiInstance->verifySingle($verificationData);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "LobResponse<IntlVerification> response = new IntlVerification.RequestBuilder()\n        .setPrimaryLine(\"370 Water St\")\n        .setCity(\"Summerside\")\n        .setState(\"Prince Edward Island\")\n        .setPostalCode(\"C1N 1C4\")\n        .setCountry(\"CA\")\n        .verify();\n\nIntlVerification intlVerification = response.getResponseBody();\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.IntlVerification.verify(%{\n  primary_line: \"370 Water St\",\n  city: \"Summerside\",\n  state: \"Prince Edward Island\",\n  postal_code: \"C1N 1C4\",\n  country: \"CA\"\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "IntlVerificationWritable singleVerify = new IntlVerificationWritable(\n  null,\n  \"370 Water St\",\n  null,\n  \"Summerside\",\n  \"Prince Edward Island\",\n  \"C1N 1C4\",\n  CountryExtended.CA\n);\n\nIntlVerificationsApi api = new IntlVerificationsApi(config);\n\ntry {\n  api.verifySingle(singleVerify, null);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+components:
+  schemas:
+    multiple_components_intl:
+      allOf:
+      - $ref: '#/components/schemas/intl_verification_base'
+      - type: object
+        required:
+        - primary_line
+        - country
+        properties:
+          city:
+            $ref: '#/components/schemas/city'
+          state:
+            type: string
+            description: The name of the state.
+          postal_code:
+            $ref: '#/components/schemas/postal_code'
+          country:
+            $ref: '#/components/schemas/country_extended'
+    street_name:
+      type: string
+      description: The name of the street.
+    intl_ver_id:
+      type: string
+      description: Unique identifier prefixed with `intl_ver_`.
+      pattern: ^intl_ver_[a-zA-Z0-9]+$
+    city:
+      allOf:
+      - $ref: '#/components/schemas/city_no_description'
+      - type: string
+        description: The name of the city.
+    country_extended:
+      type: string
+      description: Must be a 2 letter country short-name code (ISO 3166). Does not accept `US`, `AS`, `PR`, `FM`, `GU`, `MH`, `MP`, `PW`, or `VI`. For these addresses, please use the US verification API. Also does not accept `PS`, which is not currently supported.
+      enum:
+      - AD
+      - AE
+      - AF
+      - AG
+      - AI
+      - AL
+      - AN
+      - AO
+      - AQ
+      - AR
+      - AT
+      - AU
+      - AW
+      - AZ
+      - BA
+      - BB
+      - BD
+      - BE
+      - BF
+      - BG
+      - BH
+      - BI
+      - BJ
+      - BM
+      - BN
+      - BO
+      - BQ
+      - BR
+      - BS
+      - BT
+      - BW
+      - BY
+      - BZ
+      - CA
+      - CD
+      - CG
+      - CH
+      - CI
+      - CK
+      - CL
+      - CM
+      - CN
+      - CO
+      - CR
+      - CS
+      - CU
+      - CV
+      - CW
+      - CY
+      - CZ
+      - DE
+      - DJ
+      - DK
+      - DM
+      - DO
+      - DZ
+      - EC
+      - EE
+      - EG
+      - EH
+      - ER
+      - ES
+      - ET
+      - FI
+      - FJ
+      - FK
+      - FO
+      - FR
+      - GA
+      - GB
+      - GD
+      - GE
+      - GH
+      - GI
+      - GL
+      - GM
+      - GN
+      - GQ
+      - GR
+      - GS
+      - GT
+      - GW
+      - GY
+      - HK
+      - HN
+      - HR
+      - HT
+      - HU
+      - ID
+      - IE
+      - IL
+      - IN
+      - IO
+      - IQ
+      - IR
+      - IS
+      - IT
+      - JM
+      - JO
+      - JP
+      - KE
+      - KG
+      - KH
+      - KI
+      - KM
+      - KN
+      - KP
+      - KR
+      - KW
+      - KY
+      - KZ
+      - LA
+      - LB
+      - LC
+      - LI
+      - LK
+      - LR
+      - LS
+      - LT
+      - LU
+      - LV
+      - LY
+      - MA
+      - MC
+      - MD
+      - ME
+      - MG
+      - MK
+      - ML
+      - MM
+      - MN
+      - MO
+      - MR
+      - MS
+      - MT
+      - MU
+      - MV
+      - MW
+      - MX
+      - MY
+      - MZ
+      - NA
+      - NE
+      - NF
+      - NG
+      - NI
+      - NL
+      - 'NO'
+      - NP
+      - NR
+      - NU
+      - NZ
+      - OM
+      - PA
+      - PE
+      - PG
+      - PH
+      - PK
+      - PL
+      - PN
+      - PT
+      - PY
+      - QA
+      - RO
+      - RS
+      - RU
+      - RW
+      - SA
+      - SB
+      - SC
+      - SD
+      - SE
+      - SG
+      - SH
+      - SI
+      - SK
+      - SL
+      - SM
+      - SN
+      - SO
+      - SR
+      - SS
+      - ST
+      - SV
+      - SX
+      - SY
+      - SZ
+      - TC
+      - TD
+      - TG
+      - TH
+      - TJ
+      - TK
+      - TL
+      - TM
+      - TN
+      - TO
+      - TR
+      - TT
+      - TV
+      - TW
+      - TZ
+      - UA
+      - UG
+      - UY
+      - UZ
+      - VA
+      - VC
+      - VE
+      - VG
+      - VN
+      - VU
+      - WS
+      - YE
+      - ZA
+      - ZM
+      - ZW
+    intl_verifications_payload:
+      type: object
+      required:
+      - addresses
+      properties:
+        addresses:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/multiple_components_intl'
+    postal_code:
+      type: string
+      description: The postal code.
+      maxLength: 12
+    city_no_description:
+      type: string
+      maxLength: 200
+    primary_number:
+      type: string
+      description: The numeric or alphanumeric part of an address preceding the street name. Often the house, building, or PO Box number.
+    recipient:
+      type: string
+      description: The intended recipient, typically a person's or firm's name.
+      nullable: true
+      maxLength: 500
+    intl_verification:
+      allOf:
+      - $ref: '#/components/schemas/intl_verification_base'
+      - type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/intl_ver_id'
+          last_line:
+            type: string
+            description: 'Combination of the following applicable `components`:
+
+              * `city`
+
+              * `state`
+
+              * `zip_code`
+
+              * `zip_code_plus_4`
+
+              '
+          country:
+            $ref: '#/components/schemas/country_short'
+          coverage:
+            type: string
+            enum:
+            - SUBBUILDING
+            - HOUSENUMBER/BUILDING
+            - STREET
+            - LOCALITY
+            - SPARSE
+            description: 'The coverage level for the country. This represents the maximum level of
+
+              accuracy an input address can be verified to.
+
+
+              * `SUBBUILDING` - Coverage down to unit numbers. For example, in an apartment or a large building
+
+              * `HOUSENUMBER/BUILDING` - Coverage down to house number. For example, the address where a house or building may be located
+
+              * `STREET` - Coverage down to street. This means that we can verify that an street exists in a city, state, country
+
+              * `LOCALITY` - Coverage down to city, state, or village or province. This means that we can verify that a city, village, province, or state exists in a country. Countries differ in how they define what is a province, state, city, village, etc. This attempts to group eveyrthing together.
+
+              * `SPARSE` - Some addresses for this country exist in our databases
+
+              '
+          deliverability:
+            type: string
+            enum:
+            - deliverable
+            - deliverable_missing_info
+            - undeliverable
+            - no_match
+            description: 'Summarizes the deliverability of the `intl_verification` object. Possible values are:
+
+              * `deliverable` — The address is deliverable.
+
+              * `deliverable_missing_info` — The address is missing some information, but is most likely deliverable.
+
+              * `undeliverable` — The address is most likely not deliverable. Some components of the address (such as city or postal code) may have been found.
+
+              * `no_match` — This address is not deliverable. No matching street could be found within the city or postal code.
+
+              '
+          status:
+            type: string
+            enum:
+            - LV4
+            - LV3
+            - LV2
+            - LV1
+            - LF4
+            - LF3
+            - LF2
+            - LF1
+            - LM4
+            - LM3
+            - LM2
+            - LU1
+            description: 'The status level for the country. This represents the maximum level of
+
+              accuracy an input address can be verified to.
+
+
+              * `LV4` - Verified. The input data is correct. All input data was able to match in databases.
+
+              * `LV3` - Verified. The input data is correct. All input data was able to match in databases <em>after</em> some or all elements were standarized. The input data may also be using outdated city, state, or country names.
+
+              * `LV2` - Verified. The input data is correct although some input data is unverifiable due to incomplete data.
+
+              * `LV1` - Verified. The input data is acceptable but in an attempt to standarize user input, errors were introduced.
+
+              * `LF4` - Fixed. The input data is matched and fixed. (Example: Brighon, UK -> Brighton, UK)
+
+              * `LF3` - Fixed. The input data is matched and fixed but some elements such as Subbuilding number and house number cannot be checked.
+
+              * `LF2` - Fixed. The input data is matched but some elements such as Street cannot be checked.
+
+              * `LF1` - Fixed. The input data is acceptable but in an attempt to standarize user input, errors were introduced.
+
+              * `LM4` - Missing Info. The input data cannot be corrected completely.
+
+              * `LM3` - Missing Info. The input data cannot be corrected completely and there were multiple matches found in databases.
+
+              * `LM2` - Missing Info. The input data cannot be corrected completely and only some elements were found.
+
+              * `LU1` - Unverified. The input data cannot be corrected or matched.
+
+              '
+          components:
+            $ref: '#/components/schemas/intl_components'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - intl_verification
+            default: intl_verification
+    intl_verification_base:
+      type: object
+      properties:
+        recipient:
+          $ref: '#/components/schemas/recipient'
+        primary_line:
+          $ref: '#/components/schemas/primary_line'
+        secondary_line:
+          $ref: '#/components/schemas/secondary_line'
+    intl_verification_writable:
+      oneOf:
+      - $ref: '#/components/schemas/multiple_components_intl'
+      - $ref: '#/components/schemas/single_line_address_intl'
+    secondary_line:
+      type: string
+      description: 'The secondary delivery line of the address. This field is typically empty but may contain information if `primary_line` is too long.
+
+        '
+      maxLength: 200
+    intl_verifications:
+      type: object
+      required:
+      - addresses
+      - errors
+      properties:
+        addresses:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/intl_verification'
+            - $ref: '#/components/schemas/error'
+        errors:
+          description: Indicates whether any errors occurred during the verification process.
+          type: boolean
+    primary_line:
+      type: string
+      description: 'The primary delivery line (usually the street address) of the address.
+
+        '
+      maxLength: 200
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    intl_components:
+      type: object
+      description: A nested object containing a breakdown of each component of an address.
+      properties:
+        primary_number:
+          $ref: '#/components/schemas/primary_number'
+        street_name:
+          $ref: '#/components/schemas/street_name'
+        city:
+          $ref: '#/components/schemas/city'
+        state:
+          $ref: '#/components/schemas/state'
+        postal_code:
+          $ref: '#/components/schemas/postal_code'
+    country_short:
+      type: string
+      description: The country of the address. Will be returned as a 2 letter country short-name code (ISO 3166).
+      example: CA
+    single_line_address_intl:
+      type: object
+      required:
+      - address
+      - country
+      properties:
+        address:
+          type: string
+          description: 'The entire address in one string (e.g., "370 Water St C1N 1C4").
+
+            '
+          maxLength: 500
+        country:
+          $ref: '#/components/schemas/country_extended'
+    state:
+      type: string
+      description: 'The <a href="https://en.wikipedia.org/wiki/ISO_3166-2" target="_blank">ISO 3166-2</a> two letter code for the state.
+
+        '
+      maxLength: 2
+  responses:
+    bulk_intl_verifications:
+      description: Returns an array of international verification objects.
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/intl_verifications'
+          example:
+            addresses:
+            - id: intl_ver_c7cb63d68f8d6
+              recipient: null
+              primary_line: 370 WATER ST
+              secondary_line: ''
+              last_line: SUMMERSIDE PE C1N 1C4
+              country: CA
+              coverage: SUBBUILDING
+              deliverability: deliverable
+              status: LV4
+              components:
+                primary_number: '370'
+                street_name: WATER ST
+                city: SUMMERSIDE
+                state: PE
+                postal_code: C1N 1C4
+              object: intl_verification
+            errors: false
+    intl_verifications:
+      description: Returns an international verification object.
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/intl_verification'
+          examples:
+            full:
+              value:
+                id: intl_ver_c7cb63d68f8d6
+                recipient: null
+                primary_line: 370 WATER ST
+                secondary_line: ''
+                last_line: SUMMERSIDE PE C1N 1C4
+                country: CA
+                coverage: SUBBUILDING
+                deliverability: deliverable
+                status: LV4
+                components:
+                  primary_number: '370'
+                  street_name: WATER ST
+                  city: SUMMERSIDE
+                  state: PE
+                  postal_code: C1N 1C4
+                object: intl_verification
+            test:
+              value:
+                id: intl_ver_c7cb63d68f8d6
+                recipient: TEST KEYS DO NOT VERIFY ADDRESSES
+                primary_line: 370 WATER ST
+                secondary_line: ''
+                last_line: SUMMERSIDE PE C1N 1C4
+                country: CA
+                coverage: SUBBUILDING
+                deliverability: deliverable
+                status: LV4
+                components:
+                  primary_number: '370'
+                  street_name: WATER ST
+                  city: SUMMERSIDE
+                  state: PE
+                  postal_code: C1N 1C4
+                object: intl_verification
+    intl_verifications_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: country is required
+              status_code: 422
+  headers:
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  parameters:
+    lang_spec:
+      in: header
+      name: x-lang-output
+      required: false
+      description: '* `native` - Translate response to the native language of the country in the request
+
+        * `match` - match the response to the language in the request
+
+
+        Default response is in English.
+
+        '
+      schema:
+        type: string
+        enum:
+        - native
+        - match
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

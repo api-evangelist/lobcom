@@ -1,0 +1,110 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.lob.com/#tag/Events + openapi/lobcom-openapi-original.yml (event type enums)
+spec_type: Webhooks
+note: Lob delivers events via webhooks (no published AsyncAPI). Webhook payloads are HMAC-signed; verify
+  the signature header before trusting an event. Event type catalog derived from the OpenAPI event-type
+  enums.
+delivery:
+  mechanism: HTTP POST to a configured webhook URL
+  signature: HMAC signature header (verify before processing)
+  configuration: Dashboard > Webhooks
+event_families:
+- resource: postcard
+  events:
+  - postcard.created
+  - postcard.rejected
+  - postcard.rendered_pdf
+  - postcard.rendered_thumbnails
+  - postcard.deleted
+  - postcard.delivered
+  - postcard.failed
+  - postcard.mailed
+  - postcard.in_transit
+  - postcard.in_local_area
+  - postcard.international_exit
+  - postcard.processed_for_delivery
+  - postcard.re-routed
+  - postcard.returned_to_sender
+  - postcard.viewed
+- resource: letter
+  events:
+  - letter.created
+  - letter.rejected
+  - letter.rendered_pdf
+  - letter.rendered_thumbnails
+  - letter.deleted
+  - letter.delivered
+  - letter.failed
+  - letter.mailed
+  - letter.in_transit
+  - letter.in_local_area
+  - letter.international_exit
+  - letter.processed_for_delivery
+  - letter.re-routed
+  - letter.returned_to_sender
+  - letter.certified.mailed
+  - letter.certified.in_transit
+  - letter.certified.in_local_area
+  - letter.certified.processed_for_delivery
+  - letter.certified.re-routed
+  - letter.certified.returned_to_sender
+  - letter.certified.delivered
+  - letter.certified.pickup_available
+  - letter.certified.issue
+  - letter.return_envelope.created
+  - letter.return_envelope.delivered
+  - letter.return_envelope.in_transit
+  - letter.return_envelope.in_local_area
+  - letter.return_envelope.international_exit
+  - letter.return_envelope.processed_for_delivery
+  - letter.return_envelope.re_routed
+  - letter.return_envelope.returned_to_sender
+  - letter.viewed
+- resource: self_mailer
+  events:
+  - self_mailer.created
+  - self_mailer.rejected
+  - self_mailer.rendered_pdf
+  - self_mailer.rendered_thumbnails
+  - self_mailer.deleted
+  - self_mailer.delivered
+  - self_mailer.failed
+  - self_mailer.mailed
+  - self_mailer.in_transit
+  - self_mailer.in_local_area
+  - self_mailer.international_exit
+  - self_mailer.processed_for_delivery
+  - self_mailer.re-routed
+  - self_mailer.returned_to_sender
+  - self_mailer.viewed
+- resource: check
+  events:
+  - check.created
+  - check.rejected
+  - check.rendered_pdf
+  - check.rendered_thumbnails
+  - check.deleted
+  - check.delivered
+  - check.failed
+  - check.mailed
+  - check.in_transit
+  - check.in_local_area
+  - check.international_exit
+  - check.processed_for_delivery
+  - check.re-routed
+  - check.returned_to_sender
+- resource: address
+  events:
+  - address.created
+  - address.deleted
+- resource: bank_account
+  events:
+  - bank_account.created
+  - bank_account.deleted
+  - bank_account.verified
+- resource: letter_add_on
+  events:
+  - buckslips
+  - cards
+  - custom_envelope

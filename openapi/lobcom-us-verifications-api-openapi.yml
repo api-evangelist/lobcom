@@ -1,0 +1,1535 @@
+openapi: 3.0.3
+info:
+  title: Lob Accounts US Verifications API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: US Verifications
+  description: "Validate, automatically correct, and standardize the addresses in your\naddress book based on USPS's <a href=\"https://postalpro.usps.com/certifications/cass\" target=\"_blank\">Coding Accuracy Support System (CASS)</a>.\n<br>\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n\n## US Verifications Test Env\n\nWhen verifying US addresses, you'll likely want to test against a wide array of addresses to\nensure you're handling responses correctly. With your test API key, requests that use specific\nvalues for `address` or `primary_line` and (if using `primary_line`) an arbitrary five digit\nnumber for `zip_code` (e.g. \"11111\") let you explore the responses to many types of addresses:\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">ADDRESS TYPE FOR SAMPLE RESPONSE</th>\n    <th style=\"white-space: nowrap\">DELIVERABILITY</th>\n    <th style=\"white-space: nowrap\">SET <code>primary_line</code> OR <code>address</code> TO</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Commercial highrise</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>commercial highrise</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Residential highrise</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>residential highrise</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Residential house</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>residential house</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">PO Box</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>po box</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Rural route</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>rural route</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Puerty Rico address w/ urbanization</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>puerto rico</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Military address</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>military</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Department of state</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>department of state</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Generic deliverable</td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Missing a suite number</td>\n    <td style=\"white-space: nowrap\"><code>deliverable_missing_unit</code></td>\n    <td style=\"white-space: nowrap\"><code>missing unit</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Suite number doesn't exist</td>\n    <td style=\"white-space: nowrap\"><code>deliverable_incorrect_unit</code></td>\n    <td style=\"white-space: nowrap\"><code>incorrect unit</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Residential house with unnecessary suite number</td>\n    <td style=\"white-space: nowrap\"><code>deliverable_unnecessary_unit</code></td>\n    <td style=\"white-space: nowrap\"><code>unnecessary unit</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Undeliverable and block matched</td>\n    <td style=\"white-space: nowrap\"><code>undeliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>undeliverable block match</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Undeliverable and no block matched</td>\n    <td style=\"white-space: nowrap\"><code>undeliverable</code></td>\n    <td style=\"white-space: nowrap\"><code>undeliverable no match</code></td>\n  </tr>\n</table>\n\nSee the `test` request & response examples under [US Verification Examples](#operation/us_verification) within the\n\"Verify a US or US territory address\" section in US Verifications.\n\nYou can rely on the response from these examples generally matching the response you'd see in the live environment with an\naddress of that type (excluding the `recipient` field).\n\nThe test API key does not perform any verification, automatic correction, or standardization for addresses. If you wish to\ntry these features out, use our <a href=\"https://lob.com/address-verification\" target=\"_blank\">live demo</a> or the free plan (see <a href=\"https://lob.com/pricing/address-verification\" target=\"_blank\">our pricing</a> for details).\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n"
+paths:
+  /bulk/us_verifications:
+    post:
+      operationId: bulk_us_verifications
+      summary: Bulk Verify
+      description: Verify a list of US or US territory addresses _with a live API key_. Requests to this endpoint with a test API key will return a dummy response based on the primary line you input.
+      tags:
+      - US Verifications
+      parameters:
+      - in: query
+        name: case
+        schema:
+          type: string
+          enum:
+          - upper
+          - proper
+          default: upper
+        description: Casing of the verified address. Possible values are `upper` and `proper` for uppercased (e.g. "PO BOX") and proper-cased (e.g. "PO Box"), respectively. Only affects `recipient`, `primary_line`, `secondary_line`, `urbanization`, and `last_line`. Default casing is `upper`.
+        required: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/multiple_components_list'
+            example:
+              addresses:
+              - primary_line: 210 King Street
+                city: San Francisco
+                state: CA
+                zip_code: '94107'
+              - recipient: Walgreens
+                primary_line: Ave Wilson Churchill 123
+                secondary_line: ''
+                urbanization: URB FAIR OAKS
+                city: RIO PIEDRAS
+                state: PR
+                zip_code: 00926
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/multiple_components_list'
+            example:
+              addresses:
+              - primary_line: 210 King Street
+                city: San Francisco
+                state: CA
+                zip_code: '94107'
+              - recipient: Walgreens
+                primary_line: Ave Wilson Churchill 123
+                secondary_line: ''
+                urbanization: URB FAIR OAKS
+                city: RIO PIEDRAS
+                state: PR
+                zip_code: 00926
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/multiple_components_list'
+            example:
+              addresses:
+              - primary_line: 210 King Street
+                city: San Francisco
+                state: CA
+                zip_code: '94107'
+              - recipient: Walgreens
+                primary_line: Ave Wilson Churchill 123
+                secondary_line: ''
+                urbanization: URB FAIR OAKS
+                city: RIO PIEDRAS
+                state: PR
+                zip_code: 00926
+      responses:
+        '200':
+          $ref: '#/components/responses/bulk_us_verifications'
+        default:
+          $ref: '#/components/responses/us_verifications_error'
+      x-codeSamples:
+      - lang: Shell
+        source: 'curl https://api.lob.com/v1/bulk/us_verifications \
+
+          -u <YOUR LIVE API KEY>: \
+
+          --header ''Content-Type: application/x-www-form-urlencoded'' \
+
+          --data-urlencode ''addresses[0][primary_line]=210 King Street'' \
+
+          --data-urlencode ''addresses[0][city]=San Francisco'' \
+
+          --data-urlencode ''addresses[0][state]=CA'' \
+
+          --data-urlencode ''addresses[0][zip_code]=94017''
+
+          '
+        label: CURL
+      - lang: Typescript
+        source: "const UsVerifications = new USVerificationsApi(av_config);\nconst verificationData1: UsVerificationsWritable = {\n  primary_line: '210 King St',\n  city: 'San Francisco',\n  state: 'CA',\n  zip_code: '94107'\n};\nconst verificationData2: UsVerificationsWritable = {\n  primary_line: '185 BERRY ST STE 6600',\n  city: 'SAN FRANCISCO',\n  state: 'CA',\n  zip_code: '94107'\n};\nconst addressList: MultipleComponentsList = {\n  addresses: [verificationData1, verificationData2],\n};\n\ntry {\n  const bulkVerified = await UsVerifications.verifyBulk(addressList);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.bulkUSVerifications.verify({\n  addresses: [{\n    primary_line: '210 King St',\n    city: 'San Francisco',\n    state: 'CA',\n    zip_code: '94107'\n  }]\n}), function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "usVerificationsApi = UsVerificationsApi.new(config)\n\nverificationData0 = MultipleComponents.new({\n  primary_line: \"210 King Street\",\n  city: \"San Francisco\",\n  state: \"CA\",\n  zip_code: \"94017\",\n})\n\nverificationData1 = MultipleComponents.new({\n  primary_line: \"185 BERRY ST STE 6600\",\n  city: \"SAN FRANCISCO\",\n  state: \"CA\",\n  zip_code: \"94017\",\n})\n\n\naddressList = MultipleComponentsList.new({\n  addresses: [\n    verificationData0,\n    verificationData1,\n  ],\n})\n\nbegin\n  bulkVerifiedAddrs = usVerificationsApi.verifyBulk(addressList)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = UsVerificationsApi(api_client)\n\nverification_data_0 = MultipleComponents(\n  primary_line = \"210 King Street\",\n  city = \"San Francisco\",\n  state = \"CA\",\n  zip_code = \"94017\",\n)\n\nverification_data_1 = MultipleComponents(\n  primary_line = \"185 BERRY ST STE 6600\",\n  city = \"SAN FRANCISCO\",\n  state = \"CA\",\n  zip_code = \"94017\",\n)\n\n\naddress_list = MultipleComponentsList(\n  addresses = [\n    verification_data_0,\n    verification_data_1,\n  ],\n)\n\ntry:\n  bulk_verified = api.verifyBulk(address_list)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$verificationData0 = new OpenAPI\\Client\\Model\\MultipleComponents(array(\n  'primary_line'     => '210 King Street',\n  'city'     => 'San Francisco',\n  'state'     => 'CA',\n  'zip_code'     => '94017',\n));\n\n$verificationData1 = new OpenAPI\\Client\\Model\\MultipleComponents(array(\n  'primary_line'     => '185 BERRY ST STE 6600',\n  'city'     => 'SAN FRANCISCO',\n  'state'     => 'CA',\n  'zip_code'     => '94017',\n));\n\n$addressList = new OpenAPI\\Client\\Model\\MultipleComponentsList(array(\n  'addresses'     => [\n    $verificationData0,\n    $verificationData1,\n  ]\n));\n\ntry {\n    $result = $apiInstance->verifyBulk($addressList);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "MultipleComponentsList bulkVerify = new MultipleComponentsList();\nMultipleComponents bulkAddress0 = new MultipleComponents();\nbulkAddress0.setPrimaryLine(\"210 King Street\");\nbulkAddress0.setCity(\"San Francisco\");\nbulkAddress0.setState(\"CA\");\nbulkAddress0.setZipCode(\"94017\");\nbulkVerify.addAddressesItem(bulkAddress0);\n\nMultipleComponents bulkAddress1 = new MultipleComponents();\nbulkAddress1.setPrimaryLine(\"185 BERRY ST STE 6600\");\nbulkAddress1.setCity(\"SAN FRANCISCO\");\nbulkAddress1.setState(\"CA\");\nbulkAddress1.setZipCode(\"94017\");\nbulkVerify.addAddressesItem(bulkAddress1);\n\nUsVerificationsApi apiInstance = new UsVerificationsApi(config);\ntry {\n  UsVerifications bulkVerifyResponse = apiInstance.verifyBulk(bulkVerify, null);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.BulkUSVerification.verify.verify(\n%{\n  addresses:[\n    {\n      primary_line: \"210 King Street\",\n      city: \"San Francisco\",\n      state: \"CA\",\n      zip_code: \"94107\"\n    }\n ]\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "List<MultipleComponents> addresses = new List<MultipleComponents>();\nMultipleComponents bulkAddress0 = new MultipleComponents(\n  null,  // recipient\n  \"210 King Street\",  // primaryLine\n  null,  // secondaryLine\n  null,  // urbanization\n  \"San Francisco\",  // city\n  \"CA\",  // state\n  \"94017\" // zipCode\n);\naddresses.Add(bulkAddress0);\n\nMultipleComponents bulkAddress1 = new MultipleComponents(\n  null,  // recipient\n  \"185 BERRY ST STE 6600\",  // primaryLine\n  null,  // secondaryLine\n  null,  // urbanization\n  \"San Francisco\",  // city\n  \"CA\",  // state\n  \"94017\" // zipCode\n);\naddresses.Add(bulkAddress1);\n\nMultipleComponentsList bulkVerify = new MultipleComponentsList(addresses);\n\nUsVerificationsApi api = new UsVerificationsApi(config);\ntry {\n  UsVerifications bulkVerifyResponse = api.verifyBulk(bulkVerify, null);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+  /us_verifications:
+    post:
+      operationId: us_verification
+      summary: Single Verify
+      description: Verify a US or US territory address _with a live API key_. The address can be in components (e.g. `primary_line` is "210 King Street", `zip_code` is "94107") or as a single string (e.g. "210 King Street 94107"), but not as both. Requests using a test API key validate required fields but return empty values unless specific `primary_line` values are provided. See the [US Verifications Test Environment](#section/US-Verifications-Test-Env) for details.
+      tags:
+      - US Verifications
+      parameters:
+      - in: query
+        name: case
+        schema:
+          type: string
+          enum:
+          - upper
+          - proper
+          default: upper
+        description: Casing of the verified address. Possible values are `upper` and `proper` for uppercased (e.g. "PO BOX") and proper-cased (e.g. "PO Box"), respectively. Only affects `recipient`, `primary_line`, `secondary_line`, `urbanization`, and `last_line`. Default casing is `upper`.
+        required: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/us_verifications_writable'
+            examples:
+              basic:
+                value:
+                  primary_line: 210 King Street
+                  city: San Francisco
+                  state: CA
+                  zip_code: '94107'
+              full_payload:
+                value:
+                  recipient: Walgreens
+                  primary_line: Ave Wilson Churchill 123
+                  secondary_line: ''
+                  urbanization: URB FAIR OAKS
+                  city: RIO PIEDRAS
+                  state: PR
+                  zip_code: 00926
+              single_line:
+                value:
+                  address: 210 King Street 94107
+              test:
+                value:
+                  primary_line: po box
+                  zip_code: '11111'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/us_verifications_writable'
+            examples:
+              basic:
+                value:
+                  primary_line: 210 King Street
+                  city: San Francisco
+                  state: CA
+                  zip_code: '94107'
+              full_payload:
+                value:
+                  recipient: Walgreens
+                  primary_line: Ave Wilson Churchill 123
+                  secondary_line: ''
+                  urbanization: URB FAIR OAKS
+                  city: RIO PIEDRAS
+                  state: PR
+                  zip_code: 00926
+              single_line:
+                value:
+                  address: 210 King Street 94107
+              test:
+                value:
+                  primary_line: po box
+                  zip_code: '11111'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/us_verifications_writable'
+            examples:
+              basic:
+                value:
+                  primary_line: 210 King Street
+                  city: San Francisco
+                  state: CA
+                  zip_code: '94107'
+              full_payload:
+                value:
+                  recipient: Walgreens
+                  primary_line: Ave Wilson Churchill 123
+                  secondary_line: ''
+                  urbanization: URB FAIR OAKS
+                  city: RIO PIEDRAS
+                  state: PR
+                  zip_code: 00926
+              single_line:
+                value:
+                  address: 210 King Street 94107
+              test:
+                value:
+                  primary_line: po box
+                  zip_code: '11111'
+      responses:
+        '200':
+          $ref: '#/components/responses/us_verifications'
+        default:
+          $ref: '#/components/responses/us_verifications_error'
+      x-codeSamples:
+      - lang: Shell
+        source: "curl https://api.lob.com/v1/us_verifications \\\n  -u <YOUR_LIVE_API_KEY>: \\\n  -d \"primary_line=210 King Street\" \\\n  -d \"city=San Francisco\" \\\n  -d \"state=CA\" \\\n  -d \"zip_code=94107\"\n"
+        label: CURL
+      - lang: Typescript
+        source: "const UsVerification = new USVerificationsApi(av_config);\nconst verificationData1: UsVerificationsWritable = {\n  primary_line: '210 King Street',\n  city: 'San Francisco',\n  state: 'CA',\n  zip_code: '94107'\n};\n\ntry {\n  const singleVerified = await UsVerification.verifySingle(verificationData1);\n} catch (err: any) {\n  console.error(err);\n}\n"
+        label: TYPESCRIPT
+      - lang: Javascript
+        source: "Lob.usVerifications.verify({\n  primary_line: '210 King Street',\n  city: 'San Francisco',\n  state: 'CA',\n  zip_code: '94107'\n}, function (err, res) {\n  console.log(err, res);\n});\n"
+        label: NODE
+      - lang: Ruby
+        source: "usVerificationsApi = UsVerificationsApi.new(config)\n\nverificationData = UsVerificationsWritable.new({\n  primary_line: \"210 King Street\",\n  city: \"San Francisco\",\n  state: \"CA\",\n  zip_code: \"94017\",\n})\n\nbegin\n  singleVerifiedAddr = usVerificationsApi.verifySingle(verificationData)\nrescue => err\n  p err.message\nend\n"
+        label: RUBY
+      - lang: Python
+        source: "with ApiClient(configuration) as api_client:\n  api = UsVerificationsApi(api_client)\nverification_data_1 = UsVerificationsWritable(\n  primary_line = \"210 King Street\",\n  city = \"San Francisco\",\n  state = \"CA\",\n  zip_code = \"94017\",\n)\n\ntry:\n  single_verified = api.verifySingle(verification_data_1)\nexcept ApiException as e:\n  print(e)\n"
+        label: PYTHON
+      - lang: PHP
+        source: "$apiInstance = new OpenAPI\\Client\\Api\\UsVerificationsApi($config, new GuzzleHttp\\Client());\n\n$verificationData = new OpenAPI\\Client\\Model\\UsVerificationsWritable(array(\n  'primary_line'     => '210 King Street',\n  'city'     => 'San Francisco',\n  'state'     => 'CA',\n  'zip_code'     => '94017',\n));\n\ntry {\n    $result = $apiInstance->verifySingle($verificationData);\n} catch (Exception $e) {\n    echo $e->getMessage(), PHP_EOL;\n}\n"
+      - lang: Java
+        source: "UsVerificationsWritable singleVerify = new UsVerificationsWritable();\nsingleVerify.setPrimaryLine(\"210 King Street\");\nsingleVerify.setCity(\"San Francisco\");\nsingleVerify.setState(\"CA\");\nsingleVerify.setZipCode(\"94017\");\n\nUsVerificationsApi apiInstance = new UsVerificationsApi(config);\ntry {\n  apiInstance.verifySingle(singleVerify, null);\n} catch (ApiException e) {\n  e.printStackTrace();\n}\n"
+        label: JAVA
+      - lang: Elixir
+        source: "Lob.USVerification.verify(%{\n  primary_line: \"210 King Street\",\n  city: \"San Francisco\",\n  state: \"CA\",\n  zip_code: \"94107\"\n})\n"
+        label: ELIXIR
+      - lang: CSharp
+        source: "UsVerificationsWritable singleVerify = new UsVerificationsWritable(\n  null,\n  null,\n  \"210 King Street\",\n  null,\n  null,\n  \"San Francisco\",\n  \"CA\",\n  \"94017\"\n);\n\nUsVerificationsApi api = new UsVerificationsApi(config);\n\ntry {\n  api.verifySingle(singleVerify, null);\n} catch (ApiException e) {\n  Console.WriteLine(e.ToString());\n}\n"
+        label: CSHARP
+components:
+  schemas:
+    urbanization:
+      type: string
+      description: 'Only present for addresses in Puerto Rico. An urbanization refers to an area, sector, or development within a city. See <a href="https://pe.usps.com/text/pub28/28api_008.htm#:~:text=I51.,-4%20Urbanizations&text=In%20Puerto%20Rico%2C%20identical%20street,placed%20before%20the%20urbanization%20name." target="_blank">USPS documentation</a> for clarification.
+
+        '
+      maxLength: 200
+    zip_code:
+      type: string
+      pattern: ^\d{5}((-)?\d{4})?$
+    primary_line_us:
+      type: string
+      description: 'The primary delivery line (usually the street address) of the address.
+
+        Combination of the following applicable `components`:
+
+        * `primary_number`
+
+        * `street_predirection`
+
+        * `street_name`
+
+        * `street_suffix`
+
+        * `street_postdirection`
+
+        * `secondary_designator`
+
+        * `secondary_number`
+
+        * `pmb_designator`
+
+        * `pmb_number`
+
+        '
+      maxLength: 200
+    street_name:
+      type: string
+      description: The name of the street.
+    lob_confidence_score:
+      type: object
+      description: Lob Confidence Score is a nested object that provides a numerical value between 0-100 of the likelihood that an address is deliverable based on Lob’s mail delivery data to over half of US households.
+      required:
+      - score
+      - level
+      properties:
+        score:
+          type: number
+          nullable: true
+          format: float
+          description: 'A numerical score between 0 and 100 that represents the percentage of mailpieces Lob has sent to this addresses that have been delivered successfully over the past 2 years. Will be `null` if no tracking data exists for this address.
+
+            '
+          default: null
+          minimum: 0
+          maximum: 100
+        level:
+          type: string
+          enum:
+          - high
+          - medium
+          - low
+          - ''
+          description: "Indicates the likelihood that the address is a valid, mail-receiving address. Possible values are:\n  - `high` — Over 70% of mailpieces Lob has sent to this address were delivered successfully and recent mailings were also successful.\n  - `medium` — Between 40% and 70% of mailpieces Lob has sent to this address were delivered successfully.\n  - `low` — Less than 40% of mailpieces Lob has sent to this address were delivered successfully and recent mailings weren't successful.\n  - `\"\"` — No tracking data exists for this address or lob deliverability was unable to find a corresponding level of mail success.\n"
+    us_components:
+      type: object
+      description: A nested object containing a breakdown of each component of an address.
+      required:
+      - primary_number
+      - street_predirection
+      - street_name
+      - street_suffix
+      - street_postdirection
+      - secondary_designator
+      - secondary_number
+      - pmb_designator
+      - pmb_number
+      - extra_secondary_designator
+      - extra_secondary_number
+      - city
+      - state
+      - zip_code
+      - zip_code_plus_4
+      - zip_code_type
+      - delivery_point_barcode
+      - address_type
+      - record_type
+      - default_building_address
+      - county
+      - county_fips
+      - carrier_route
+      - carrier_route_type
+      - po_box_only_flag
+      properties:
+        primary_number:
+          $ref: '#/components/schemas/primary_number'
+        street_predirection:
+          type: string
+          enum:
+          - N
+          - S
+          - E
+          - W
+          - NE
+          - SW
+          - SE
+          - NW
+          - ''
+          description: 'Geographic direction preceding a street name (`N`, `S`, `E`, `W`, `NE`, `SW`, `SE`, `NW`).
+
+            '
+        street_name:
+          $ref: '#/components/schemas/street_name'
+        street_suffix:
+          type: string
+          description: 'The standard USPS abbreviation for the street suffix (`ST`, `AVE`, `BLVD`, etc).
+
+            '
+        street_postdirection:
+          type: string
+          enum:
+          - N
+          - S
+          - E
+          - W
+          - NE
+          - SW
+          - SE
+          - NW
+          - ''
+          description: 'Geographic direction following a street name (`N`, `S`, `E`, `W`, `NE`, `SW`, `SE`, `NW`).
+
+            '
+        secondary_designator:
+          type: string
+          description: 'The standard USPS abbreviation describing the `components[secondary_number]` (`STE`, `APT`, `BLDG`, etc).
+
+            '
+        secondary_number:
+          type: string
+          description: 'Number of the apartment/unit/etc.
+
+            '
+        pmb_designator:
+          type: string
+          description: 'Designator of a <a href="https://en.wikipedia.org/wiki/Commercial_mail_receiving_agency" target="_blank">CMRA-authorized</a> private mailbox.
+
+            '
+        pmb_number:
+          type: string
+          description: 'Number of a <a href="https://en.wikipedia.org/wiki/Commercial_mail_receiving_agency" target="_blank">CMRA-authorized</a> private mailbox.
+
+            '
+        extra_secondary_designator:
+          type: string
+          description: 'An extra (often unnecessary) secondary designator provided with the input address.
+
+            '
+        extra_secondary_number:
+          type: string
+          description: 'An extra (often unnecessary) secondary number provided with the input address.
+
+            '
+        city:
+          $ref: '#/components/schemas/city'
+        state:
+          $ref: '#/components/schemas/state'
+        zip_code:
+          type: string
+          description: The 5-digit ZIP code
+          pattern: ^\d{5}$
+        zip_code_plus_4:
+          allOf:
+          - description: The 4-digit ZIP add-on code
+          - $ref: '#/components/schemas/zip_code_plus_4'
+        zip_code_type:
+          $ref: '#/components/schemas/zip_code_type'
+        delivery_point_barcode:
+          type: string
+          description: 'A 12-digit identifier that uniquely identifies a delivery point (location where mail can be sent and received). It consists of the 5-digit ZIP code (`zip_code`), 4-digit ZIP+4 add-on (`zip_code_plus_4`), 2-digit delivery point, and 1-digit delivery point check digit.
+
+            '
+        address_type:
+          type: string
+          enum:
+          - residential
+          - commercial
+          - ''
+          description: 'Uses USPS''s <a href="https://www.usps.com/nationalpremieraccounts/rdi.htm" target="_blank">Residential Delivery Indicator (RDI)</a> to identify
+
+            whether an address is classified as residential or
+
+            business. Possible values are:
+
+            * `residential` –– The address is residential or a PO Box.
+
+            * `commercial` –– The address is commercial.
+
+            * `''''` –– Not enough information provided to be determined.
+
+            '
+        record_type:
+          type: string
+          enum:
+          - street
+          - highrise
+          - firm
+          - po_box
+          - rural_route
+          - general_delivery
+          - ''
+          description: 'A description of the type of address. Populated if a DPV match is made (`deliverability_analysis[dpv_confirmation]`
+
+            is `Y`, `S`, or `D`). For more detailed information about each record type, see
+
+            [US Verification Details](#tag/US-Verification-Types).
+
+            '
+        default_building_address:
+          type: boolean
+          description: 'Designates whether or not the address is the default address for a building containing multiple delivery points.
+
+            '
+        county:
+          $ref: '#/components/schemas/county'
+        county_fips:
+          $ref: '#/components/schemas/county_fips'
+        carrier_route:
+          type: string
+          description: 'A 4-character code assigned to a mail delivery route within a ZIP code.
+
+            '
+        carrier_route_type:
+          type: string
+          enum:
+          - city_delivery
+          - rural_route
+          - highway_contract
+          - po_box
+          - general_delivery
+          description: 'The type of `components[carrier_route]`. For more detailed information about
+
+            each carrier route type, see [US Verification Details](#tag/US-Verification-Types).
+
+            '
+        po_box_only_flag:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates the mailing facility for an address only supports PO Box deliveries and other forms of mail delivery are not available.
+
+            '
+        latitude:
+          type: number
+          format: float
+          description: 'A positive or negative decimal indicating the geographic latitude of the address, specifying the north-to-south position of a location. This should be used with `longitude` to pinpoint locations on a map. Will not be returned for undeliverable addresses or military addresses (state is `AA`, `AE`, or `AP`).
+
+            '
+          nullable: true
+        longitude:
+          type: number
+          format: float
+          description: 'A positive or negative decimal indicating the geographic longitude of the address, specifying the north-to-south position of a location. This should be used with `latitude` to pinpoint locations on a map. Will not be returned for undeliverable addresses or military addresses (state is `AA`, `AE`, or `AP`).
+
+            '
+          nullable: true
+    us_ver_id:
+      type: string
+      description: Unique identifier prefixed with `us_ver_`.
+      pattern: ^us_ver_[a-zA-Z0-9_]+$
+    city:
+      allOf:
+      - $ref: '#/components/schemas/city_no_description'
+      - type: string
+        description: The name of the city.
+    deliverability_analysis:
+      type: object
+      description: A nested object containing a breakdown of the deliverability of an address.
+      required:
+      - dpv_confirmation
+      - dpv_cmra
+      - dpv_vacant
+      - dpv_active
+      - dpv_inactive_reason
+      - dpv_throwback
+      - dpv_non_delivery_day_flag
+      - dpv_non_delivery_day_values
+      - dpv_no_secure_location
+      - dpv_door_not_accessible
+      - dpv_footnotes
+      - ews_match
+      - lacs_indicator
+      - lacs_return_code
+      - suite_return_code
+      properties:
+        dpv_confirmation:
+          type: string
+          enum:
+          - Y
+          - S
+          - D
+          - N
+          - ''
+          description: "Result of Delivery Point Validation (DPV), which determines whether or not the address is deliverable by the USPS. Possible values are:\n* `Y` –– The address is deliverable by the USPS.\n* `S` –– The address is deliverable by removing the provided secondary unit designator. This information may be incorrect or unnecessary.\n* `D` –– The address is deliverable to the building's default address but is missing a secondary unit designator and/or number.\n  There is a chance the mail will not reach the intended recipient.\n* `N` –– The address is not deliverable according to the USPS, but parts of the address are valid (such as the street and ZIP code).\n* `''` –– This address is not deliverable. No matching street could be found within the city or ZIP code.\n"
+          example: Y
+        dpv_cmra:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates whether or not the address is <a href="https://en.wikipedia.org/wiki/Commercial_mail_receiving_agency" target="_blank">CMRA-authorized</a>. Possible values are:
+
+            * `Y` –– Address is CMRA-authorized.
+
+            * `N` –– Address is not CMRA-authorized.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: N
+        dpv_vacant:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates that an address was once deliverable, but has become vacant and is no longer receiving deliveries. Possible values are:
+
+            * `Y` –– Address is vacant.
+
+            * `N` –– Address is not vacant.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: N
+        dpv_active:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Corresponds to the USPS field `dpv_no_stat`. Indicates that an address has been vacated in the recent past, and is no longer receiving deliveries. If it''s been unoccupied for 90+ days, or temporarily vacant, this will be flagged. Possible values are:
+
+            * `Y` –– Address is active.
+
+            * `N` –– Address is not active.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: Y
+        dpv_inactive_reason:
+          type: string
+          enum:
+          - '01'
+          - '02'
+          - '03'
+          - '04'
+          - '05'
+          - '06'
+          - ''
+          description: 'Indicates the reason why an address is vacant or no longer receiving deliveries. Possible values are:
+
+            * `01` –– Address does not receive mail from the USPS directly, but is serviced by a drop address.
+
+            * `02` –– Address not yet deliverable.
+
+            * `03` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            * `04` –– Address is a College, Military Zone, or other type.
+
+            * `05` –– Address no longer receives deliveries.
+
+            * `06` –– Address is missing required secondary information.
+
+            * `''''` –– A DPV match is not made or the address is active.
+
+            '
+          example: '06'
+        dpv_throwback:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates a street address for which mail is delivered to a PO Box. Possible values are:
+
+            * `Y` –– Address is a PO Box throwback delivery point.
+
+            * `N` –– Address is not a PO Box throwback delivery point.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: N
+        dpv_non_delivery_day_flag:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates whether deliveries are not performed on one or more days of the week at an address. Possible values are:
+
+            * `Y` –– Mail delivery does not occur on some days of the week.
+
+            * `N` –– Mail delivery occurs every day of the week.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: N
+        dpv_non_delivery_day_values:
+          type: string
+          description: 'Indicates days of the week (starting on Sunday) deliveries are not performed at an address. For example:
+
+            * `YNNNNNN` –– Mail delivery does not occur on Sunday''s.
+
+            * `NYNNNYN` –– Mail delivery does not occur on Monday''s or Friday''s.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string) or address receives mail every day of the week (`deliverability_analysis[dpv_non_delivery_day_flag]` is `N` or an empty string).
+
+            '
+          example: YNNNNNN
+        dpv_no_secure_location:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates packages to this address will not be left due to security concerns. Possible values are:
+
+            * `Y` –– Address does not have a secure mailbox.
+
+            * `N` –– Address has a secure mailbox.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: N
+        dpv_door_not_accessible:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates the door of the address is not accessible for mail delivery. Possible values are:
+
+            * `Y` –– Door is not accessible.
+
+            * `N` –– Door is accessible.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: N
+        dpv_footnotes:
+          type: array
+          description: 'An array of 2-character strings that gives more insight into how `deliverability_analysis[dpv_confirmation]` was determined. Will always include at least 1 string, and can include up to 3. For details, see [US Verification Details](#tag/US-Verification-Types).
+
+            '
+          items:
+            $ref: '#/components/schemas/dpv_footnote'
+          example:
+          - AA
+          - BB
+        ews_match:
+          type: boolean
+          description: 'Indicates whether or not an address has been flagged in the <a href="https://docs.informatica.com/data-engineering/data-engineering-quality/10-4-0/address-validator-port-reference/postal-carrier-certification-data-ports/early-warning-system-return-code.html" target="_blank">Early Warning System</a>, meaning the address is under development and not yet ready to receive mail. However, it should become available in a few months.
+
+            '
+          example: false
+        lacs_indicator:
+          type: string
+          enum:
+          - Y
+          - N
+          - ''
+          description: 'Indicates whether this address has been converted by
+
+            <a href="https://postalpro.usps.com/address-quality/lacslink" target="_blank">LACS<sup>Link</sup></a>.
+
+            LACS<sup>Link</sup> corrects outdated addresses into their modern counterparts.
+
+            Possible values are:
+
+            * `Y` –– New address produced with a matching record in LACS<sup>Link</sup>.
+
+            * `N` –– New address could not be produced with a matching record in LACS<sup>Link</sup>.
+
+            * `''''` –– A DPV match is not made (`deliverability_analysis[dpv_confirmation]` is `N` or an empty string).
+
+            '
+          example: ''
+        lacs_return_code:
+          type: string
+          description: 'A code indicating how `deliverability_analysis[lacs_indicator]` was determined.
+
+            Possible values are:
+
+            * `A` — A new address was produced because a match was found in LACS<sup>Link</sup>.
+
+            * `92` — A LACS<sup>Link</sup> record was matched after dropping secondary information.
+
+            * `14` — A match was found in LACS<sup>Link</sup>, but could not be converted to a deliverable address.
+
+            * `00` — A match was not found in LACS<sup>Link</sup>, and no new address was produced.
+
+            * `''''` — LACS<sup>Link</sup> was not attempted.
+
+            '
+          example: ''
+        suite_return_code:
+          type: string
+          enum:
+          - A
+          - '00'
+          - ''
+          description: 'A return code that indicates whether the address was matched and corrected by
+
+            <a href="https://postalpro.usps.com/address-quality-solutions/suitelink" target="_blank">Suite<sup>Link</sup></a>.
+
+            Suite<sup>Link</sup> attempts to provide secondary information to business addresses.
+
+            Possible values are:
+
+            * `A` –– A Suite<sup>Link</sup> match was found and secondary information was added.
+
+            * `00` –– A Suite<sup>Link</sup> match could not be found and no secondary information was added.
+
+            * `''''` –– Suite<sup>Link</sup> lookup was not attempted.
+
+            '
+          example: ''
+    dpv_footnote:
+      type: string
+      enum:
+      - AA
+      - A1
+      - BB
+      - CC
+      - N1
+      - F1
+      - G1
+      - U1
+      - M1
+      - M3
+      - P1
+      - P3
+      - R1
+      - R7
+      - RR
+      example: AA
+    us_verification:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/us_ver_id'
+        recipient:
+          $ref: '#/components/schemas/recipient'
+        primary_line:
+          $ref: '#/components/schemas/primary_line_us'
+        secondary_line:
+          $ref: '#/components/schemas/secondary_line'
+        urbanization:
+          $ref: '#/components/schemas/urbanization'
+        last_line:
+          type: string
+          description: 'Combination of the following applicable `components`:
+
+            * City (`city`)
+
+            * State (`state`)
+
+            * ZIP code (`zip_code`)
+
+            * ZIP+4 (`zip_code_plus_4`)
+
+            '
+        deliverability:
+          type: string
+          enum:
+          - deliverable
+          - deliverable_unnecessary_unit
+          - deliverable_incorrect_unit
+          - deliverable_missing_unit
+          - undeliverable
+          description: 'Summarizes the deliverability of the `us_verification` object.
+
+            For full details, see the `deliverability_analysis` field. Possible values are:
+
+            * `deliverable` – The address is deliverable by the USPS.
+
+            * `deliverable_unnecessary_unit` – The address is deliverable, but the secondary unit information is unnecessary.
+
+            * `deliverable_incorrect_unit` – The address is deliverable to the building''s default address but the secondary unit provided may not exist. There is a chance the mail will not reach the intended recipient.
+
+            * `deliverable_missing_unit` – The address is deliverable to the building''s default address but is missing secondary unit information. There is a chance the mail will not reach the intended recipient.
+
+            * `undeliverable` – The address is not deliverable according to the USPS.
+
+            '
+        valid_address:
+          type: boolean
+          enum:
+          - true
+          - false
+          description: 'This field indicates whether an address was found in a more comprehensive address dataset that includes sources from the USPS, open source mapping data, and our proprietary mail delivery data.
+
+            This field can be interpreted as a representation of whether an address is a real location or not. Additionally a valid address may contradict the deliverability field since an address can be a real valid location but the USPS may not deliver to that address.
+
+            '
+        components:
+          $ref: '#/components/schemas/us_components'
+        deliverability_analysis:
+          $ref: '#/components/schemas/deliverability_analysis'
+        lob_confidence_score:
+          $ref: '#/components/schemas/lob_confidence_score'
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - us_verification
+          default: us_verification
+    us_verifications:
+      type: object
+      required:
+      - addresses
+      - errors
+      properties:
+        addresses:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/us_verification'
+            - $ref: '#/components/schemas/error'
+        errors:
+          description: Indicates whether any errors occurred during the verification process.
+          type: boolean
+    city_no_description:
+      type: string
+      maxLength: 200
+    county_fips:
+      type: string
+      description: 'A 5-digit <a href="https://en.wikipedia.org/wiki/FIPS_county_code" target="_blank">FIPS county code</a> which uniquely identifies `components[county]`. It consists of a 2-digit state code and a 3-digit county code.
+
+        '
+      pattern: \d{5}
+    primary_number:
+      type: string
+      description: The numeric or alphanumeric part of an address preceding the street name. Often the house, building, or PO Box number.
+    recipient:
+      type: string
+      description: The intended recipient, typically a person's or firm's name.
+      nullable: true
+      maxLength: 500
+    county:
+      type: string
+      description: County name of the address city.
+    single_line_address:
+      type: object
+      required:
+      - address
+      properties:
+        address:
+          type: string
+          description: 'The entire address in one string (e.g., "210 King Street 94107"). _Does not support a recipient and will error when other payload parameters are provided._
+
+            '
+          maxLength: 500
+    us_verifications_writable:
+      oneOf:
+      - $ref: '#/components/schemas/multiple_components'
+      - $ref: '#/components/schemas/single_line_address'
+    secondary_line:
+      type: string
+      description: 'The secondary delivery line of the address. This field is typically empty but may contain information if `primary_line` is too long.
+
+        '
+      maxLength: 200
+    zip_code_type:
+      type: string
+      enum:
+      - standard
+      - po_box
+      - unique
+      - military
+      - ''
+      description: 'A description of the ZIP code type. For more detailed information about
+
+        each ZIP code type, see [US Verification Details](#tag/US-Verification-Types).
+
+        '
+    multiple_components:
+      allOf:
+      - anyOf:
+        - title: US verification object with `city` and `state`
+          required:
+          - city
+          - state
+        - title: US verification object with `zip_code`
+          required:
+          - zip_code
+      - type: object
+        required:
+        - primary_line
+        properties:
+          recipient:
+            $ref: '#/components/schemas/recipient'
+          primary_line:
+            $ref: '#/components/schemas/primary_line_us'
+          secondary_line:
+            $ref: '#/components/schemas/secondary_line'
+          urbanization:
+            $ref: '#/components/schemas/urbanization'
+          city:
+            allOf:
+            - $ref: '#/components/schemas/city_no_description'
+            - type: string
+              description: The name of the city. `city` and `state` are required if no `zip_code` is passed.
+          state:
+            type: string
+            description: The <a href="https://en.wikipedia.org/wiki/ISO_3166-2:US" target="_blank">ISO 3166-2</a> two letter code or subdivision name for the state. `city` and `state` are required if no `zip_code` is passed.
+            maxLength: 50
+          zip_code:
+            allOf:
+            - description: Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).
+            - $ref: '#/components/schemas/zip_code'
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    zip_code_plus_4:
+      type: string
+      pattern: ^\d{4}$
+    multiple_components_list:
+      type: object
+      required:
+      - addresses
+      properties:
+        addresses:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/multiple_components'
+    state:
+      type: string
+      description: 'The <a href="https://en.wikipedia.org/wiki/ISO_3166-2" target="_blank">ISO 3166-2</a> two letter code for the state.
+
+        '
+      maxLength: 2
+  responses:
+    bulk_us_verifications:
+      description: Returns a list of US verification objects.
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/us_verifications'
+          example:
+            addresses:
+            - id: us_ver_c7cb63d68f8d6
+              recipient: LOB.COM
+              primary_line: 210 KING ST
+              secondary_line: ''
+              urbanization: ''
+              last_line: SAN FRANCISCO CA 94107-1702
+              deliverability: deliverable
+              valid_address: true
+              components:
+                primary_number: '210'
+                street_predirection: ''
+                street_name: KING
+                street_suffix: ST
+                street_postdirection: ''
+                secondary_designator: ''
+                secondary_number: ''
+                pmb_designator: ''
+                pmb_number: ''
+                extra_secondary_designator: ''
+                extra_secondary_number: ''
+                city: SAN FRANCISCO
+                state: CA
+                zip_code: '94107'
+                zip_code_plus_4: '1702'
+                zip_code_type: standard
+                delivery_point_barcode: '941071728506'
+                address_type: commercial
+                record_type: street
+                default_building_address: false
+                county: SAN FRANCISCO
+                county_fips: '06075'
+                carrier_route: C032
+                carrier_route_type: city_delivery
+                po_box_only_flag: N
+                latitude: 37.77597542841264
+                longitude: -122.3929557343685
+              deliverability_analysis:
+                dpv_confirmation: Y
+                dpv_cmra: N
+                dpv_vacant: N
+                dpv_active: Y
+                dpv_inactive_reason: ''
+                dpv_throwback: N
+                dpv_non_delivery_day_flag: N
+                dpv_non_delivery_day_values: ''
+                dpv_no_secure_location: N
+                dpv_door_not_accessible: N
+                dpv_footnotes:
+                - AA
+                - BB
+                ews_match: false
+                lacs_indicator: ''
+                lacs_return_code: ''
+                suite_return_code: ''
+              lob_confidence_score:
+                score: 100
+                level: high
+              object: us_verification
+            errors: false
+    us_verifications_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: primary_line is required or address is required
+              status_code: 422
+    us_verifications:
+      description: Returns a US verification object.
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/us_verification'
+          examples:
+            basic:
+              value:
+                id: us_ver_c7cb63d68f8d6
+                recipient: LOB.COM
+                primary_line: 210 KING ST
+                secondary_line: ''
+                urbanization: ''
+                last_line: SAN FRANCISCO CA 94107-1702
+                deliverability: deliverable
+                valid_address: true
+                components:
+                  primary_number: '210'
+                  street_predirection: ''
+                  street_name: KING
+                  street_suffix: ST
+                  street_postdirection: ''
+                  secondary_designator: ''
+                  secondary_number: ''
+                  pmb_designator: ''
+                  pmb_number: ''
+                  extra_secondary_designator: ''
+                  extra_secondary_number: ''
+                  city: SAN FRANCISCO
+                  state: CA
+                  zip_code: '94107'
+                  zip_code_plus_4: '1702'
+                  zip_code_type: standard
+                  delivery_point_barcode: '941071702108'
+                  address_type: commercial
+                  record_type: street
+                  default_building_address: false
+                  county: SAN FRANCISCO
+                  county_fips: '06075'
+                  carrier_route: C032
+                  carrier_route_type: city_delivery
+                  po_box_only_flag: N
+                  latitude: 37.77597542841264
+                  longitude: -122.3929557343685
+                deliverability_analysis:
+                  dpv_confirmation: Y
+                  dpv_cmra: N
+                  dpv_vacant: N
+                  dpv_active: Y
+                  dpv_inactive_reason: ''
+                  dpv_throwback: N
+                  dpv_non_delivery_day_flag: N
+                  dpv_non_delivery_day_values: ''
+                  dpv_no_secure_location: N
+                  dpv_door_not_accessible: N
+                  dpv_footnotes:
+                  - AA
+                  - BB
+                  ews_match: false
+                  lacs_indicator: ''
+                  lacs_return_code: ''
+                  suite_return_code: ''
+                lob_confidence_score:
+                  score: 100
+                  level: high
+                object: us_verification
+            test:
+              value:
+                id: us_ver_po_box
+                recipient: TEST KEYS DO NOT VERIFY ADDRESSES
+                primary_line: PO BOX 720114
+                secondary_line: ''
+                urbanization: ''
+                last_line: SAN FRANCISCO CA 94172-0114
+                deliverability: deliverable
+                valid_address: true
+                components:
+                  primary_number: '720114'
+                  street_predirection: ''
+                  street_name: PO BOX
+                  street_suffix: ''
+                  street_postdirection: ''
+                  secondary_designator: ''
+                  secondary_number: ''
+                  pmb_designator: ''
+                  pmb_number: ''
+                  extra_secondary_designator: ''
+                  extra_secondary_number: ''
+                  city: SAN FRANCISCO
+                  state: CA
+                  zip_code: '94172'
+                  zip_code_plus_4: '0114'
+                  zip_code_type: po_box
+                  delivery_point_barcode: '941720114146'
+                  address_type: residential
+                  record_type: po_box
+                  default_building_address: false
+                  county: SAN FRANCISCO
+                  county_fips: '06075'
+                  carrier_route: BOO2
+                  carrier_route_type: po_box
+                  po_box_only_flag: ''
+                  latitude: 37.75971500260575
+                  longitude: -122.69397561170017
+                deliverability_analysis:
+                  dpv_confirmation: Y
+                  dpv_cmra: N
+                  dpv_vacant: N
+                  dpv_active: Y
+                  dpv_inactive_reason: ''
+                  dpv_throwback: ''
+                  dpv_non_delivery_day_flag: ''
+                  dpv_non_delivery_day_values: ''
+                  dpv_no_secure_location: ''
+                  dpv_door_not_accessible: ''
+                  dpv_footnotes:
+                  - AA
+                  - BB
+                  ews_match: false
+                  lacs_indicator: ''
+                  lacs_return_code: ''
+                  suite_return_code: ''
+                object: us_verification
+  headers:
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

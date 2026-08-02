@@ -1,0 +1,27 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Lob
+  version: 1.0.0
+extends: openapi/lobcom-openapi-original.yml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: lobcom
+      x-apievangelist-category:
+        - Direct Mail
+        - Address Verification
+        - Print
+      x-apievangelist-auth: http-basic-api-key
+      x-apievangelist-idempotency: Idempotency-Key
+      x-apievangelist-pagination: cursor
+  - target: $.info
+    update:
+      x-apievangelist-artifacts:
+        authentication: authentication/lobcom-authentication.yml
+        conventions: conventions/lobcom-conventions.yml
+        errors: errors/lobcom-problem-types.yml
+        error_codes: errors/lobcom-error-codes.yml
+        lifecycle: lifecycle/lobcom-lifecycle.yml
+        webhooks: asyncapi/lobcom-webhooks.yml
+        data_model: data-model/lobcom-data-model.yml
+        packages: packages/lobcom-packages.yml

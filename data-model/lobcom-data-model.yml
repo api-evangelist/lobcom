@@ -1,0 +1,111 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/lobcom-openapi-original.yml ($ref links, id-reference fields, path id params)
+id_prefixes:
+  address: adr_
+  postcard: psc_
+  letter: ltr_
+  check: chk_
+  self_mailer: sfm_
+  buckslip: bck_
+  bank_account: bank_
+  billing_group: bg_
+  card: card_
+  campaign: cmp_
+  creative: crv_
+  template: tmpl_
+  template_version: vrsn_
+  upload: upl_
+  export: ex_
+  order: ord_
+  event: evnt_
+entities:
+  - name: address
+    description: A saved mailing address (address book entry).
+  - name: postcard
+    description: A postcard mail piece.
+  - name: letter
+    description: A letter mail piece.
+  - name: check
+    description: A physical check drawn on a verified bank account.
+  - name: self_mailer
+    description: A self-mailer piece.
+  - name: snap_pack
+    description: A snap-pack mail piece.
+  - name: booklet
+    description: A booklet mail piece.
+  - name: buckslip
+    description: A buckslip insert; ordered via buckslip orders.
+  - name: card
+    description: A plastic/paper card product; ordered via card orders.
+  - name: bank_account
+    description: A bank account used to fund checks.
+  - name: billing_group
+    description: Groups mail pieces for billing/cost attribution.
+  - name: template
+    description: A reusable HTML template.
+  - name: template_version
+    description: A version of a template.
+  - name: campaign
+    description: A direct-mail campaign.
+  - name: creative
+    description: A campaign creative (mail-piece design).
+  - name: upload
+    description: An audience upload for a campaign.
+  - name: export
+    description: An export generated from an upload.
+  - name: event
+    description: A tracking/system event delivered via webhooks.
+relationships:
+  - from: postcard
+    to: address
+    type: belongs_to
+    via: [to, from]
+  - from: letter
+    to: address
+    type: belongs_to
+    via: [to, from]
+  - from: check
+    to: address
+    type: belongs_to
+    via: [to, from]
+  - from: check
+    to: bank_account
+    type: belongs_to
+    via: bank_account
+  - from: self_mailer
+    to: address
+    type: belongs_to
+    via: [to, from]
+  - from: template
+    to: template_version
+    type: has_many
+    via: versions
+  - from: template_version
+    to: template
+    type: belongs_to
+    via: tmpl_id
+  - from: campaign
+    to: creative
+    type: has_many
+    via: creatives
+  - from: campaign
+    to: upload
+    type: has_many
+    via: uploads
+  - from: upload
+    to: export
+    type: has_many
+    via: exports
+  - from: buckslip
+    to: order
+    type: has_many
+    via: orders
+  - from: card
+    to: order
+    type: has_many
+    via: orders
+  - from: event
+    to: postcard
+    type: references
+    via: reference_id

@@ -1,0 +1,46 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.lob.com/ (SDKs and Tools) + public package registries
+packages:
+  - language: typescript
+    registry: npm
+    name: "@lob/lob-typescript-sdk"
+    url: https://www.npmjs.com/package/@lob/lob-typescript-sdk
+    install: npm install @lob/lob-typescript-sdk
+    source: https://github.com/lob/lob-typescript-sdk
+    official: true
+  - language: python
+    registry: pypi
+    name: lob
+    url: https://pypi.org/project/lob/
+    install: pip install lob
+    source: https://github.com/lob/lob-python
+    official: true
+  - language: ruby
+    registry: rubygems
+    name: lob
+    url: https://rubygems.org/gems/lob
+    install: gem install lob
+    source: https://github.com/lob/lob-ruby
+    official: true
+  - language: php
+    registry: packagist
+    name: lob/lob-php
+    url: https://packagist.org/packages/lob/lob-php
+    install: composer require lob/lob-php
+    source: https://github.com/lob/lob-php
+    official: true
+  - language: csharp
+    registry: nuget
+    name: lob.net
+    url: https://www.nuget.org/packages/lob.net
+    install: dotnet add package lob.net
+    source: https://github.com/lob/lob-dotnet
+    official: true
+  - language: java
+    registry: maven
+    name: com.lob:lob-java
+    url: https://central.sonatype.com/artifact/com.lob/lob-java
+    install: "implementation 'com.lob:lob-java:13.4.6'"
+    source: https://github.com/lob/lob-java
+    official: true

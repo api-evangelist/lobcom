@@ -1,0 +1,39 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/lobcom-openapi-original.yml (4xx/5xx responses)
+format: custom
+envelope:
+  shape: '{ "error": { "code": string, "message": string, "status_code": int } }'
+  content_type: application/json
+  note: >
+    Lob does NOT use RFC 9457 application/problem+json. Errors are returned in a
+    Lob-specific envelope keyed on `error` with `code`, `message`, and `status_code`.
+    See errors/lobcom-error-codes.yml for the full code registry.
+problems:
+  - status: 401
+    title: Unauthorized
+    detail: Missing/invalid API key, unverified payment method, or unauthorized token.
+  - status: 403
+    title: Forbidden
+    detail: Publishable key used where a secret key is required, feature limit reached, or billing address required.
+  - status: 404
+    title: Not Found
+    detail: The requested resource or endpoint does not exist.
+  - status: 408
+    title: Request Timeout
+    detail: The request took too long; retry.
+  - status: 409
+    title: Conflict
+    detail: The operation would leave data in a conflicted state.
+  - status: 422
+    title: Unprocessable Entity
+    detail: Validation error — invalid input, unsupported version, or a business-rule violation. The most common error class.
+  - status: 429
+    title: Too Many Requests
+    detail: Rate limit exceeded (rate_limit_exceeded). Slow down; honor ratelimit-reset.
+  - status: 500
+    title: Internal Server Error
+    detail: An error occurred on Lob's servers; retry.
+  - status: 503
+    title: Service Unavailable
+    detail: Lob servers temporarily unavailable; retry.
