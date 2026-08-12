@@ -685,12 +685,816 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/lobcom-zip-lookups-api-openapi.yml
+- aid: lobcom:lobcom-events-api
+  name: Lob.com Events API
+  description: >-
+    When various notable things happen within the Lob architecture, Events will be created. To get these
+    events sent to your server
+
+    automatically when they occur, you can set up [Webhooks](#tag/Webhooks).
+
+
+    <h3>Postcards</h3>
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">EVENT TYPE</th>
+        <th style="white-space: nowrap">LIVE-ONLY</th>
+        <th style="white-space: nowrap">WHEN EVENT TYPE OCCURS</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.created</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard is successfully created (Lob returns a 200 status code).</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.rejected</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard was not successfully created (Usually happens when
+    one or more postcards fail the creation step during a batch request)</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.rendered_pdf</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard's PDF proof is successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.rendered_thumbnails</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard's thumbnails are successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.deleted</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard is successfully canceled.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.mailed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A postcard receives a "Mailed" <a href='#operation/tracking_event'>tracking
+    event</a>. Only enabled for certain <a href='https://dashboard.lob.com/#/settings/editions' target="_blank">Print
+    & Mail Editions</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.in_transit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A postcard receives an "In Transit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.in_local_area</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A postcard receives an "In Local Area" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.processed_for_delivery</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A postcard receives a "Processed for Delivery" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.delivered</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard receives a "Delivered" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.failed</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard receives a "Failed" <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors">rendering
+    error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.re-routed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A postcard receives a "Re-Routed" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.returned_to_sender</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A postcard receives a "Returned to Sender" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.international_exit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A postcard receives a "International Exit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.viewed</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A postcard QR code or URL was scanned or viewed by the recipient.
+    </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.informed_delivery.email_sent</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was sent to the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.informed_delivery.email_opened</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was opened by the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>postcard.informed_delivery.email_clicked_through</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">The link in an informed delivery email was clicked on. </td>
+      </tr>
+    </table>
+
+
+    <h3>Self Mailers</h3>
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">EVENT TYPE</th>
+        <th style="white-space: nowrap">LIVE-ONLY</th>
+        <th style="white-space: nowrap">WHEN EVENT TYPE OCCURS</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.created</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A self_mailer is successfully created (Lob returns a 200 status
+    code).</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.rejected</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A self_mailer was not successfully created (Usually happens when
+    one or more self_mailers fail the creation step during a batch request)</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.rendered_pdf</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A self_mailer's PDF proof is successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.rendered_thumbnails</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A self_mailer's thumbnails are successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.deleted</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A self_mailer is successfully canceled.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.mailed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives a "Mailed" <a href='#operation/tracking_event'>tracking
+    event</a>. Only enabled for certain
+        <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Editions</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.in_transit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives an "In Transit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.in_local_area</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives an "In Local Area" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.processed_for_delivery</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives a "Processed for Delivery" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.delivered</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives an "Delivered" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.failed</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A self_mailer receives an "Failed" <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors">rendering
+    error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.re-routed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives a "Re-Routed" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.returned_to_sender</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives a "Returned to Sender" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.international_exit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A self_mailer receives an "International Exit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.viewed</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A self_mailer's QR code or URL was scanned or viewed by the recipient.
+    </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.informed_delivery.email_sent</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was sent to the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.informed_delivery.email_opened</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was opened by the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>self_mailer.informed_delivery.email_clicked_through</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">The link in an informed delivery email was clicked on. </td>
+      </tr>
+    </table>
+
+
+    <h3>Letters</h3>
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">EVENT TYPE</th>
+        <th style="white-space: nowrap">LIVE-ONLY</th>
+        <th style="white-space: nowrap">WHEN EVENT TYPE OCCURS</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.created</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A letter is successfully created (Lob returns a 200 status code).</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.rejected</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A letter was not successfully created (Usually happens when one
+    or more letters fail the creation step during a batch request)</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.rendered_pdf</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A letter's PDF proof is successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.rendered_thumbnails</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A letter's thumbnails are successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.deleted</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A letter is successfully canceled.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.mailed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives a "Mailed" <a href='#operation/tracking_event'>tracking
+    event</a>. Only enabled for certain
+        <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Editions</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.in_transit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives an "In Transit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.in_local_area</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives an "In Local Area" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.processed_for_delivery</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives a "Processed for Delivery" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.delivered</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives a "Delivered" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.failed</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A letter receives a "Failed" <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors">rendering
+    error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.re-routed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives a "Re-Routed" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.returned_to_sender</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives a "Returned to Sender" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.international_exit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A letter receives a "International Exit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.viewed</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A letter's QR code or URL was scanned or viewed by the recipient.
+    </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.mailed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives a "Mailed" <a href='#operation/tracking_event'>tracking
+    event</a>. Only enabled for certain
+        <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Editions</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.in_transit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives an "In Transit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.in_local_area</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives an "In Transit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.processed_for_delivery</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives a "Processed for Delivery" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.re-routed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives a "Re-Routed" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.returned_to_sender</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives a "Returned to Sender" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.delivered</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives a "Delivered" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.pickup_available</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives a "Pickup Available" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.certified.issue</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A certified letter receives an "Issue" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.return_envelope.created</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A return envelope is created (occurs simultaneously with letter
+    creation).</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.return_envelope.in_transit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A return envelope receives an "In Transit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.return_envelope.in_local_area</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A return envelope receives an "In Local Area" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.return_envelope.processed_for_delivery</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A return envelope receives a "Processed for Delivery" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.return_envelope.re-routed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A return envelope receives a "Re-Routed" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.return_envelope.returned_to_sender</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A return envelope receives a "Returned to Sender" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.informed_delivery.email_sent</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was sent to the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.informed_delivery.email_opened</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was opened by the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>letter.informed_delivery.email_clicked_through</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">The link in an informed delivery email was clicked on. </td>
+      </tr>
+    </table>
+
+
+    <h3>Checks</h3>
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">EVENT TYPE</th>
+        <th style="white-space: nowrap">LIVE-ONLY</th>
+        <th style="white-space: nowrap">WHEN EVENT TYPE OCCURS</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.created</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A check is successfully created (Lob returns a 200 status code).</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.rejected</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A check was not successfully created (Usually happens when one
+    or more checks fail the creation step during a batch request)</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.rendered_pdf</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A check's PDF proof is successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.rendered_thumbnails</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A check's thumbnails are successfully rendered.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.deleted</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A check is successfully canceled.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.mailed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A check receives a "Mailed" <a href='#operation/tracking_event'>tracking
+    event</a>. Only enabled for certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print
+    & Mail Editions</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.in_transit</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A check receives an "In Transit" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.in_local_area</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A check receives an "In Local Area" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.processed_for_delivery</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A check receives a "Processed for Delivery" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.delivered</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A check receives a "Delivered" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.failed</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A check receives a "Failed" <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors">rendering
+    error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.re-routed</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A check receives a "Re-Routed" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.returned_to_sender</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">A check receives a "Returned to Sender" <a href='#operation/tracking_event'>tracking
+    event</a>.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.informed_delivery.email_sent</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was sent to the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.informed_delivery.email_opened</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">An informed delivery email was opened by the recipient. </td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>check.informed_delivery.email_clicked_through</code></td>
+        <td style="white-space: nowrap"><code>true</code></td>
+        <td style="white-space: nowrap">The link in an informed delivery email was clicked on. </td>
+      </tr>
+    </table>
+
+
+    <h3>Addresses</h3>
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">EVENT TYPE</th>
+        <th style="white-space: nowrap">LIVE-ONLY</th>
+        <th style="white-space: nowrap">WHEN EVENT TYPE OCCURS</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>address.created</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">An address is successfully created (Lob returns a 200 status code).</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>address.deleted</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">An address is successfully deleted.</td>
+      </tr>
+    </table>
+
+
+    <h3>Bank Accounts</h3>
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">EVENT TYPE</th>
+        <th style="white-space: nowrap">LIVE-ONLY</th>
+        <th style="white-space: nowrap">WHEN EVENT TYPE OCCURS</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>bank_account.created</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A bank account is successfully created (Lob returns a 200 status
+    code).</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>bank_account.deleted</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A bank account is successfully deleted.</td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap"><code>bank_account.verified</code></td>
+        <td style="white-space: nowrap"><code>false</code></td>
+        <td style="white-space: nowrap">A bank account is successfully verified.</td>
+      </tr>
+    </table>
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-events-api-openapi.yml
+- aid: lobcom:lobcom-tracking-events-api
+  name: Lob.com Tracking Events API
+  description: >-
+    As mailpieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes
+    these mail scans to generate tracking events.
+
+
+    <h3>Certified Tracking Event Details</h3>
+
+
+    Letters sent with USPS Certified Mail are fully tracked by USPS, and
+
+    therefore their [tracking events](#operation/tracking_event) have an
+
+    additional `details` object with more detailed information about the
+
+    tracking event. The following table shows the potential values for
+
+    the fields in the `details` object mapped to the tracking event `name`.
+
+
+    <table>
+      <tr>
+        <th style="white-space: nowrap">NAME</th>
+        <th style="white-space: nowrap">EVENT</th>
+        <th style="white-space: nowrap">DESCRIPTION</th>
+        <th style="white-space: nowrap">ACTION REQUIRED</th>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Mailed</td>
+        <td style="white-space: nowrap"><code>package_accepted</code></td>
+        <td>Package has been accepted into the carrier network for delivery.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">In Transit</td>
+        <td style="white-space: nowrap"><code>package_arrived</code></td>
+        <td>Package has arrived at an intermediate location in the carrier network.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">In Transit</td>
+        <td style="white-space: nowrap"><code>package_departed</code></td>
+        <td>Package has departed from an intermediate location in the carrier network.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">In Transit</td>
+        <td style="white-space: nowrap"><code>package_processing</code></td>
+        <td>Package is processing at an intermediate location in the carrier network.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">In Transit</td>
+        <td style="white-space: nowrap"><code>package_processed</code></td>
+        <td>Package has been processed at an intermediate location.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">In Local Area</td>
+        <td style="white-space: nowrap"><code>package_in_local_area</code></td>
+        <td>Package is at a location near the end destination.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Processed For Delivery</td>
+        <td style="white-space: nowrap"><code>delivery_scheduled</code></td>
+        <td>Package is scheduled for delivery.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Processed For Delivery</td>
+        <td style="white-space: nowrap"><code>out_for_delivery</code></td>
+        <td>Package is out for delivery.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Pickup Available</td>
+        <td style="white-space: nowrap"><code>pickup_available</code></td>
+        <td>Package is available for pickup at carrier location.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Delivered</td>
+        <td style="white-space: nowrap"><code>delivered</code></td>
+        <td>Package has been delivered.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Re-Routed</td>
+        <td style="white-space: nowrap"><code>package_forwarded</code></td>
+        <td>Package has been forwarded.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Returned to Sender</td>
+        <td style="white-space: nowrap"><code>returned_to_sender</code></td>
+        <td>Package is to be returned to sender.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>address_issue</code></td>
+        <td>Address information is incorrect. Contact carrier to ensure delivery.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>contact_carrier</code></td>
+        <td>Contact the carrier for more information.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>delayed</code></td>
+        <td>Delivery of package is delayed.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>delivery_attempted</code></td>
+        <td>Delivery of package has been attempted. Contact carrier to ensure delivery.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>delivery_rescheduled</code></td>
+        <td>Delivery of package has been rescheduled.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>location_inaccessible</code></td>
+        <td>Delivery location inaccessible to carrier. Contact carrier to ensure delivery.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>notice_left</code></td>
+        <td>Carrier left notice during attempted delivery. Follow carrier instructions on notice.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>package_damaged</code></td>
+        <td>Package has been damaged. Contact carrier for more details.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>package_disposed</code></td>
+        <td>Package has been disposed.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>package_held</code></td>
+        <td>Package held at carrier location. Contact carrier for more details.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>package_lost</code></td>
+        <td>Package has been lost. Contact carrier for more details.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>package_unclaimed</code></td>
+        <td>Package is unclaimed.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>package_undeliverable</code></td>
+        <td>Package is not able to be delivered.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>reschedule_delivery</code></td>
+        <td>Contact carrier to reschedule delivery.</td>
+        <td style="white-space: nowrap"><code>true</code></td>
+      </tr>
+      <tr>
+        <td style="white-space: nowrap">Issue</td>
+        <td style="white-space: nowrap"><code>other</code></td>
+        <td>Unrecognized carrier status.</td>
+        <td style="white-space: nowrap"><code>false</code></td>
+      </tr>
+    </table>
+
+    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
+  humanURL: https://docs.lob.com/
+  baseURL: https://api.lob.com/v1
+  tags:
+  - Tracking Events
+  properties:
+  - type: OpenAPI
+    url: openapi/lobcom-tracking-events-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/lobcom-openapi-overlay.yaml
 # --- identity / link properties ---
 - type: DeveloperPortal
   url: https://docs.lob.com/
