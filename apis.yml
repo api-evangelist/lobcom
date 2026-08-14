@@ -30,7 +30,7 @@ accessModel:
   method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-20'
+modified: '2026-08-13'
 image: https://www.lob.com/favicon.ico
 tags:
 - Company
@@ -1519,7 +1519,7 @@ common:
 - type: TermsOfService
   url: https://www.lob.com/legal/terms
 - type: PrivacyPolicy
-  url: https://www.lob.com/legal/privacy
+  url: https://www.lob.com/privacy
 - type: StatusPage
   url: https://status.lob.com/
 # --- artifacts ---
@@ -1527,8 +1527,6 @@ common:
   url: packages/lobcom-packages.yml
 - type: SDKs
   url: packages/lobcom-packages.yml
-- type: WellKnown
-  url: well-known/lobcom-well-known.yml
 - type: MCPServer
   url: mcp/lobcom-mcp.yml
 - type: LLMsTxt
@@ -1564,8 +1562,26 @@ common:
   url: security/lobcom-domain-security.yml
 - type: AgenticAccess
   url: agentic-access/lobcom-agentic-access.yml
+- type: Postman
+  url: https://raw.githubusercontent.com/lob/lob-openapi/main/dist/lob-api-postman.json
+- type: GitHubRepository
+  url: https://github.com/lob/lob-openapi
+- type: HelpCenter
+  url: https://help.lob.com/
+- type: Plans
+  url: plans/lobcom-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/lobcom-rate-limits.yml
+- type: Components
+  url: components/lobcom-components.yml
+- type: TrustCenter
+  url: security/lobcom-trust-center.yml
+- type: Compliance
+  url: security/lobcom-trust-center.yml
+- type: ToolCrosswalk
+  url: mcp/lobcom-tool-crosswalk.yml
 x-enrichment:
-  date: '2026-07-20'
+  date: '2026-08-13'
   status: enriched
-  artifacts_added: 19
+  artifacts_added: 5
   pass: local-v1
