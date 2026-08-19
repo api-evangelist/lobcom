@@ -1,0 +1,144 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Bank Accounts API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Bank Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/bank_accounts/:bank_id/verify",
+            "params": [
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the bank account to be verified"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify a bank account in order to create a check.\n\nCheck the `microdeposit_type` field returned by `GET /v1/bank_accounts/:id` to determine which parameter to submit:\n- `amounts` — provide the two microdeposit amounts (in cents) that appeared\n  in the bank account statement.\n\n- `descriptor_code` — provide the 6-character code (beginning with `SM`)\n  from the bank statement descriptor of the single $0.01 microdeposit.\n\n\nSubmitting the wrong parameter type for the account's `microdeposit_type` wil"
+        },
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/bank_accounts/:bank_id",
+            "params": [
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the bank account"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing bank account. You need only supply the unique bank account identifier that was returned upon bank account creation."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/bank_accounts/:bank_id",
+            "params": [
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the bank account"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a bank account. It cannot be undone."
+        },
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/bank_accounts",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              },
+              {
+                "name": "date_created",
+                "value": "",
+                "type": "query",
+                "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+              },
+              {
+                "name": "metadata",
+                "value": "",
+                "type": "query",
+                "description": "Filter by metadata key-value pair`."
+              }
+            ]
+          },
+          "docs": "Returns a list of your bank accounts. The bank accounts are returned sorted by creation date, with the most recently created bank accounts appearing first."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/bank_accounts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new bank account with the provided properties. Bank accounts created in live mode will need to be verified via micro deposits before being able to send live checks. The deposits will appear in the bank account in 2-3 business days and have the description \"VERIFICATION\"."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

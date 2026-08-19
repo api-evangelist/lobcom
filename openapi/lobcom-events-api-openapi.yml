@@ -1,0 +1,353 @@
+openapi: 3.2.0
+info:
+  title: Lob Events API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Events
+  description: "When various notable things happen within the Lob architecture, Events will be created. To get these events sent to your server\nautomatically when they occur, you can set up [Webhooks](#tag/Webhooks).\n\n<h3>Postcards</h3>\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">EVENT TYPE</th>\n    <th style=\"white-space: nowrap\">LIVE-ONLY</th>\n    <th style=\"white-space: nowrap\">WHEN EVENT TYPE OCCURS</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.created</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard is successfully created (Lob returns a 200 status code).</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.rejected</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard was not successfully created (Usually happens when one or more postcards fail the creation step during a batch request)</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.rendered_pdf</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard's PDF proof is successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.rendered_thumbnails</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard's thumbnails are successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.deleted</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard is successfully canceled.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.mailed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives a \"Mailed\" <a href='#operation/tracking_event'>tracking event</a>. Only enabled for certain <a href='https://dashboard.lob.com/#/settings/editions' target=\"_blank\">Print & Mail Editions</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.in_transit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives an \"In Transit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.in_local_area</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives an \"In Local Area\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.processed_for_delivery</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives a \"Processed for Delivery\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.delivered</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives a \"Delivered\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.failed</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives a \"Failed\" <a href=\"https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors\">rendering error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.re-routed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives a \"Re-Routed\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.returned_to_sender</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives a \"Returned to Sender\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.international_exit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A postcard receives a \"International Exit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.viewed</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A postcard QR code or URL was scanned or viewed by the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.informed_delivery.email_sent</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was sent to the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.informed_delivery.email_opened</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was opened by the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>postcard.informed_delivery.email_clicked_through</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">The link in an informed delivery email was clicked on. </td>\n  </tr>\n</table>\n\n<h3>Self Mailers</h3>\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">EVENT TYPE</th>\n    <th style=\"white-space: nowrap\">LIVE-ONLY</th>\n    <th style=\"white-space: nowrap\">WHEN EVENT TYPE OCCURS</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.created</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer is successfully created (Lob returns a 200 status code).</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.rejected</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer was not successfully created (Usually happens when one or more self_mailers fail the creation step during a batch request)</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.rendered_pdf</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer's PDF proof is successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.rendered_thumbnails</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer's thumbnails are successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.deleted</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer is successfully canceled.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.mailed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives a \"Mailed\" <a href='#operation/tracking_event'>tracking event</a>. Only enabled for certain\n    <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Editions</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.in_transit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives an \"In Transit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.in_local_area</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives an \"In Local Area\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.processed_for_delivery</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives a \"Processed for Delivery\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.delivered</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives an \"Delivered\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.failed</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives an \"Failed\" <a href=\"https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors\">rendering error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.re-routed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives a \"Re-Routed\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.returned_to_sender</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives a \"Returned to Sender\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.international_exit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer receives an \"International Exit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.viewed</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A self_mailer's QR code or URL was scanned or viewed by the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.informed_delivery.email_sent</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was sent to the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.informed_delivery.email_opened</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was opened by the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>self_mailer.informed_delivery.email_clicked_through</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">The link in an informed delivery email was clicked on. </td>\n  </tr>\n</table>\n\n<h3>Letters</h3>\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">EVENT TYPE</th>\n    <th style=\"white-space: nowrap\">LIVE-ONLY</th>\n    <th style=\"white-space: nowrap\">WHEN EVENT TYPE OCCURS</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.created</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A letter is successfully created (Lob returns a 200 status code).</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.rejected</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A letter was not successfully created (Usually happens when one or more letters fail the creation step during a batch request)</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.rendered_pdf</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A letter's PDF proof is successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.rendered_thumbnails</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A letter's thumbnails are successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.deleted</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A letter is successfully canceled.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.mailed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives a \"Mailed\" <a href='#operation/tracking_event'>tracking event</a>. Only enabled for certain\n    <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Editions</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.in_transit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives an \"In Transit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.in_local_area</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives an \"In Local Area\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.processed_for_delivery</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives a \"Processed for Delivery\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.delivered</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives a \"Delivered\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.failed</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A letter receives a \"Failed\" <a href=\"https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors\">rendering error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.re-routed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives a \"Re-Routed\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.returned_to_sender</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives a \"Returned to Sender\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.international_exit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A letter receives a \"International Exit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.viewed</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A letter's QR code or URL was scanned or viewed by the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.mailed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives a \"Mailed\" <a href='#operation/tracking_event'>tracking event</a>. Only enabled for certain\n    <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Editions</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.in_transit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives an \"In Transit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.in_local_area</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives an \"In Transit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.processed_for_delivery</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives a \"Processed for Delivery\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.re-routed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives a \"Re-Routed\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.returned_to_sender</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives a \"Returned to Sender\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.delivered</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives a \"Delivered\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.pickup_available</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives a \"Pickup Available\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.certified.issue</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A certified letter receives an \"Issue\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.return_envelope.created</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A return envelope is created (occurs simultaneously with letter creation).</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.return_envelope.in_transit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A return envelope receives an \"In Transit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.return_envelope.in_local_area</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A return envelope receives an \"In Local Area\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.return_envelope.processed_for_delivery</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A return envelope receives a \"Processed for Delivery\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.return_envelope.re-routed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A return envelope receives a \"Re-Routed\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.return_envelope.returned_to_sender</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A return envelope receives a \"Returned to Sender\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.informed_delivery.email_sent</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was sent to the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.informed_delivery.email_opened</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was opened by the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>letter.informed_delivery.email_clicked_through</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">The link in an informed delivery email was clicked on. </td>\n  </tr>\n</table>\n\n<h3>Checks</h3>\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">EVENT TYPE</th>\n    <th style=\"white-space: nowrap\">LIVE-ONLY</th>\n    <th style=\"white-space: nowrap\">WHEN EVENT TYPE OCCURS</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.created</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A check is successfully created (Lob returns a 200 status code).</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.rejected</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A check was not successfully created (Usually happens when one or more checks fail the creation step during a batch request)</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.rendered_pdf</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A check's PDF proof is successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.rendered_thumbnails</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A check's thumbnails are successfully rendered.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.deleted</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A check is successfully canceled.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.mailed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A check receives a \"Mailed\" <a href='#operation/tracking_event'>tracking event</a>. Only enabled for certain <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Editions</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.in_transit</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A check receives an \"In Transit\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.in_local_area</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A check receives an \"In Local Area\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.processed_for_delivery</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A check receives a \"Processed for Delivery\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.delivered</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A check receives a \"Delivered\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.failed</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A check receives a \"Failed\" <a href=\"https://help.lob.com/print-and-mail/designing-mail-creatives/creative-formatting/rendering-errors\">rendering error</a> or <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.re-routed</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A check receives a \"Re-Routed\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.returned_to_sender</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">A check receives a \"Returned to Sender\" <a href='#operation/tracking_event'>tracking event</a>.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.informed_delivery.email_sent</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was sent to the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.informed_delivery.email_opened</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">An informed delivery email was opened by the recipient. </td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>check.informed_delivery.email_clicked_through</code></td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n    <td style=\"white-space: nowrap\">The link in an informed delivery email was clicked on. </td>\n  </tr>\n</table>\n\n<h3>Addresses</h3>\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">EVENT TYPE</th>\n    <th style=\"white-space: nowrap\">LIVE-ONLY</th>\n    <th style=\"white-space: nowrap\">WHEN EVENT TYPE OCCURS</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>address.created</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">An address is successfully created (Lob returns a 200 status code).</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>address.deleted</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">An address is successfully deleted.</td>\n  </tr>\n</table>\n\n<h3>Bank Accounts</h3>\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">EVENT TYPE</th>\n    <th style=\"white-space: nowrap\">LIVE-ONLY</th>\n    <th style=\"white-space: nowrap\">WHEN EVENT TYPE OCCURS</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>bank_account.created</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A bank account is successfully created (Lob returns a 200 status code).</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>bank_account.deleted</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A bank account is successfully deleted.</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>bank_account.verified</code></td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n    <td style=\"white-space: nowrap\">A bank account is successfully verified.</td>\n  </tr>\n</table>\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n"
+paths: {}
+webhooks:
+  events:
+    post:
+      summary: Events
+      description: Information about an event
+      operationId: event
+      tags:
+      - Events
+      responses:
+        '200':
+          $ref: '#/components/responses/events'
+components:
+  schemas:
+    self_mailer_types:
+      type: string
+      description: Unique identifier referring to status of self mailer
+      enum:
+      - self_mailer.created
+      - self_mailer.rejected
+      - self_mailer.rendered_pdf
+      - self_mailer.rendered_thumbnails
+      - self_mailer.deleted
+      - self_mailer.delivered
+      - self_mailer.failed
+      - self_mailer.mailed
+      - self_mailer.in_transit
+      - self_mailer.in_local_area
+      - self_mailer.international_exit
+      - self_mailer.processed_for_delivery
+      - self_mailer.re-routed
+      - self_mailer.returned_to_sender
+      - self_mailer.viewed
+    letter_types:
+      type: string
+      description: Unique identifier referring to status of letter
+      enum:
+      - letter.created
+      - letter.rejected
+      - letter.rendered_pdf
+      - letter.rendered_thumbnails
+      - letter.deleted
+      - letter.delivered
+      - letter.failed
+      - letter.mailed
+      - letter.in_transit
+      - letter.in_local_area
+      - letter.international_exit
+      - letter.processed_for_delivery
+      - letter.re-routed
+      - letter.returned_to_sender
+      - letter.certified.mailed
+      - letter.certified.in_transit
+      - letter.certified.in_local_area
+      - letter.certified.processed_for_delivery
+      - letter.certified.re-routed
+      - letter.certified.returned_to_sender
+      - letter.certified.delivered
+      - letter.certified.pickup_available
+      - letter.certified.issue
+      - letter.return_envelope.created
+      - letter.return_envelope.delivered
+      - letter.return_envelope.in_transit
+      - letter.return_envelope.in_local_area
+      - letter.return_envelope.international_exit
+      - letter.return_envelope.processed_for_delivery
+      - letter.return_envelope.re_routed
+      - letter.return_envelope.returned_to_sender
+      - letter.viewed
+    check_types:
+      type: string
+      description: Unique identifier referring to status of check
+      enum:
+      - check.created
+      - check.rejected
+      - check.rendered_pdf
+      - check.rendered_thumbnails
+      - check.deleted
+      - check.delivered
+      - check.failed
+      - check.mailed
+      - check.in_transit
+      - check.in_local_area
+      - check.international_exit
+      - check.processed_for_delivery
+      - check.re-routed
+      - check.returned_to_sender
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    bank_account_types:
+      type: string
+      description: Unique identifier referring to status of bank account
+      enum:
+      - bank_account.created
+      - bank_account.deleted
+      - bank_account.verified
+    event_type:
+      type: object
+      required:
+      - id
+      - enabled_for_test
+      - resource
+      - object
+      properties:
+        id:
+          oneOf:
+          - $ref: '#/components/schemas/postcard_types'
+          - $ref: '#/components/schemas/self_mailer_types'
+          - $ref: '#/components/schemas/letter_types'
+          - $ref: '#/components/schemas/check_types'
+          - $ref: '#/components/schemas/address_types'
+          - $ref: '#/components/schemas/bank_account_types'
+        enabled_for_test:
+          type: boolean
+          description: Value is `true` if the event type is enabled in both the test and live environments and `false` if it is only enabled in the live environment.
+        resource:
+          type: string
+          enum:
+          - postcards
+          - self mailers
+          - letters
+          - checks
+          - addresses
+          - bank accounts
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - event_type
+          default: event_type
+    address_types:
+      type: string
+      description: Unique identifier referring to status of address
+      enum:
+      - address.created
+      - address.deleted
+    postcard_types:
+      type: string
+      description: Unique identifier referring to status of postcard
+      enum:
+      - postcard.created
+      - postcard.rejected
+      - postcard.rendered_pdf
+      - postcard.rendered_thumbnails
+      - postcard.deleted
+      - postcard.delivered
+      - postcard.failed
+      - postcard.mailed
+      - postcard.in_transit
+      - postcard.in_local_area
+      - postcard.international_exit
+      - postcard.processed_for_delivery
+      - postcard.re-routed
+      - postcard.returned_to_sender
+      - postcard.viewed
+    events:
+      type: object
+      required:
+      - id
+      - body
+      - reference_id
+      - event_type
+      - date_created
+      - object
+      properties:
+        id:
+          type: string
+          description: Unique identifier prefixed with `evt_`.
+          pattern: ^evt_[a-zA-Z0-9_]+$
+        body:
+          type: object
+          description: The body of the associated resource as they were at the time of the event, i.e. the [postcard object](#operation/postcard_retrieve), [the letter object](#operation/letter_retrieve), [the check object](#operation/check_retrieve), [the address object](#operation/address_retrieve), or [the bank account object](#operation/bank_account_retrieve). For `.deleted` events, the body matches the response for the corresponding delete endpoint for that resource (e.g. the [postcard delete response](#operation/postcard_delete)).
+        reference_id:
+          description: Unique identifier of the related resource for the event.
+          type: string
+        event_type:
+          $ref: '#/components/schemas/event_type'
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - event
+          default: event
+  responses:
+    events:
+      description: Returns an `event` object to the specified server.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/events'
+          example:
+            event_type:
+              resource: postcards
+              enabled_for_test: true
+              id: postcard.created
+              object: event_type
+            reference_id: psc_d2d10a2e9cba991c
+            id: evt_d95ff8ffd2b5cfb4
+            date_created: '2016-12-04T22:50:08.180Z'
+            body:
+              id: psc_d2d10a2e9cba991c
+              description: Test Postcard
+              metadata: {}
+              to:
+                id: adr_8e783523dd7f0e70
+                description: Test Recipient Address
+                name: Harry Zhang
+                company: LOB
+                phone: null
+                email: null
+                address_line1: 123 TEST ST
+                address_line2: UNIT 1
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: '94107'
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2016-12-04T10:51:51.844Z'
+                date_modified: '2016-12-04T10:51:51.844Z'
+                object: address
+              from:
+                id: adr_d2e26faf793ed422
+                description: Test Sender Address
+                name: Harry Zhang
+                company: LOB
+                phone: null
+                email: null
+                address_line1: 123 TEST ST
+                address_line2: UNIT 1
+                address_city: SAN FRANCISCO
+                address_state: CA
+                address_zip: '94107'
+                address_country: UNITED STATES
+                metadata: {}
+                date_created: '2016-12-04T10:51:51.845Z'
+                date_modified: '2016-12-04T10:51:51.845Z'
+                object: address
+              url: https://lob-assets.com/postcards/psc_d2d10a2e9cba991c.pdf?expires=1540372221&signature=dNE8OtbDymujUxBIMYle4H1cv1aZNFk
+              front_template_id: null
+              back_template_id: null
+              carrier: USPS
+              tracking_events: []
+              thumbnails:
+              - small: https://lob-assets.com/postcards/psc_d2d10a2e9cba991c_thumb_small_1.png?expires=1540372221&signature=McmqScxPgbe7yQY5X31U3vhU8VUlfA1
+                medium: https://lob-assets.com/postcards/psc_d2d10a2e9cba991c_thumb_medium_1.png?expires=1540372221&signature=VBClptOuCcj9Ybay6gE5aetT5j3C7KS
+                large: https://lob-assets.com/postcards/psc_d2d10a2e9cba991c_thumb_large_1.png?expires=1540372221&signature=RAHpIwoYKYM17f0bbaoOiamCkjpzYfH
+              - small: https://lob-assets.com/postcards/psc_d2d10a2e9cba991c_thumb_small_1.png?expires=1540372221&signature=5biHoaCmkphQaGJymOZxmTF0hHdiH4N
+                medium: https://lob-assets.com/postcards/psc_d2d10a2e9cba991c_thumb_medium_1.png?expires=1540372221&signature=1ApGx0kn5EO4qQKGJzCe6zEPnQpzpRY
+                large: https://lob-assets.com/postcards/psc_d2d10a2e9cba991c_thumb_large_1.png?expires=1540372221&signature=z80p90RBak6T26IAfg5yg7a6qKF53a8
+              merge_variables: null
+              mail_type: usps_first_class
+              size: 4x6
+              expected_delivery_date: '2016-12-09'
+              date_created: '2016-12-04T10:51:51.843Z'
+              date_modified: '2016-12-04T10:51:51.843Z'
+              send_date: '2016-12-04T10:56:51.843Z'
+              object: postcard
+            object: event
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

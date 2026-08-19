@@ -1,0 +1,538 @@
+{
+  "item": [
+    {
+      "id": "e187ef67-f7d7-4fdd-bdd9-3762db75629d",
+      "name": "Resource Proofs",
+      "description": {
+        "content": "The resource proofs endpoint allows you to create a final rendering of any template. This is best practice to ensure that you are visually validating your creative before any mail pieces use the template. The API provides endpoints for creating, updating, and retrieving template proofs.\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e5f56a3c-dfbf-4cb5-9555-7d5c324c4543",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing resource proof. You need only supply the unique resource proof identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "resource_proofs",
+                ":res_prf_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "res_prf_id",
+                  "description": "(Required) id of the resource proof"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "114dae76-f0d6-4cd9-aa65-f6e346baab61",
+              "name": "Returns a resource proof object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "resource_proofs",
+                    ":res_prf_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "res_prf_id",
+                      "description": "(Required) id of the resource proof"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e9f9726a-7189-4b46-889b-04d011c7e42d",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "resource_proofs",
+                    ":res_prf_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "res_prf_id",
+                      "description": "(Required) id of the resource proof"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"to address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c5763572-9615-44fe-8232-6f5295ddfaa4",
+          "name": "Update",
+          "request": {
+            "name": "Update",
+            "description": {
+              "content": "Updates the specified resource proof.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "resource_proofs",
+                ":res_prf_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "res_prf_id",
+                  "description": "(Required) id of the resource proof"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"template_id\": \"<string,null>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "69f45124-fad7-49dc-a4f3-beb5d7da6872",
+              "name": "Returns an updated resource proof object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "resource_proofs",
+                    ":res_prf_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "res_prf_id",
+                      "description": "(Required) id of the resource proof"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"template_id\": \"tmpl_a1234dddg\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0133b0a8-f749-4c8f-bf18-1f2f5ac3f22d",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "resource_proofs",
+                    ":res_prf_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "res_prf_id",
+                      "description": "(Required) id of the resource proof"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"template_id\": \"tmpl_a1234dddg\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"to address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d272df95-966a-4a98-9ade-2bcc233780ac",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new resource proof with the provided properties.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "resource_proofs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"template_id\": \"<string,null>\",\n  \"resource_type\": \"<string>\",\n  \"resource_parameters\": {\n    \"to\": \"<string>\",\n    \"front\": \"<string>\",\n    \"back\": \"<string>\",\n    \"from\": \"<string>\",\n    \"size\": \"4x6\",\n    \"merge_variables\": \"<object,null>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "534ac9d7-ef58-497b-aff9-a937e184003f",
+              "name": "Returns a resource proof object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "resource_proofs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"resource_type\": \"postcard\",\n  \"resource_parameters\": {\n    \"front\": \"tmpl_a1234dddg\",\n    \"back\": \"tmpl_a1234dddg\",\n    \"to\": \"adr_a1234dddg\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5102930a-afe7-46ba-a1c7-a1e696de7d9d",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "resource_proofs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"resource_type\": \"postcard\",\n  \"resource_parameters\": {\n    \"front\": \"tmpl_a1234dddg\",\n    \"back\": \"tmpl_a1234dddg\",\n    \"to\": \"adr_a1234dddg\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"to address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "11702a93-76cc-4c3d-8aff-e8325b977363",
+    "name": "Lob Resource Proofs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

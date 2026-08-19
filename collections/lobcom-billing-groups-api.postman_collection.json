@@ -1,0 +1,828 @@
+{
+  "item": [
+    {
+      "id": "426758a3-54ac-4e77-bfb3-e4ae1ec753be",
+      "name": "Billing Groups",
+      "description": {
+        "content": "The Billing Groups API allows you to create and view labels that can be attached to certain consumption-based\nusages of Letters, Checks, Postcards and Self-Mailers to customize your bill. Please check each\nresource API section to learn more about how to access the Billing Groups API.\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a6843f56-2400-4386-8c72-8a87ff452fdc",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing billing_group. You need only supply the unique billing_group identifier that was returned upon billing_group creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "billing_groups",
+                ":bg_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bg_id",
+                  "description": "(Required) id of the billing_group"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cf0aa12e-d644-4bd0-ba14-81738d428266",
+              "name": "Returns a billing_group object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups",
+                    ":bg_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bg_id",
+                      "description": "(Required) id of the billing_group"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "82cee865-925d-4fd1-add9-41fa0ff92e8a",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups",
+                    ":bg_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bg_id",
+                      "description": "(Required) id of the billing_group"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"billing_group not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0f1773dd-cbee-40f7-987f-0f826e96f258",
+          "name": "Update",
+          "request": {
+            "name": "Update",
+            "description": {
+              "content": "Updates all editable attributes of the billing_group with the given id.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "billing_groups",
+                ":bg_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bg_id",
+                  "description": "(Required) id of the billing_group"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f3f8f89f-3b4c-40c3-b8c8-7cc65976422a",
+              "name": "Returns a billing group object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups",
+                    ":bg_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bg_id",
+                      "description": "(Required) id of the billing_group"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "name",
+                      "value": "Marketing Dept"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Usage group used for the Marketing Dept resource sends"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3e0109ef-655f-47e6-a4c3-c0104ea8975b",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups",
+                    ":bg_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bg_id",
+                      "description": "(Required) id of the billing_group"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "name",
+                      "value": "Marketing Dept"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Usage group used for the Marketing Dept resource sends"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"message about incorrect parameter\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "17632bc9-1b69-4373-9b91-98e66c767589",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your billing_groups. The billing_groups are returned sorted by creation date, with the most recently created billing_groups appearing first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "billing_groups"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "An integer that designates the offset at which to begin returning results. Defaults to 0."
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_0]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_modified[key_0]",
+                  "value": "<string>",
+                  "description": "Filter by date modified. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created",
+                  "value": "<string>",
+                  "description": "Sorts items by ascending or descending dates. Use either `date_created` or `date_modified`, not both.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "date_modified",
+                  "value": "<string>",
+                  "description": "Sorts items by ascending or descending dates. Use either `date_created` or `date_modified`, not both.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3a69af71-82ca-4653-b8d0-2e3d808e6662",
+              "name": "Returns a list of billing_groups.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_modified[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_modified",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f7670857-010f-4113-8793-f322357735df",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_modified[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_modified",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"billing_group not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6f7fd1bd-d0f6-4c6f-81d4-72720cf2ced9",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new billing_group with the provided properties.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "billing_groups"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "79bf82e6-b3b1-4b8b-8129-4ea4eeb3df19",
+              "name": "Returns a billing group object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "name",
+                      "value": "Marketing Dept"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Usage group used for the Marketing Dept resource sends"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e8eb7b1f-7033-4bfb-aefd-1218eb49798d",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "billing_groups"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "name",
+                      "value": "Marketing Dept"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Usage group used for the Marketing Dept resource sends"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"message about incorrect parameter\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "72b4915b-5157-412d-b980-ab3d906cda35",
+    "name": "Lob Billing Groups API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

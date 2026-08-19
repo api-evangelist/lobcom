@@ -1,0 +1,90 @@
+generated: '2026-08-13'
+method: searched
+source: https://trust.lob.com + https://www.lob.com/security
+trust_center:
+  url: https://trust.lob.com
+  platform: Vanta
+  title: Lob.com, Inc. Trust Center
+  access: >
+    Landing page and metadata are public; the underlying document set (SOC 2 report,
+    subprocessor list, policies) is served through Vanta and typically requires requesting
+    access with an NDA.
+  probe:
+    url: https://trust.lob.com
+    status: 200
+    content_type: text/html
+    checked: '2026-08-13'
+    note: >
+      A Vanta-hosted single-page app. The shell carries a real canonical link, page title and
+      description for Lob specifically, so it is a genuine trust center rather than an SPA
+      catch-all — but the certification list itself renders client-side and is not readable
+      from the served HTML. The certifications recorded below were therefore taken from Lob's
+      own security page, not from the trust center DOM.
+certifications:
+  - name: SOC 2 Type 2
+    status: certified
+    scope: all five Trust Services Criteria
+    cadence: annual audit
+    evidence: >-
+      "annual SOC 2 Type 2 audits across all five Trust Services Criteria" —
+      https://www.lob.com/security
+  - name: HIPAA
+    status: supported
+    scope: dedicated infrastructure + Business Associate Agreement (BAA)
+    evidence: https://www.lob.com/security
+  - name: GDPR
+    status: aligned
+    evidence: https://www.lob.com/security
+  - name: CCPA/CPRA
+    status: aligned
+    evidence: https://www.lob.com/security
+not_claimed:
+  - ISO 27001
+  - PCI DSS
+  - FedRAMP
+  - HITRUST
+not_claimed_note: >
+  Checked and absent from both www.lob.com/security and the trust center metadata as of
+  2026-08-13. Recorded explicitly so a later pass does not read silence as an unchecked gap.
+security_controls:
+  encryption_in_transit: TLS 1.2+
+  encryption_at_rest: AES-256
+  sso: SAML 2.0 (Enterprise only)
+  rbac: true (Enterprise only)
+  audit_logs: programmatic access to audit and API request logs
+  hosting: Amazon Web Services
+  penetration_testing: regular, by independent third parties
+  appsec: >
+    Automated testing, static security analysis, dependency vulnerability scanning, mandatory
+    code review, infrastructure-as-code deployment.
+  source: https://www.lob.com/security
+vulnerability_disclosure:
+  published: false
+  checked: '2026-08-13'
+  evidence:
+    - url: https://www.lob.com/.well-known/security.txt
+      status: 404
+    - url: https://api.lob.com/.well-known/security.txt
+      status: 404
+    - url: https://hackerone.com/lob
+      status: 404
+    - url: https://www.lob.com/legal/bug-bounty
+      status: 200
+      note: >
+        Soft-200. www.lob.com/legal/<anything> returns the Terms of Service page byte-for-byte
+        (verified: /legal/bug-bounty, /legal/responsible-disclosure and a nonsense path all
+        hash identically). Not a disclosure policy — recorded so the 200 is never mistaken for
+        one.
+  note: >
+    Third-party aggregators still list a Lob HackerOne program, but hackerone.com/lob now
+    returns 404 and the HackerOne GraphQL API answers "Team does not exist". No security.txt is
+    served on any Lob host and no disclosure page exists on lob.com. The only machine-readable
+    security contact Lob publishes is the DNS CAA iodef record on lob.com
+    (an iodef mailto: address — see security/lobcom-domain-security.yml). Because no
+    vulnerability disclosure policy is published, NO `Security` pointer is emitted in apis.yml.
+subprocessors:
+  url: https://trust.lob.com
+  note: Lob's trust center description directs readers to its subprocessor page.
+legal:
+  terms: https://www.lob.com/legal/terms
+  privacy: https://www.lob.com/privacy

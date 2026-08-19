@@ -1,0 +1,94 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://docs.lob.com/#tag/Rate-Limiting (Rate Limiting trait tag, published verbatim in
+  Lob's own OpenAPI at github.com/lob/lob-openapi — mirrored locally at
+  openapi/_original/lobcom-openapi-original.yml) + the ratelimit-* response headers declared
+  in components.headers of that spec
+limit_count: 3
+scope_note: >
+  Limits are enforced per API key AND per endpoint — a burst against POST /v1/postcards does
+  not consume the budget for POST /v1/letters. Test-mode keys are rate limited exactly like
+  live keys, so limit behaviour can be exercised without spending money.
+limits:
+  - id: default
+    scope: per-api-key-per-endpoint
+    limit: 150
+    window: 5s
+    window_seconds: 5
+    applies_to: all endpoints except the two verification endpoints below
+    source: https://docs.lob.com/#tag/Rate-Limiting
+  - id: us-verifications
+    scope: per-api-key-per-endpoint
+    limit: 300
+    window: 5s
+    window_seconds: 5
+    applies_to: POST /v1/us_verifications
+    source: https://docs.lob.com/#tag/Rate-Limiting
+  - id: us-autocompletions
+    scope: per-api-key-per-endpoint
+    limit: 300
+    window: 5s
+    window_seconds: 5
+    applies_to: POST /v1/us_autocompletions
+    source: https://docs.lob.com/#tag/Rate-Limiting
+headers:
+  - name: ratelimit-limit
+    aliases:
+      - X-Rate-Limit-Limit
+    meaning: The rate limit ceiling for the endpoint just called.
+    example: '150'
+  - name: ratelimit-remaining
+    aliases:
+      - X-Rate-Limit-Remaining
+    meaning: Requests remaining in the current window for that endpoint.
+    example: '100'
+  - name: ratelimit-reset
+    aliases:
+      - X-Rate-Limit-Reset
+    meaning: UTC epoch seconds at which the window resets.
+    example: '1528749846'
+header_note: >
+  Lob's prose documentation writes the headers as X-Rate-Limit-*, while the OpenAPI declares
+  the response headers as lowercase ratelimit-limit / ratelimit-remaining / ratelimit-reset
+  and $refs them onto list and create responses. Both spellings come from Lob; an integrator
+  should match case-insensitively. These are Lob's own names, NOT the RFC 9331 RateLimit
+  header field draft.
+exhaustion:
+  status: 429
+  reason: Too Many Requests
+  retry_after_header: false
+  retry_guidance: >
+    Lob does not return Retry-After. The 429 body instructs the caller to wait 5 seconds, and
+    ratelimit-reset carries the exact epoch second the window clears.
+  body_shape: |
+    {
+      "error": {
+        "message": "Rate limit exceeded. Please wait 5 seconds and try your request again.",
+        "code": "rate_limit_exceeded",
+        "status_code": 429
+      }
+    }
+  error_code: rate_limit_exceeded
+related_quotas:
+  - id: unpaid-us-verifications
+    limit: 300
+    window: month
+    scope: per-account
+    applies_to: POST /v1/us_verifications
+    enforcement_status: 403
+    note: >
+      Not a rate limit but a billing gate — the first 300 live us_verifications requests per
+      month need no payment method on file; past that the endpoint returns 403 until one is
+      added. Documented in the Test and Live Environments trait tag.
+  - id: live-webhooks
+    limit: per Print & Mail edition
+    scope: per-account
+    applies_to: webhook subscriptions
+    note: >
+      Live mode caps the number of webhooks at the account's Print & Mail edition allotment;
+      Test mode is uncapped. No numeric value is published.
+cross_reference:
+  errors: errors/lobcom-problem-types.yml
+  conventions: conventions/lobcom-conventions.yml
+  plans: plans/lobcom-plans-pricing.yml

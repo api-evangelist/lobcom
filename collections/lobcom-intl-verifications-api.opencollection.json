@@ -1,0 +1,61 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Intl Verifications API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Intl Verifications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Bulk Verify",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/bulk/intl_verifications",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify a list of international (except US or US territories) address _with a live API key_. Requests to this endpoint with a test API key will return a dummy response based on the primary line you input."
+        },
+        {
+          "info": {
+            "name": "Single Verify",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/intl_verifications",
+            "headers": [
+              {
+                "name": "x-lang-output",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify an international (except US or US territories) address _with a live API key_. Requests to this endpoint with a test API key will return a dummy response based on the primary line you input."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

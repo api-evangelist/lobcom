@@ -1,0 +1,1194 @@
+{
+  "item": [
+    {
+      "id": "bc0ac682-6563-43d3-aa08-59eac42603b0",
+      "name": "Checks",
+      "description": {
+        "content": "Checks allow you to send payments via physical checks. The API provides endpoints\nfor creating checks, retrieving individual checks, canceling checks, and retrieving a list of checks.\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "77f715e9-966d-410e-8c06-291e80638819",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your checks. The checks are returned sorted by creation date, with the most recently created checks appearing first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_0]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_1]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "scheduled",
+                  "value": "<boolean>",
+                  "description": "* `true` - only return orders (past or future) where `send_date` is\ngreater than `date_created`\n* `false` - only return orders where `send_date` is equal to `date_created`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "mail_type",
+                  "value": "usps_first_class",
+                  "description": "A string designating the mail postage type: * `usps_first_class` - (default) * `usps_standard` - a <a href=\"https://lob.com/pricing/print-mail#compare\" target=\"_blank\">cheaper option</a> which is less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6` postcards or for any postcards sent outside of the United States.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created",
+                  "value": "<string>",
+                  "description": "Sorts items by ascending or descending dates. Use either `date_created` or `send_date`, not both.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "send_date",
+                  "value": "<string>",
+                  "description": "Sorts items by ascending or descending dates. Use either `date_created` or `send_date`, not both.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "A string describing the render status:\n* `processed` - the rendering process is currently underway.\n* `rendered` - the rendering process has completed successfully.\n* `failed` - the rendering process has failed.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c6cfcef4-8a08-42d2-91c8-9c3c75d6268b",
+              "name": "A dictionary with a data property that contains an array of up to `limit` checks. Each entry in the array is a separate check. The previous and next page of checks can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more checks are available beyond the current set of returned results, the `next_url` field will be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_1]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "scheduled",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "mail_type",
+                      "value": "usps_first_class"
+                    },
+                    {
+                      "key": "date_created",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "send_date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"chk_0176bf6197100185\",\n      \"description\": \"Demo Check\",\n      \"metadata\": {},\n      \"check_number\": 12559,\n      \"memo\": \"rent\",\n      \"amount\": 22.5,\n      \"url\": \"https://lob-assets.com/checks/chk_0176bf6197100185.pdf?version=v1&expires=1568239682&signature=aqKV5lmg_ktxzyl-qEwIf8-7DbvcguLO0LrfFcyMrUDDt6hxX_da0MEEpElxKR876VUaZrpHq_i_ayDWrsK3BA\",\n      \"to\": {\n        \"id\": \"adr_bae820679f3f536b\",\n        \"description\": \"Harry - Office\",\n        \"name\": \"HARRY ZHANG\",\n        \"company\": \"LOB\",\n        \"email\": \"harry@lob.com\",\n        \"phone\": \"5555555555\",\n        \"address_line1\": \"210 KING ST STE 6100\",\n        \"address_line2\": \"\",\n        \"address_city\": \"SAN FRANCISCO\",\n        \"address_state\": \"CA\",\n        \"address_zip\": \"94107-1741\",\n        \"address_country\": \"UNITED STATES\",\n        \"metadata\": {},\n        \"date_created\": \"2018-12-08T03:08:43.446Z\",\n        \"date_modified\": \"2018-12-08T03:08:43.446Z\",\n        \"object\": \"address\",\n        \"recipient_moved\": false\n      },\n      \"from\": {\n        \"id\": \"adr_210a8d4b0b76d77b\",\n        \"name\": \"LEORE AVIDAR\",\n        \"address_line1\": \"210 KING ST STE 6100\",\n        \"address_city\": \"SAN FRANCISCO\",\n        \"address_state\": \"CA\",\n        \"address_zip\": \"94107-1741\",\n        \"address_country\": \"UNITED STATES\",\n        \"metadata\": {},\n        \"date_created\": \"2018-12-08T03:01:07.651Z\",\n        \"date_modified\": \"2018-12-08T03:01:07.651Z\",\n        \"object\": \"address\"\n      },\n      \"bank_account\": {\n        \"id\": \"bank_8cad8df5354d33f\",\n        \"description\": \"Test Bank Account\",\n        \"metadata\": {},\n        \"routing_number\": \"322271627\",\n        \"account_number\": \"123456789\",\n        \"account_type\": \"individual\",\n        \"signatory\": \"John Doe\",\n        \"bank_name\": \"J.P. MORGAN CHASE BANK, N.A.\",\n        \"verified\": true,\n        \"date_created\": \"2015-11-06T19:24:24.440Z\",\n        \"date_modified\": \"2015-11-06T19:41:28.312Z\",\n        \"object\": \"bank_account\",\n        \"signature_url\": \"https://lob-assets.com/bank-accounts/asd_asdfghjkqwertyui.pdf?expires=1234567890&signature=aksdf\"\n      },\n      \"carrier\": \"USPS\",\n      \"tracking_events\": [],\n      \"thumbnails\": [\n        {\n          \"small\": \"https://lob-assets.com/checks/chk_0176bf6197100185_thumb_small_1.png?version=v1&expires=1568239682&signature=T8DfMm_mxJJzIPgm8I0lvYY4Z6I8aFjsGsrEAicEqw8Ei_FaOtiGQKGeY16rdugAt8lmS_iX0lveBoG2RgWDDw\",\n          \"medium\": \"https://lob-assets.com/checks/chk_0176bf6197100185_thumb_medium_1.png?version=v1&expires=1568239682&signature=-iJD7C58xOCD8eQ01StqSlw9WbDymL0Ygze9twfTs9s17zQppr2Zx363_Z4bP3ATHNhF3osjHuAxIasI2Wf6DQ\",\n          \"large\": \"https://lob-assets.com/checks/chk_0176bf6197100185_thumb_large_1.png?version=v1&expires=1568239682&signature=VJlOkVDPKZThstdd632r3Grm2WhoyPkC-pffpcePTw1i1NkpAObDSRaItKMOQgeWkAcUud3SH0tYcVOadaNiCw\"\n        },\n        {\n          \"small\": \"https://lob-assets.com/checks/chk_0176bf6197100185_thumb_small_2.png?version=v1&expires=1568239682&signature=XpCkOjy2zIKXkuc0s-UAYGNwpD_pgt7c9FKTDUCYbyqXupAg1MV1l2tdqevr0L0LT5FJqrGZH9khD5QRMQTkAA\",\n          \"medium\": \"https://lob-assets.com/checks/chk_0176bf6197100185_thumb_medium_2.png?version=v1&expires=1568239682&signature=sdgnJMzusEfndu7dNmk37eKc0AV7Hmqev6TQAqkCESs5pg7j6dDTsp7v4pnDvhsj8d7SIMcahl1aGiysoom0CA\",\n          \"large\": \"https://lob-assets.com/checks/chk_0176bf6197100185_thumb_large_2.png?version=v1&expires=1568239682&signature=ybe8ovBh8Gf-AWKGRs4CB4XkU-erPVbY66umXARhTiJG2Dg1QlyCb9WmBXWt0tBCwD5NGMl20mHeAgHwecLxBA\"\n        }\n      ],\n      \"expected_delivery_date\": \"2019-08-16\",\n      \"mail_type\": \"usps_first_class\",\n      \"date_created\": \"2019-08-08T19:34:47.571Z\",\n      \"date_modified\": \"2019-08-08T19:34:49.612Z\",\n      \"send_date\": \"2019-08-08\",\n      \"message\": \"pancakes are good\",\n      \"object\": \"check\",\n      \"check_bottom_template_id\": \"tmpl_a\",\n      \"attachment_template_id\": \"tmpl_a\",\n      \"check_bottom_template_version_id\": \"vrsn_a\",\n      \"attachment_template_version_id\": \"vrsn_a\",\n      \"merge_variables\": {},\n      \"use_type\": \"operational\",\n      \"deleted\": true\n    },\n    {\n      \"id\": \"chk_92b9a6714bc0557c\",\n      \"description\": \"Demo Check\",\n      \"metadata\": {},\n      \"check_number\": 12558,\n      \"memo\": \"rent\",\n      \"amount\": 22.5,\n      \"url\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c.pdf?version=v1&expires=1568239682&signature=jCct5PvzU58Iz2pSo58nf6rgsMRcJfMbUWThmm6lztFl5Vn2Y204b9h7gvw0vJvkDK2ThfaYqaUbWc0KzTpvAg\",\n      \"to\": {\n        \"id\": \"adr_bae820679f3f536b\",\n        \"name\": \"HARRY ZHANG\",\n        \"address_line1\": \"210 KING ST STE 6100\",\n        \"address_city\": \"SAN FRANCISCO\",\n        \"address_state\": \"CA\",\n        \"address_zip\": \"94107-1741\",\n        \"address_country\": \"UNITED STATES\",\n        \"metadata\": {},\n        \"date_created\": \"2018-12-08T03:08:43.446Z\",\n        \"date_modified\": \"2018-12-08T03:08:43.446Z\",\n        \"object\": \"address\"\n      },\n      \"from\": {\n        \"id\": \"adr_210a8d4b0b76d77b\",\n        \"name\": \"LEORE AVIDAR\",\n        \"address_line1\": \"210 KING ST STE 6100\",\n        \"address_city\": \"SAN FRANCISCO\",\n        \"address_state\": \"CA\",\n        \"address_zip\": \"94107-1741\",\n        \"address_country\": \"UNITED STATES\",\n        \"metadata\": {},\n        \"date_created\": \"2018-12-08T03:01:07.651Z\",\n        \"date_modified\": \"2018-12-08T03:01:07.651Z\",\n        \"object\": \"address\"\n      },\n      \"bank_account\": {\n        \"id\": \"bank_8cad8df5354d33f\",\n        \"description\": \"Test Bank Account\",\n        \"metadata\": {},\n        \"routing_number\": \"322271627\",\n        \"account_number\": \"123456789\",\n        \"account_type\": \"individual\",\n        \"signatory\": \"John Doe\",\n        \"bank_name\": \"J.P. MORGAN CHASE BANK, N.A.\",\n        \"verified\": true,\n        \"date_created\": \"2015-11-06T19:24:24.440Z\",\n        \"date_modified\": \"2015-11-06T19:41:28.312Z\",\n        \"object\": \"bank_account\"\n      },\n      \"carrier\": \"USPS\",\n      \"tracking_events\": [],\n      \"thumbnails\": [\n        {\n          \"small\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_small_1.png?version=v1&expires=1568239682&signature=ublquO_xAdvAkAwGJuOjgZQwcz7c3Ao4NHWHeDVTBEBjcrQr8LavxWEwUc1KU105Zex3SajRQLd6hqJOrDl0Bw\",\n          \"medium\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_medium_1.png?version=v1&expires=1568239682&signature=vHyuOtsanX4HnY_0LNft6ZJ8C67JnbI8ZVCjA2d9nR0Rd6lCl0Nk1s6BAhefbBkzecX9Yp0B8NWN9Q5v1Z4ICw\",\n          \"large\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_large_1.png?version=v1&expires=1568239682&signature=SzCLKJ5m_TKJPLlL9PMw-zW9wo5mVYEK1jCtHwWRwwEaNU2v4Aehy-YHtus3TFJIt8RD2M-0Y3MtCxHwhqSABg\"\n        },\n        {\n          \"small\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_small_2.png?version=v1&expires=1568239682&signature=iElagODaOCkF_lCUxIw-lK50GhEU1ar_odmslCazZqD4Fsd_rQLx3M4Q5HzYWp4evfzuCoFvk4oAQVuIAaguAw\",\n          \"medium\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_medium_2.png?version=v1&expires=1568239682&signature=2vwvm_QsfmdtkAa-_F4uk-0yeUPRascyhfwOr-OX1ya9i_8gdFQAxMTrP-FfNBVSYFXeknFm6IUPJHggfgeiBg\",\n          \"large\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_large_2.png?version=v1&expires=1568239682&signature=NQf7tP9F4rP66S16hQ8duFpZSbTjaGBGK61Sr3H5D4CWtRyaPdoQlIpT2Jw-eKRcuYRkDEtQse_oWtL5gPqXDQ\"\n        },\n        {\n          \"small\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_small_3.png?version=v1&expires=1568239682&signature=dbjFd44H9TyZsc3d0fqKon5e0GqZ6GA1dT26MH6WnoX8lrQor2CA6sZJ5qmu0Z4SAFlMKAzb-twqN7faLjEbDQ\",\n          \"medium\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_medium_3.png?version=v1&expires=1568239682&signature=vSgwVs7T9E6KKBK7XU-6jRL9i0jvgTqvNxkdRARFf0UNlryJFm8l_t_x5mPH0sCTFZcLp7ouRaR5hhdHC6vZBQ\",\n          \"large\": \"https://lob-assets.com/checks/chk_92b9a6714bc0557c_thumb_large_3.png?version=v1&expires=1568239682&signature=If4tXlN13WYy7JDPpFkWw0HAQpYNJHqi2UstiPHxUA_8IAj6vXORb-22acI124Pd1bR1QSjBHAW1gbiJ0kjiAQ\"\n        }\n      ],\n      \"merge_variables\": null,\n      \"expected_delivery_date\": \"2019-08-16\",\n      \"mail_type\": \"usps_first_class\",\n      \"date_created\": \"2019-08-08T19:34:27.802Z\",\n      \"date_modified\": \"2019-08-08T19:34:30.582Z\",\n      \"send_date\": \"2019-08-08T19:34:27.802Z\",\n      \"use_type\": \"operational\",\n      \"object\": \"check\"\n    }\n  ],\n  \"object\": \"list\",\n  \"next_url\": \"https://api.lob.com/v1/checks?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wOC0wOFQxOTozNDoyNy44MDJaIiwiaWRPZmZzZXQiOiJjaGtfOTJiOWE2NzE0YmMwNTU3YyJ9\",\n  \"previous_url\": null,\n  \"count\": 2\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "86070d10-b9ee-44d4-8614-986262e284ce",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_1]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "scheduled",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "mail_type",
+                      "value": "usps_first_class"
+                    },
+                    {
+                      "key": "date_created",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "send_date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"to address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4f6fed6a-6b30-4d7f-91f0-5bea50bf5069",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new check with the provided properties.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "idempotency_key",
+                  "value": "<string>",
+                  "description": "A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href=\"https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12\" target=\"_blank\">implementation guide</a>.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href=\"https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12\" target=\"_blank\">implementation guide</a>.\n",
+                "key": "Idempotency-Key",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "amount",
+                  "value": "<float>"
+                },
+                {
+                  "disabled": false,
+                  "key": "bank_account",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "message",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "use_type",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "value",
+                  "value": "<Error: Too many levels of nesting to fake this schema>"
+                },
+                {
+                  "disabled": false,
+                  "key": "mail_type",
+                  "value": "usps_first_class"
+                },
+                {
+                  "disabled": false,
+                  "key": "memo",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "check_number",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "logo",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "check_bottom",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "attachment",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "billing_group_id",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "print_speed",
+                  "value": "core"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9b61437b-abdf-461a-9bea-063c68487cfc",
+              "name": "Returns a check object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "idempotency_key",
+                      "value": "026e7634-24d7-486c-a0bb-4a17fd0eebc5"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href=\"https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12\" target=\"_blank\">implementation guide</a>.\n",
+                    "key": "Idempotency-Key",
+                    "value": "026e7634-24d7-486c-a0bb-4a17fd0eebc5"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Demo Check"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[description]",
+                      "value": "Harry - Office"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[name]",
+                      "value": "Harry Zhang"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[company]",
+                      "value": "Lob"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[email]",
+                      "value": "harry@lob.com"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[phone]",
+                      "value": "5555555555"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_line1]",
+                      "value": "210 King St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_line2]",
+                      "value": "# 6100"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_city]",
+                      "value": "San Francisco"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_state]",
+                      "value": "CA"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_zip]",
+                      "value": "94107"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_country]",
+                      "value": "US"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[name]",
+                      "value": "Leore Avidar"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_line1]",
+                      "value": "210 King St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_line2]",
+                      "value": "# 6100"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_city]",
+                      "value": "San Francisco"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_state]",
+                      "value": "CA"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_zip]",
+                      "value": "94107-1741"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "bank_account",
+                      "value": "bank_8cad8df5354d33f"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "amount",
+                      "value": "22.5"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "memo",
+                      "value": "rent"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "logo",
+                      "value": "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "check_bottom",
+                      "value": "tmpl_23668b406d5afef"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "merge_variables[name]",
+                      "value": "Harry"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "metadata[memo]",
+                      "value": "rafting trip"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "attachment",
+                      "value": "./cool.pdf"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "send_date",
+                      "value": "2017-11-01T00:00:00.000Z"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "mail_type",
+                      "value": "usps_first_class"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "check_number",
+                      "value": "10001"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "print_speed",
+                      "value": "core"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "01cab016-2259-468f-8986-8a9072b655c7",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "idempotency_key",
+                      "value": "026e7634-24d7-486c-a0bb-4a17fd0eebc5"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href=\"https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12\" target=\"_blank\">implementation guide</a>.\n",
+                    "key": "Idempotency-Key",
+                    "value": "026e7634-24d7-486c-a0bb-4a17fd0eebc5"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Demo Check"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[description]",
+                      "value": "Harry - Office"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[name]",
+                      "value": "Harry Zhang"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[company]",
+                      "value": "Lob"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[email]",
+                      "value": "harry@lob.com"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[phone]",
+                      "value": "5555555555"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_line1]",
+                      "value": "210 King St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_line2]",
+                      "value": "# 6100"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_city]",
+                      "value": "San Francisco"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_state]",
+                      "value": "CA"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_zip]",
+                      "value": "94107"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "to[address_country]",
+                      "value": "US"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[name]",
+                      "value": "Leore Avidar"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_line1]",
+                      "value": "210 King St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_line2]",
+                      "value": "# 6100"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_city]",
+                      "value": "San Francisco"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_state]",
+                      "value": "CA"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "from[address_zip]",
+                      "value": "94107-1741"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "bank_account",
+                      "value": "bank_8cad8df5354d33f"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "amount",
+                      "value": "22.5"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "memo",
+                      "value": "rent"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "logo",
+                      "value": "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/check_logo.png"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "check_bottom",
+                      "value": "tmpl_23668b406d5afef"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "merge_variables[name]",
+                      "value": "Harry"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "metadata[memo]",
+                      "value": "rafting trip"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "attachment",
+                      "value": "./cool.pdf"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "send_date",
+                      "value": "2017-11-01T00:00:00.000Z"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "mail_type",
+                      "value": "usps_first_class"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "check_number",
+                      "value": "10001"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "print_speed",
+                      "value": "core"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"to address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "21ead9e4-2200-488a-8b73-52cf2154938f",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing check. You need only supply the unique check identifier that was returned upon check creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checks",
+                ":chk_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "chk_id",
+                  "description": "(Required) id of the check"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fcdcc108-52e4-48ca-af27-1e176680f5b8",
+              "name": "Returns a check object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks",
+                    ":chk_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "chk_id",
+                      "description": "(Required) id of the check"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4ccb1f6f-9907-4674-b7e7-033dd349384a",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks",
+                    ":chk_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "chk_id",
+                      "description": "(Required) id of the check"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"to address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e4618ba7-5fdb-4543-b799-ecd3c2ffa141",
+          "name": "Cancel",
+          "request": {
+            "name": "Cancel",
+            "description": {
+              "content": "Completely removes a check from production. This can only be done if the check has a `send_date` and the `send_date` has not yet passed. If the check is successfully canceled, you will not be charged for it. Read more on [cancellation windows](#section/Cancellation-Windows) and [scheduling](#section/Scheduled-Mailings). Scheduling and cancellation is a premium feature. Upgrade to the appropriate <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Edition</a> to gain access.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checks",
+                ":chk_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "chk_id",
+                  "description": "(Required) id of the check"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1af8aa0d-0b14-419a-8e65-a5f2bf6b66ef",
+              "name": "Deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks",
+                    ":chk_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "chk_id",
+                      "description": "(Required) id of the check"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"chk_123456789\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e782ba2-39d7-40ad-bbb9-ab984439615d",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checks",
+                    ":chk_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "chk_id",
+                      "description": "(Required) id of the check"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"to address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "5b52383f-584c-4f9b-915a-bdef80996092",
+    "name": "Lob Checks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

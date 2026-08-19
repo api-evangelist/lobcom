@@ -1,0 +1,1086 @@
+{
+  "item": [
+    {
+      "id": "984e8dca-4c12-4878-8bc2-1777fbf59255",
+      "name": "Bank Accounts",
+      "description": {
+        "content": "Bank Accounts allow you to store your bank account securely in our system. The API provides\nendpoints for creating bank accounts, deleting bank accounts, verifying bank accounts,\nretrieving individual bank accounts, and retrieving a list of bank accounts.\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "46e887bf-5736-4821-b1e8-2b92cfa91515",
+          "name": "Verify",
+          "request": {
+            "name": "Verify",
+            "description": {
+              "content": "Verify a bank account in order to create a check.\n\nCheck the `microdeposit_type` field returned by `GET /v1/bank_accounts/:id` to determine which parameter to submit:\n- `amounts` — provide the two microdeposit amounts (in cents) that appeared\n  in the bank account statement.\n\n- `descriptor_code` — provide the 6-character code (beginning with `SM`)\n  from the bank statement descriptor of the single $0.01 microdeposit.\n\n\nSubmitting the wrong parameter type for the account's `microdeposit_type` will return an error.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "bank_accounts",
+                ":bank_id",
+                "verify"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bank_id",
+                  "description": "(Required) id of the bank account to be verified"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "amounts",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "amounts",
+                  "value": "<integer>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5c182db3-eb0a-4980-a363-004c34f40004",
+              "name": "Returns a bank_account object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts",
+                    ":bank_id",
+                    "verify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bank_id",
+                      "description": "(Required) id of the bank account to be verified"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "amounts",
+                      "value": "25"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "amounts",
+                      "value": "63"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d23bba5f-082a-4be3-9375-d89065f3e3ca",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts",
+                    ":bank_id",
+                    "verify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bank_id",
+                      "description": "(Required) id of the bank account to be verified"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "amounts",
+                      "value": "25"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "amounts",
+                      "value": "63"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"routing_number is required\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3bf007c2-eb0b-4038-b04e-127c72c37e54",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing bank account. You need only supply the unique bank account identifier that was returned upon bank account creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "bank_accounts",
+                ":bank_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bank_id",
+                  "description": "(Required) id of the bank account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b4608302-6230-492b-b5ce-01e323d34cea",
+              "name": "Returns a bank account object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts",
+                    ":bank_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bank_id",
+                      "description": "(Required) id of the bank account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d8ed2194-6543-4203-b8f4-9d8d1f24337f",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts",
+                    ":bank_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bank_id",
+                      "description": "(Required) id of the bank account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"routing_number is required\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "078563a3-cec8-4201-b662-8da435adcd12",
+          "name": "Delete",
+          "request": {
+            "name": "Delete",
+            "description": {
+              "content": "Permanently deletes a bank account. It cannot be undone.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "bank_accounts",
+                ":bank_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bank_id",
+                  "description": "(Required) id of the bank account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "46c3c518-f903-4d6c-afd9-c87c480f62eb",
+              "name": "Deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts",
+                    ":bank_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bank_id",
+                      "description": "(Required) id of the bank account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"bank_123456789\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bf862b88-e3de-449a-9e78-e7cf7bcbc487",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts",
+                    ":bank_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bank_id",
+                      "description": "(Required) id of the bank account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"routing_number is required\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e84b8ccc-d3a6-4574-9200-8b09edbe139a",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your bank accounts. The bank accounts are returned sorted by creation date, with the most recently created bank accounts appearing first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "bank_accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_0]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_1]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7449a47c-18d6-4ac8-947d-263209eb5aed",
+              "name": "A dictionary with a data property that contains an array of up to `limit` bank_accounts. Each entry in the array is a separate bank_account. The previous and next page of bank_accounts can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more bank_accounts are available beyond the current set of returned results, the `next_url` field will be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_1]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"bank_0e3fb07eba0b35b\",\n      \"signature_url\": \"https://lob-assets.com/letters/asd_asdfghjklqwertyu.pdf?version=45&expires=1234567890&signature=a\",\n      \"description\": \"Example bank account\",\n      \"metadata\": {},\n      \"routing_number\": \"122100024\",\n      \"account_number\": \"1234564789\",\n      \"account_type\": \"company\",\n      \"signatory\": \"John Doe\",\n      \"bank_name\": \"JPMORGAN CHASE BANK, NA\",\n      \"verified\": true,\n      \"date_created\": \"2019-03-30T13:13:22.200Z\",\n      \"date_modified\": \"2019-03-30T13:13:23.385Z\",\n      \"object\": \"bank_account\"\n    },\n    {\n      \"id\": \"bank_eba93f7de3c02d9\",\n      \"description\": \"Example bank account\",\n      \"metadata\": {},\n      \"routing_number\": \"122100024\",\n      \"account_number\": \"1234564789\",\n      \"account_type\": \"company\",\n      \"signatory\": \"John Doe\",\n      \"bank_name\": \"JPMORGAN CHASE BANK, NA\",\n      \"verified\": true,\n      \"date_created\": \"2019-03-30T13:11:06.809Z\",\n      \"date_modified\": \"2019-03-30T13:11:07.872Z\",\n      \"object\": \"bank_account\"\n    }\n  ],\n  \"object\": \"list\",\n  \"next_url\": \"https://api.lob.com/v1/bank_accounts?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wMy0zMFQxMzoxMTowNi44MDlaIiwiaWRPZmZzZXQiOiJiYW5rX2ViYTkzZjdkZTNjMDJkOSJ9\",\n  \"previous_url\": null,\n  \"count\": 2\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f662c67-403a-4154-b3c7-259c248e1ed9",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_1]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"routing_number is required\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e7074684-7bbe-4183-88dc-584fddca6867",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new bank account with the provided properties. Bank accounts created in live mode will need to be verified via micro deposits before being able to send live checks. The deposits will appear in the bank account in 2-3 business days and have the description \"VERIFICATION\".",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "bank_accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "routing_number",
+                  "value": "<string>",
+                  "description": "(Required) Must be a <a href=\"https://www.frbservices.org/index.html\" target=\"_blank\">valid US routing number</a>."
+                },
+                {
+                  "disabled": false,
+                  "key": "account_number",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "account_type",
+                  "value": "<string>",
+                  "description": "(Required) The type of entity that holds the account."
+                },
+                {
+                  "disabled": false,
+                  "key": "signatory",
+                  "value": "<string>",
+                  "description": "(Required) The signatory associated with your account. This name will be printed on checks created with this bank account. If you prefer to use a custom signature image on your checks instead, please create your bank account from the <a href=\"https://dashboard.lob.com/#/login\" target=\"_blank\">Dashboard</a>."
+                },
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "check_template",
+                  "value": "<string>",
+                  "description": "The check template used for printing. The defualt value is `common`. If you bank with JP Morgan Chase and wish to use Positive Pay use the `jpm` template. `jpm` requires additional information to be provided."
+                },
+                {
+                  "disabled": false,
+                  "key": "fractional_routing_number",
+                  "value": "<string>",
+                  "description": "The fractional routing number for your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the fractional routing number associated with your home bank institution."
+                },
+                {
+                  "disabled": false,
+                  "key": "city",
+                  "value": "<string>",
+                  "description": "The city associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the city associated with your home bank institution."
+                },
+                {
+                  "disabled": false,
+                  "key": "state",
+                  "value": "<string>",
+                  "description": "The state associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the state associated with your home bank institution."
+                },
+                {
+                  "disabled": false,
+                  "key": "zipcode",
+                  "value": "<string>",
+                  "description": "The zipcode associated with your home bank account. Required for the `jpm` check template only. Please contact a bank representative if you do not know the zipcode associated with your home bank institution."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3e34013e-e03c-424c-a76c-7f042acd75a5",
+              "name": "Returns a bank_account object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test Bank Account"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Must be a <a href=\"https://www.frbservices.org/index.html\" target=\"_blank\">valid US routing number</a>.",
+                        "type": "text/plain"
+                      },
+                      "key": "routing_number",
+                      "value": "322271627"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "account_number",
+                      "value": "123456789"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The signatory associated with your account. This name will be printed on checks created with this bank account. If you prefer to use a custom signature image on your checks instead, please create your bank account from the <a href=\"https://dashboard.lob.com/#/login\" target=\"_blank\">Dashboard</a>.",
+                        "type": "text/plain"
+                      },
+                      "key": "signatory",
+                      "value": "Jane Doe"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The type of entity that holds the account.",
+                        "type": "text/plain"
+                      },
+                      "key": "account_type",
+                      "value": "individual"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "metadata[spiffy]",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "dc6fa0d7-5900-40ea-b257-f8407a534e9a",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bank_accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test Bank Account"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Must be a <a href=\"https://www.frbservices.org/index.html\" target=\"_blank\">valid US routing number</a>.",
+                        "type": "text/plain"
+                      },
+                      "key": "routing_number",
+                      "value": "322271627"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "account_number",
+                      "value": "123456789"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The signatory associated with your account. This name will be printed on checks created with this bank account. If you prefer to use a custom signature image on your checks instead, please create your bank account from the <a href=\"https://dashboard.lob.com/#/login\" target=\"_blank\">Dashboard</a>.",
+                        "type": "text/plain"
+                      },
+                      "key": "signatory",
+                      "value": "Jane Doe"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The type of entity that holds the account.",
+                        "type": "text/plain"
+                      },
+                      "key": "account_type",
+                      "value": "individual"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "metadata[spiffy]",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"routing_number is required\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a34ba50e-097a-43b0-a08c-e423873a3546",
+    "name": "Lob Bank Accounts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

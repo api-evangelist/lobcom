@@ -1,0 +1,157 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Campaigns API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Campaigns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/campaigns",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of your campaigns. The campaigns are returned sorted by creation date, with the most recently created campaigns appearing first."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/campaigns",
+            "headers": [
+              {
+                "name": "x-lang-output",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new campaign with the provided properties. See how to launch your first campaign [here](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/launch-your-first-campaign)."
+        },
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/campaigns/:cmp_id",
+            "params": [
+              {
+                "name": "cmp_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the campaign"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing campaign. You need only supply the unique campaign identifier that was returned upon campaign creation."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.lob.com/v1/campaigns/:cmp_id",
+            "params": [
+              {
+                "name": "cmp_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the campaign"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the details of an existing campaign. You need only supply the unique identifier that was returned upon campaign creation."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/campaigns/:cmp_id",
+            "params": [
+              {
+                "name": "cmp_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the campaign"
+              }
+            ]
+          },
+          "docs": "Delete an existing campaign. You need only supply the unique identifier that was returned upon campaign creation. Deleting a campaign also deletes any associated mail pieces that have been created but not sent. A campaign's `send_date` matches its associated mail pieces' `send_date`s."
+        },
+        {
+          "info": {
+            "name": "Send Campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/campaigns/:cmp_id/send",
+            "params": [
+              {
+                "name": "cmp_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the campaign"
+              }
+            ]
+          },
+          "docs": "Sends a campaign. You need only supply the unique campaign identifier that was returned upon campaign creation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts Templates API
+  title: Lob Templates API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -338,97 +338,38 @@ paths:
         source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\n\nvar templateCreate = *lob.NewTemplateWritable()\ntemplateCreate.SetDescription(\"Test Template\")\ntemplateCreate.SetHtml(\"<html>HTML for {{name}}</html>\")\n\n\n\ncreatedtemplate, _, err := apiClient.TemplatesApi.Create(context).TemplateWritable(templateCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
         label: GO
 components:
-  parameters:
-    metadata:
-      in: query
-      name: metadata
-      description: Filter by metadata key-value pair`.
-      schema:
-        $ref: '#/components/schemas/metadata'
-      style: deepObject
-      explode: true
-    include:
-      in: query
-      name: include
-      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
-
-        '
-      schema:
-        type: array
-        items:
-          type: string
-      explode: true
-    date_created:
-      in: query
-      name: date_created
-      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-      schema:
-        $ref: '#/components/schemas/date_filter'
-      style: deepObject
-      explode: true
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: How many results to return.
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
-    before_after:
-      in: query
-      name: before/after
-      required: false
-      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
-
-        '
-      schema:
-        allOf:
-        - type: object
-          properties:
-            before:
-              type: string
-              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
-
-                '
-            after:
-              type: string
-              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
-
-                '
-        - oneOf:
-          - required:
-            - before
-          - required:
-            - after
-  headers:
-    ratelimit-limit:
-      description: The rate limit for a given endpoint.
-      schema:
-        type: integer
-        example: 150
-    ratelimit-reset:
-      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
-
-        '
-      schema:
-        type: integer
-        example: 1528749846
-    ratelimit-remaining:
-      description: The number of requests remaining in the current window.
-      schema:
-        type: integer
-        example: 100
   schemas:
-    object:
-      type: string
-      description: Value is resource type.
-    date_created:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was created.
+    template_version_writable:
+      type: object
+      required:
+      - html
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        html:
+          $ref: '#/components/schemas/template_html'
+        engine:
+          $ref: '#/components/schemas/engine'
+        required_vars:
+          $ref: '#/components/schemas/template_required_vars'
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    template_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/tmpl_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
     lob_base:
       type: object
       required:
@@ -444,176 +385,10 @@ components:
           $ref: '#/components/schemas/deleted'
         object:
           $ref: '#/components/schemas/object'
-    date_filter:
-      type: object
-      additionalProperties:
-        type: string
-      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-    tmpl_id:
-      type: string
-      description: Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).
-      pattern: ^tmpl_[a-zA-Z0-9]+$
-    vrsn_id:
-      type: string
-      description: Unique identifier prefixed with `vrsn_`.
-      pattern: ^vrsn_[a-zA-Z0-9]+$
-    template_update:
-      type: object
-      properties:
-        description:
-          $ref: '#/components/schemas/resource_description'
-        published_version:
-          allOf:
-          - description: The ID of the published version of a template you'd like to update. The published version is the one that will be used in any Print & Mail API requests that reference the specified template. Will err if the referenced `published_version` has been deleted or does not exist.
-            type: string
-          - $ref: '#/components/schemas/vrsn_id'
-    resource_description:
-      type: string
-      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
-
-        '
-      maxLength: 255
-      nullable: true
-    list:
-      type: object
-      description: Multiple items returned in order
-      properties:
-        object:
-          $ref: '#/components/schemas/object'
-        next_url:
-          type: string
-          description: Url of next page of items in list.
-          nullable: true
-        previous_url:
-          type: string
-          description: Url of previous page of items in list.
-          nullable: true
-        count:
-          $ref: '#/components/schemas/count'
-        total_count:
-          type: integer
-          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
     date_modified:
       type: string
       format: date-time
       description: A timestamp in ISO 8601 format of the date the resource was last modified.
-    engine:
-      type: string
-      description: "The engine used to combine HTML template with merge variables.\n  * `legacy` - Lob's original engine\n  * `handlebars`\n"
-      enum:
-      - legacy
-      - handlebars
-      nullable: true
-      default: legacy
-    template_version_writable:
-      type: object
-      required:
-      - html
-      properties:
-        description:
-          $ref: '#/components/schemas/resource_description'
-        html:
-          $ref: '#/components/schemas/template_html'
-        engine:
-          $ref: '#/components/schemas/engine'
-        required_vars:
-          $ref: '#/components/schemas/template_required_vars'
-    template_deletion:
-      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
-      properties:
-        id:
-          $ref: '#/components/schemas/tmpl_id'
-        deleted:
-          $ref: '#/components/schemas/deleted'
-    template:
-      type: object
-      required:
-      - id
-      - versions
-      - published_version
-      properties:
-        description:
-          $ref: '#/components/schemas/resource_description'
-        id:
-          $ref: '#/components/schemas/tmpl_id'
-        versions:
-          type: array
-          description: An array of all non-deleted [version objects](#tag/Template-Versions) associated with the template.
-          items:
-            $ref: '#/components/schemas/template_version'
-        published_version:
-          allOf:
-          - description: The template's currently published version. This version will be used in any Print & Mail API requests that reference the specified template.
-          - $ref: '#/components/schemas/template_version'
-        object:
-          type: string
-          description: Value is resource type.
-          enum:
-          - template
-          default: template
-        metadata:
-          $ref: '#/components/schemas/metadata'
-        date_created:
-          $ref: '#/components/schemas/date_created'
-        date_modified:
-          $ref: '#/components/schemas/date_modified'
-        deleted:
-          $ref: '#/components/schemas/deleted'
-    template_version:
-      allOf:
-      - $ref: '#/components/schemas/template_version_writable'
-      - $ref: '#/components/schemas/lob_base'
-      - type: object
-        required:
-        - id
-        properties:
-          id:
-            $ref: '#/components/schemas/vrsn_id'
-          suggest_json_editor:
-            type: boolean
-            description: 'Used by frontend, true if the template uses advanced features.
-
-              '
-          merge_variables:
-            type: object
-            description: 'Object representing the keys of every merge variable present in the template. It has one key named ''keys'', and its value is an array of strings.
-
-              '
-          object:
-            type: string
-            description: Value is resource type.
-            enum:
-            - version
-            default: version
-    deleted:
-      type: boolean
-      description: Only returned if the resource has been successfully deleted.
-    template_required_vars:
-      type: array
-      items:
-        type: string
-      description: 'An array of required variables to be used in a template. Only available for `handlebars` templates.
-
-        '
-    template_html:
-      type: string
-      description: 'An HTML string of less than 100,000 characters to be used as the `published_version` of this template. See [here](#section/HTML-Examples) for guidance on designing HTML templates. Please see endpoint specific documentation for any other product-specific HTML details:
-
-        - [Postcards](#operation/postcard_create) - `front` and `back`
-
-        - [Self Mailers](#operation/self_mailer_create) - `inside` and `outside`
-
-        - [Letters](#operation/letter_create) - `file`
-
-        - [Checks](#operation/check_create) - `check_bottom` and `attachment`
-
-        - [Cards](#operation/card_create) - `front` and `back`
-
-
-        If there is a syntax error with your variable names within your HTML, then an error will be thrown, e.g. using a `{{#users}}` opening tag without the corresponding closing tag `{{/users}}`.
-
-        '
-      maxLength: 100000
     metadata:
       type: object
       additionalProperties:
@@ -621,24 +396,6 @@ components:
       description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
       maxLength: 500
       pattern: '[^"\\]{0,500}'
-    template_writable:
-      type: object
-      required:
-      - html
-      properties:
-        description:
-          $ref: '#/components/schemas/resource_description'
-        html:
-          $ref: '#/components/schemas/template_html'
-        metadata:
-          $ref: '#/components/schemas/metadata'
-        engine:
-          $ref: '#/components/schemas/engine'
-        required_vars:
-          $ref: '#/components/schemas/template_required_vars'
-    count:
-      type: integer
-      description: number of resources in a set
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -817,17 +574,294 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    failure_status_code:
+    template:
+      type: object
+      required:
+      - id
+      - versions
+      - published_version
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        id:
+          $ref: '#/components/schemas/tmpl_id'
+        versions:
+          type: array
+          description: An array of all non-deleted [version objects](#tag/Template-Versions) associated with the template.
+          items:
+            $ref: '#/components/schemas/template_version'
+        published_version:
+          allOf:
+          - description: The template's currently published version. This version will be used in any Print & Mail API requests that reference the specified template.
+          - $ref: '#/components/schemas/template_version'
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - template
+          default: template
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type:
+          - string
+          - 'null'
+          description: Url of next page of items in list.
+        previous_url:
+          type:
+          - string
+          - 'null'
+          description: Url of previous page of items in list.
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    template_html:
+      type: string
+      description: 'An HTML string of less than 100,000 characters to be used as the `published_version` of this template. See [here](#section/HTML-Examples) for guidance on designing HTML templates. Please see endpoint specific documentation for any other product-specific HTML details:
+
+        - [Postcards](#operation/postcard_create) - `front` and `back`
+
+        - [Self Mailers](#operation/self_mailer_create) - `inside` and `outside`
+
+        - [Letters](#operation/letter_create) - `file`
+
+        - [Checks](#operation/check_create) - `check_bottom` and `attachment`
+
+        - [Cards](#operation/card_create) - `front` and `back`
+
+
+        If there is a syntax error with your variable names within your HTML, then an error will be thrown, e.g. using a `{{#users}}` opening tag without the corresponding closing tag `{{/users}}`.
+
+        '
+      maxLength: 100000
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    count:
       type: integer
+      description: number of resources in a set
+    template_update:
+      type: object
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        published_version:
+          allOf:
+          - description: The ID of the published version of a template you'd like to update. The published version is the one that will be used in any Print & Mail API requests that reference the specified template. Will err if the referenced `published_version` has been deleted or does not exist.
+            type: string
+          - $ref: '#/components/schemas/vrsn_id'
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    template_required_vars:
+      type: array
+      items:
+        type: string
+      description: 'An array of required variables to be used in a template. Only available for `handlebars` templates.
+
+        '
+    object:
+      type: string
+      description: Value is resource type.
+    template_writable:
+      type: object
+      required:
+      - html
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        html:
+          $ref: '#/components/schemas/template_html'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        engine:
+          $ref: '#/components/schemas/engine'
+        required_vars:
+          $ref: '#/components/schemas/template_required_vars'
+    vrsn_id:
+      type: string
+      description: Unique identifier prefixed with `vrsn_`.
+      pattern: ^vrsn_[a-zA-Z0-9]+$
+    engine:
+      type:
+      - string
+      - 'null'
+      description: "The engine used to combine HTML template with merge variables.\n  * `legacy` - Lob's original engine\n  * `handlebars`\n"
       enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+      - legacy
+      - handlebars
+      default: legacy
+    template_version:
+      allOf:
+      - $ref: '#/components/schemas/template_version_writable'
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            $ref: '#/components/schemas/vrsn_id'
+          suggest_json_editor:
+            type: boolean
+            description: 'Used by frontend, true if the template uses advanced features.
+
+              '
+          merge_variables:
+            type: object
+            description: 'Object representing the keys of every merge variable present in the template. It has one key named ''keys'', and its value is an array of strings.
+
+              '
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - version
+            default: version
+    tmpl_id:
+      type: string
+      description: Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).
+      pattern: ^tmpl_[a-zA-Z0-9]+$
+    resource_description:
+      type:
+      - string
+      - 'null'
+      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+
+        '
+      maxLength: 255
+  parameters:
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    metadata:
+      in: query
+      name: metadata
+      description: Filter by metadata key-value pair`.
+      schema:
+        $ref: '#/components/schemas/metadata'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+  mediaTypes:
+    template:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/template'
+        example:
+          id: tmpl_c94e83ca2cd5121
+          description: Test Template
+          versions:
+          - id: vrsn_362184d96d9b0c9
+            suggest_json_editor: true
+            description: Test Template
+            engine: legacy
+            html: <html>HTML for {{name}}</html>
+            date_created: '2017-11-07T22:56:10.962Z'
+            date_modified: '2017-11-07T22:56:10.962Z'
+            object: version
+          published_version:
+            id: vrsn_362184d96d9b0c9
+            suggest_json_editor: false
+            description: Test Template
+            engine: handlebars
+            html: <html>HTML for {{name}}</html>
+            date_created: '2017-11-07T22:56:10.962Z'
+            date_modified: '2017-11-07T22:56:10.962Z'
+            object: version
+          metadata: {}
+          date_created: '2017-11-07T22:56:10.962Z'
+          date_modified: '2017-11-07T22:56:10.962Z'
+          object: template
+  headers:
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
   responses:
     all_templates:
       description: A dictionary with a data property that contains an array of up to `limit` templates. Each entry in the array is a separate template. The previous and next page of templates can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more templates are available beyond the current set of returned results, the `next_url` field will be empty.
@@ -914,61 +948,10 @@ components:
             value:
               id: tmpl_123456789
               deleted: true
-  mediaTypes:
-    template:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/template'
-        example:
-          id: tmpl_c94e83ca2cd5121
-          description: Test Template
-          versions:
-          - id: vrsn_362184d96d9b0c9
-            suggest_json_editor: true
-            description: Test Template
-            engine: legacy
-            html: <html>HTML for {{name}}</html>
-            date_created: '2017-11-07T22:56:10.962Z'
-            date_modified: '2017-11-07T22:56:10.962Z'
-            object: version
-          published_version:
-            id: vrsn_362184d96d9b0c9
-            suggest_json_editor: false
-            description: Test Template
-            engine: handlebars
-            html: <html>HTML for {{name}}</html>
-            date_created: '2017-11-07T22:56:10.962Z'
-            date_modified: '2017-11-07T22:56:10.962Z'
-            object: version
-          metadata: {}
-          date_created: '2017-11-07T22:56:10.962Z'
-          date_modified: '2017-11-07T22:56:10.962Z'
-          object: template
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

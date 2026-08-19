@@ -1,36 +1,7 @@
 {
   "provider": "lobcom",
   "sources": [
-    "lobcom-accounts-api-openapi.yml",
-    "lobcom-addresses-api-openapi.yml",
-    "lobcom-bank-accounts-api-openapi.yml",
-    "lobcom-billing-groups-api-openapi.yml",
-    "lobcom-booklets-api-openapi.yml",
-    "lobcom-buckslip-orders-api-openapi.yml",
-    "lobcom-buckslips-api-openapi.yml",
-    "lobcom-campaigns-api-openapi.yml",
-    "lobcom-card-orders-api-openapi.yml",
-    "lobcom-cards-api-openapi.yml",
-    "lobcom-checks-api-openapi.yml",
-    "lobcom-creatives-api-openapi.yml",
-    "lobcom-identity-validation-api-openapi.yml",
-    "lobcom-informed-delivery-campaign-api-openapi.yml",
-    "lobcom-intl-verifications-api-openapi.yml",
-    "lobcom-letters-api-openapi.yml",
-    "lobcom-lob-credits-api-openapi.yml",
-    "lobcom-postcards-api-openapi.yml",
-    "lobcom-qr-codes-api-openapi.yml",
-    "lobcom-resource-proofs-api-openapi.yml",
-    "lobcom-reverse-geocode-lookups-api-openapi.yml",
-    "lobcom-self-mailers-api-openapi.yml",
-    "lobcom-snap-packs-api-openapi.yml",
-    "lobcom-template-versions-api-openapi.yml",
-    "lobcom-templates-api-openapi.yml",
-    "lobcom-uploads-api-openapi.yml",
-    "lobcom-url-shortener-api-openapi.yml",
-    "lobcom-us-autocompletions-api-openapi.yml",
-    "lobcom-us-verifications-api-openapi.yml",
-    "lobcom-zip-lookups-api-openapi.yml"
+    "lobcom-openapi-original.yml"
   ],
   "outputs": [
     "lobcom-accounts-api-openapi.yml",
@@ -45,6 +16,7 @@
     "lobcom-cards-api-openapi.yml",
     "lobcom-checks-api-openapi.yml",
     "lobcom-creatives-api-openapi.yml",
+    "lobcom-events-api-openapi.yml",
     "lobcom-identity-validation-api-openapi.yml",
     "lobcom-informed-delivery-campaign-api-openapi.yml",
     "lobcom-intl-verifications-api-openapi.yml",
@@ -58,15 +30,25 @@
     "lobcom-snap-packs-api-openapi.yml",
     "lobcom-template-versions-api-openapi.yml",
     "lobcom-templates-api-openapi.yml",
-    "lobcom-uploads-api-openapi.yml",
+    "lobcom-tracking-events-api-openapi.yml",
     "lobcom-url-shortener-api-openapi.yml",
     "lobcom-us-autocompletions-api-openapi.yml",
     "lobcom-us-verifications-api-openapi.yml",
+    "lobcom-uploads-api-openapi.yml",
     "lobcom-zip-lookups-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "archived openapi/lobcom-openapi-original.yml"
+  ],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "lobcom-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0; promoted x-webhooks (2) to the standard `webhooks` key",
+    "lobcom-openapi-original.yml: declared missing tag: Accounts",
+    "lobcom-openapi-original.yml: declared missing tag: Booklets",
+    "lobcom-openapi-original.yml: declared missing tag: Lob Credits",
+    "lobcom-openapi-original.yml: declared missing tag: Snap Packs",
+    "apis.yml register: written (+2 apis, 32 total)"
+  ],
   "skipped": []
 }

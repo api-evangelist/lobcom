@@ -1,0 +1,933 @@
+{
+  "item": [
+    {
+      "id": "bb54193d-ddbc-4923-8513-57a2c4f839ec",
+      "name": "Buckslips",
+      "description": {
+        "content": "The Buckslips endpoint allows you to easily create buckslips that can later be used as add-ons for Letters Campaigns. Note that a Letter Campaign with Buckslip add-on requires a minimum send quantity of 5,000 letters.\nThe API provides endpoints for creating buckslips, retrieving individual buckslips, creating buckslip orders, and retrieving a list of buckslips.\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1dd46cff-fa19-4bbf-b719-c337a2e9c785",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your buckslips. The buckslips are returned sorted by creation date, with the most recently created buckslips appearing first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "buckslips"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "919d13a7-1d8c-43eb-8c72-7fadd18ef1f2",
+              "name": "Returns a list of buckslip objects",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6d94f4d3-2c98-40d7-aa44-9a9c5b4c761f",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"message about incorrect parameter\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6187e05c-471d-4ca3-ae4d-5e2f891f738a",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new buckslip given information",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "buckslips"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "front",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "8.75x3.75"
+                },
+                {
+                  "disabled": false,
+                  "key": "back",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c631167e-a6ee-4aec-91c1-1c828ae51148",
+              "name": "Buckslip created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test buckslip"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "front",
+                      "value": "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/buckslip.pdf"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "back",
+                      "value": "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/buckslip.pdf"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9fe9b863-54b8-4727-97c1-858cabf72a10",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test buckslip"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "front",
+                      "value": "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/buckslip.pdf"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "back",
+                      "value": "https://s3-us-west-2.amazonaws.com/public.lob.com/assets/buckslip.pdf"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"message about incorrect parameter\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "abe1997f-336a-47d8-9ba2-f347e88cc189",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing buckslip. You need only supply the unique customer identifier that was returned upon buckslip creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "buckslips",
+                ":buckslip_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "buckslip_id",
+                  "description": "(Required) id of the buckslip"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "27345015-1c4b-4295-a5d5-74c967fb0444",
+              "name": "Returns a buckslip object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips",
+                    ":buckslip_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "buckslip_id",
+                      "description": "(Required) id of the buckslip"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2afae91c-4293-474d-8fe0-53adc8718edc",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips",
+                    ":buckslip_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "buckslip_id",
+                      "description": "(Required) id of the buckslip"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"message about incorrect parameter\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0a78be58-1557-456c-9d9e-5bf178c424dc",
+          "name": "Update",
+          "request": {
+            "name": "Update",
+            "description": {
+              "content": "Update the details of an existing buckslip. You need only supply the unique identifier that was returned upon buckslip creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "buckslips",
+                ":buckslip_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "buckslip_id",
+                  "description": "(Required) id of the buckslip"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "auto_reorder",
+                  "value": "<boolean>",
+                  "description": "Allows for auto reordering"
+                },
+                {
+                  "disabled": false,
+                  "key": "reorder_quantity",
+                  "value": "<number>",
+                  "description": "The quantity of items to be reordered (only required when auto_reorder is true)."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6a20ff51-bbdc-4ec3-9c0d-b7355d5e1cb4",
+              "name": "Returns a buckslip object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips",
+                    ":buckslip_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "buckslip_id",
+                      "description": "(Required) id of the buckslip"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test buckslip"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Allows for auto reordering",
+                        "type": "text/plain"
+                      },
+                      "key": "auto_reorder",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ace334b0-55a9-48b3-a585-ea653d07b372",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips",
+                    ":buckslip_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "buckslip_id",
+                      "description": "(Required) id of the buckslip"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test buckslip"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Allows for auto reordering",
+                        "type": "text/plain"
+                      },
+                      "key": "auto_reorder",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"message about incorrect parameter\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8b4be742-2809-450c-b54a-acc39a959bd0",
+          "name": "Delete",
+          "request": {
+            "name": "Delete",
+            "description": {
+              "content": "Delete an existing buckslip. You need only supply the unique identifier that was returned upon buckslip creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "buckslips",
+                ":buckslip_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "buckslip_id",
+                  "description": "(Required) id of the buckslip"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "093bb03c-0ef2-4cc3-839b-ebcfccac5336",
+              "name": "Deleted the buckslip",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips",
+                    ":buckslip_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "buckslip_id",
+                      "description": "(Required) id of the buckslip"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"buckslip_123456789\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "33d3b2fb-f31b-42fc-96e8-567eb99a76f0",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "buckslips",
+                    ":buckslip_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "buckslip_id",
+                      "description": "(Required) id of the buckslip"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"message about incorrect parameter\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "5fdd9031-b890-41ee-a559-3a27bfc3b81e",
+    "name": "Lob Buckslips API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

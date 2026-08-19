@@ -1,0 +1,425 @@
+generated: '2026-08-13'
+method: derived
+source: mcp/lobcom-mcp.yml + openapi/ (31 refined specs, 105 operations)
+note: Lob publishes no MCP server, so the MCP side of this crosswalk is the DERIVED candidate tool list
+  in mcp/lobcom-mcp.yml, not a shipped agent surface. Every binding below was verified against a real
+  operationId present in this repo's OpenAPI — nothing is mapped by guess. Third-party hosts (mcpbundles.com
+  advertises a 49-tool 'Lob' bundle) wrap the same REST surface; they are not Lob-published and are deliberately
+  NOT treated as a Lob agent surface here.
+surfaces:
+  openapi:
+    path: openapi/
+    specs: 31
+    operations: 106
+    gated: false
+    source: https://github.com/lob/lob-openapi (spec v1.22.0)
+    unique_operation_ids: 105
+  graphql: null
+  mcp:
+    url: null
+    status: not published by Lob
+    gated: null
+    third_party: https://mcp.mcpbundles.com/bundle/lob (independent host, not Lob)
+coverage:
+  mcp_tools: 12
+  bound_to_rest: 12
+  mcp_only: 0
+  rest_operations: 105
+  rest_covered: 12
+  rest_only: 93
+  rest_coverage_pct: 11.4
+  note: 105 unique operationIds across 106 operation entries — get_lob_credits_balance appears in two
+    refined specs (accounts and lob-credits) because the tag split duplicated it.
+crosswalk:
+- tool: create_postcard
+  category: print-and-mail
+  rest:
+  - postcard_create
+  binding: POST /postcards
+  spec: openapi/lobcom-postcards-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: create_letter
+  category: print-and-mail
+  rest:
+  - letter_create
+  binding: POST /letters
+  spec: openapi/lobcom-letters-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: create_check
+  category: print-and-mail
+  rest:
+  - check_create
+  binding: POST /checks
+  spec: openapi/lobcom-checks-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: create_self_mailer
+  category: print-and-mail
+  rest:
+  - self_mailer_create
+  binding: POST /self_mailers
+  spec: openapi/lobcom-self-mailers-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: verify_us_address
+  category: address-verification
+  rest:
+  - us_verification
+  binding: POST /us_verifications
+  spec: openapi/lobcom-us-verifications-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: verify_intl_address
+  category: address-verification
+  rest:
+  - intl_verification
+  binding: POST /intl_verifications
+  spec: openapi/lobcom-intl-verifications-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: autocomplete_us_address
+  category: address-verification
+  rest:
+  - autocompletion
+  binding: POST /us_autocompletions
+  spec: openapi/lobcom-us-autocompletions-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: create_address
+  category: address-book
+  rest:
+  - address_create
+  binding: POST /addresses
+  spec: openapi/lobcom-addresses-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: create_template
+  category: templates
+  rest:
+  - create_template
+  binding: POST /templates
+  spec: openapi/lobcom-templates-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: create_bank_account
+  category: funding
+  rest:
+  - bank_account_create
+  binding: POST /bank_accounts
+  spec: openapi/lobcom-bank-accounts-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: list_postcards
+  category: print-and-mail
+  rest:
+  - postcards_list
+  binding: GET /postcards
+  spec: openapi/lobcom-postcards-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+- tool: get_credits_balance
+  category: account
+  rest:
+  - get_lob_credits_balance
+  binding: GET /accounts
+  spec: openapi/lobcom-lob-credits-api-openapi.yml
+  confidence: high
+  note: Derived candidate tool bound 1:1 to a published operation; the tool inherits that operation's
+    parameters and requestBody as its inputSchema.
+mcp_only: []
+rest_only_note: Operations with no candidate tool. The candidate list covers the marquee create/verify
+  flows only; the long tail is retrieve/list/delete and the newer product surfaces (campaigns, creatives,
+  buckslips, cards, QR codes, uploads, tracking events).
+rest_only:
+- operationId: address_delete
+  binding: DELETE /addresses/{adr_id}
+  spec: openapi/lobcom-addresses-api-openapi.yml
+- operationId: address_retrieve
+  binding: GET /addresses/{adr_id}
+  spec: openapi/lobcom-addresses-api-openapi.yml
+- operationId: addresses_list
+  binding: GET /addresses
+  spec: openapi/lobcom-addresses-api-openapi.yml
+- operationId: bank_account_delete
+  binding: DELETE /bank_accounts/{bank_id}
+  spec: openapi/lobcom-bank-accounts-api-openapi.yml
+- operationId: bank_account_retrieve
+  binding: GET /bank_accounts/{bank_id}
+  spec: openapi/lobcom-bank-accounts-api-openapi.yml
+- operationId: bank_account_verify
+  binding: POST /bank_accounts/{bank_id}/verify
+  spec: openapi/lobcom-bank-accounts-api-openapi.yml
+- operationId: bank_accounts_list
+  binding: GET /bank_accounts
+  spec: openapi/lobcom-bank-accounts-api-openapi.yml
+- operationId: billing_group_create
+  binding: POST /billing_groups
+  spec: openapi/lobcom-billing-groups-api-openapi.yml
+- operationId: billing_group_retrieve
+  binding: GET /billing_groups/{bg_id}
+  spec: openapi/lobcom-billing-groups-api-openapi.yml
+- operationId: billing_group_update
+  binding: POST /billing_groups/{bg_id}
+  spec: openapi/lobcom-billing-groups-api-openapi.yml
+- operationId: billing_groups_list
+  binding: GET /billing_groups
+  spec: openapi/lobcom-billing-groups-api-openapi.yml
+- operationId: booklet_create
+  binding: POST /booklets
+  spec: openapi/lobcom-booklets-api-openapi.yml
+- operationId: booklet_delete
+  binding: DELETE /booklets/{booklet_id}
+  spec: openapi/lobcom-booklets-api-openapi.yml
+- operationId: booklet_retrieve
+  binding: GET /booklets/{booklet_id}
+  spec: openapi/lobcom-booklets-api-openapi.yml
+- operationId: booklets_list
+  binding: GET /booklets
+  spec: openapi/lobcom-booklets-api-openapi.yml
+- operationId: buckslip_create
+  binding: POST /buckslips
+  spec: openapi/lobcom-buckslips-api-openapi.yml
+- operationId: buckslip_delete
+  binding: DELETE /buckslips/{buckslip_id}
+  spec: openapi/lobcom-buckslips-api-openapi.yml
+- operationId: buckslip_order_create
+  binding: POST /buckslips/{buckslip_id}/orders
+  spec: openapi/lobcom-buckslip-orders-api-openapi.yml
+- operationId: buckslip_orders_retrieve
+  binding: GET /buckslips/{buckslip_id}/orders
+  spec: openapi/lobcom-buckslip-orders-api-openapi.yml
+- operationId: buckslip_retrieve
+  binding: GET /buckslips/{buckslip_id}
+  spec: openapi/lobcom-buckslips-api-openapi.yml
+- operationId: buckslip_update
+  binding: PATCH /buckslips/{buckslip_id}
+  spec: openapi/lobcom-buckslips-api-openapi.yml
+- operationId: buckslips_list
+  binding: GET /buckslips
+  spec: openapi/lobcom-buckslips-api-openapi.yml
+- operationId: bulk_intl_verifications
+  binding: POST /bulk/intl_verifications
+  spec: openapi/lobcom-intl-verifications-api-openapi.yml
+- operationId: bulk_us_verifications
+  binding: POST /bulk/us_verifications
+  spec: openapi/lobcom-us-verifications-api-openapi.yml
+- operationId: campaign_create
+  binding: POST /campaigns
+  spec: openapi/lobcom-campaigns-api-openapi.yml
+- operationId: campaign_delete
+  binding: DELETE /campaigns/{cmp_id}
+  spec: openapi/lobcom-campaigns-api-openapi.yml
+- operationId: campaign_retrieve
+  binding: GET /campaigns/{cmp_id}
+  spec: openapi/lobcom-campaigns-api-openapi.yml
+- operationId: campaign_send
+  binding: POST /campaigns/{cmp_id}/send
+  spec: openapi/lobcom-campaigns-api-openapi.yml
+- operationId: campaign_update
+  binding: PATCH /campaigns/{cmp_id}
+  spec: openapi/lobcom-campaigns-api-openapi.yml
+- operationId: campaigns_list
+  binding: GET /campaigns
+  spec: openapi/lobcom-campaigns-api-openapi.yml
+- operationId: card_create
+  binding: POST /cards
+  spec: openapi/lobcom-cards-api-openapi.yml
+- operationId: card_delete
+  binding: DELETE /cards/{card_id}
+  spec: openapi/lobcom-cards-api-openapi.yml
+- operationId: card_order_create
+  binding: POST /cards/{card_id}/orders
+  spec: openapi/lobcom-card-orders-api-openapi.yml
+- operationId: card_orders_retrieve
+  binding: GET /cards/{card_id}/orders
+  spec: openapi/lobcom-card-orders-api-openapi.yml
+- operationId: card_retrieve
+  binding: GET /cards/{card_id}
+  spec: openapi/lobcom-cards-api-openapi.yml
+- operationId: card_update
+  binding: POST /cards/{card_id}
+  spec: openapi/lobcom-cards-api-openapi.yml
+- operationId: cards_list
+  binding: GET /cards
+  spec: openapi/lobcom-cards-api-openapi.yml
+- operationId: check_cancel
+  binding: DELETE /checks/{chk_id}
+  spec: openapi/lobcom-checks-api-openapi.yml
+- operationId: check_retrieve
+  binding: GET /checks/{chk_id}
+  spec: openapi/lobcom-checks-api-openapi.yml
+- operationId: checks_list
+  binding: GET /checks
+  spec: openapi/lobcom-checks-api-openapi.yml
+- operationId: create_template_version
+  binding: POST /templates/{tmpl_id}/versions
+  spec: openapi/lobcom-template-versions-api-openapi.yml
+- operationId: creative_create
+  binding: POST /creatives
+  spec: openapi/lobcom-creatives-api-openapi.yml
+- operationId: creative_retrieve
+  binding: GET /creatives/{crv_id}
+  spec: openapi/lobcom-creatives-api-openapi.yml
+- operationId: creative_update
+  binding: PATCH /creatives/{crv_id}
+  spec: openapi/lobcom-creatives-api-openapi.yml
+- operationId: domain_create
+  binding: POST /domains
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: domain_delete
+  binding: DELETE /domains/{domain_id}
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: domain_get
+  binding: GET /domains/{domain_id}
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: domain_list
+  binding: GET /domains
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: export_retrieve
+  binding: GET /uploads/{upl_id}/exports/{ex_id}
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: identity_validation
+  binding: POST /identity_validation
+  spec: openapi/lobcom-identity-validation-api-openapi.yml
+- operationId: informed_delivery_campaign_create
+  binding: POST /informed_delivery_campaigns
+  spec: openapi/lobcom-informed-delivery-campaign-api-openapi.yml
+- operationId: informed_delivery_campaign_list
+  binding: GET /informed_delivery_campaigns
+  spec: openapi/lobcom-informed-delivery-campaign-api-openapi.yml
+- operationId: informed_delivery_campaign_retrieve
+  binding: GET /informed_delivery_campaigns/{usps_campaign_id}
+  spec: openapi/lobcom-informed-delivery-campaign-api-openapi.yml
+- operationId: informed_delivery_campaign_update
+  binding: PATCH /informed_delivery_campaigns/{usps_campaign_id}
+  spec: openapi/lobcom-informed-delivery-campaign-api-openapi.yml
+- operationId: letter_cancel
+  binding: DELETE /letters/{ltr_id}
+  spec: openapi/lobcom-letters-api-openapi.yml
+- operationId: letter_retrieve
+  binding: GET /letters/{ltr_id}
+  spec: openapi/lobcom-letters-api-openapi.yml
+- operationId: letters_list
+  binding: GET /letters
+  spec: openapi/lobcom-letters-api-openapi.yml
+- operationId: link_create
+  binding: POST /links
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: link_update
+  binding: PATCH /links/{link_id}
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: links_delete
+  binding: DELETE /links/{link_id}
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: links_get
+  binding: GET /links/{link_id}
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: links_list
+  binding: GET /links
+  spec: openapi/lobcom-url-shortener-api-openapi.yml
+- operationId: postcard_delete
+  binding: DELETE /postcards/{psc_id}
+  spec: openapi/lobcom-postcards-api-openapi.yml
+- operationId: postcard_retrieve
+  binding: GET /postcards/{psc_id}
+  spec: openapi/lobcom-postcards-api-openapi.yml
+- operationId: qr_codes_list
+  binding: GET /qr_code_analytics
+  spec: openapi/lobcom-qr-codes-api-openapi.yml
+- operationId: report_retrieve
+  binding: GET /uploads/{upl_id}/report
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: resource_proof_create
+  binding: POST /resource_proofs
+  spec: openapi/lobcom-resource-proofs-api-openapi.yml
+- operationId: resource_proof_retrieve
+  binding: GET /resource_proofs/{res_prf_id}
+  spec: openapi/lobcom-resource-proofs-api-openapi.yml
+- operationId: resource_proof_update
+  binding: PATCH /resource_proofs/{res_prf_id}
+  spec: openapi/lobcom-resource-proofs-api-openapi.yml
+- operationId: reverse_geocode_lookup
+  binding: POST /us_reverse_geocode_lookups
+  spec: openapi/lobcom-reverse-geocode-lookups-api-openapi.yml
+- operationId: self_mailer_delete
+  binding: DELETE /self_mailers/{sfm_id}
+  spec: openapi/lobcom-self-mailers-api-openapi.yml
+- operationId: self_mailer_retrieve
+  binding: GET /self_mailers/{sfm_id}
+  spec: openapi/lobcom-self-mailers-api-openapi.yml
+- operationId: self_mailers_list
+  binding: GET /self_mailers
+  spec: openapi/lobcom-self-mailers-api-openapi.yml
+- operationId: snap_pack_create
+  binding: POST /snap_packs
+  spec: openapi/lobcom-snap-packs-api-openapi.yml
+- operationId: snap_pack_delete
+  binding: DELETE /snap_packs/{snap_pack_id}
+  spec: openapi/lobcom-snap-packs-api-openapi.yml
+- operationId: snap_pack_retrieve
+  binding: GET /snap_packs/{snap_pack_id}
+  spec: openapi/lobcom-snap-packs-api-openapi.yml
+- operationId: snap_packs_list
+  binding: GET /snap_packs
+  spec: openapi/lobcom-snap-packs-api-openapi.yml
+- operationId: template_delete
+  binding: DELETE /templates/{tmpl_id}
+  spec: openapi/lobcom-templates-api-openapi.yml
+- operationId: template_retrieve
+  binding: GET /templates/{tmpl_id}
+  spec: openapi/lobcom-templates-api-openapi.yml
+- operationId: template_update
+  binding: POST /templates/{tmpl_id}
+  spec: openapi/lobcom-templates-api-openapi.yml
+- operationId: template_version_delete
+  binding: DELETE /templates/{tmpl_id}/versions/{vrsn_id}
+  spec: openapi/lobcom-template-versions-api-openapi.yml
+- operationId: template_version_retrieve
+  binding: GET /templates/{tmpl_id}/versions/{vrsn_id}
+  spec: openapi/lobcom-template-versions-api-openapi.yml
+- operationId: template_version_update
+  binding: POST /templates/{tmpl_id}/versions/{vrsn_id}
+  spec: openapi/lobcom-template-versions-api-openapi.yml
+- operationId: template_versions_list
+  binding: GET /templates/{tmpl_id}/versions
+  spec: openapi/lobcom-template-versions-api-openapi.yml
+- operationId: templates_list
+  binding: GET /templates
+  spec: openapi/lobcom-templates-api-openapi.yml
+- operationId: upload_create
+  binding: POST /uploads
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: upload_delete
+  binding: DELETE /uploads/{upl_id}
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: upload_export_create
+  binding: POST /uploads/{upl_id}/exports
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: upload_file
+  binding: POST /uploads/{upl_id}/file
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: upload_retrieve
+  binding: GET /uploads/{upl_id}
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: upload_update
+  binding: PATCH /uploads/{upl_id}
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: uploads_list
+  binding: GET /uploads
+  spec: openapi/lobcom-uploads-api-openapi.yml
+- operationId: zip_lookup
+  binding: POST /us_zip_lookups
+  spec: openapi/lobcom-zip-lookups-api-openapi.yml

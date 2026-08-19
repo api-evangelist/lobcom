@@ -1,14 +1,48 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: searched
-source: https://docs.lob.com/ (SDKs and Tools) + public package registries
+source: >-
+  https://help.lob.com/developer-docs/sdks-and-libraries + https://github.com/lob (org repo listing)
+  + unauthenticated registry metadata endpoints (registry.npmjs.org, pypi.org, rubygems.org,
+  repo.packagist.org, search.maven.org, api.nuget.org, proxy.golang.org, hex.pm)
+note: >
+  Lob ships first-party, OpenAPI-generated SDKs in nine languages, all under github.com/lob.
+  Most were re-cut together on 2026-06-05 from spec v1.22.x, which is a healthy currency signal.
+  TWO DOCUMENTATION DEFECTS were found while dating these packages and are recorded verbatim
+  below rather than smoothed over: (1) Lob's own SDK page tells Python users `pip install lob`,
+  but PyPI `lob` has not been released since 2022-02-19 (4.5.4) — the maintained package is
+  `lob-python` 5.2.0, published 2026-06-05 from the same repo; (2) NuGet `lob.net` is stuck at
+  1.0.0-beta3 (2020-04-03) while the maintained .NET package is `lob.dotnet` 1.2.0 (2026-06-05).
+  A consumer following the published install instructions lands on a four-year-old client.
 packages:
   - language: typescript
     registry: npm
-    name: "@lob/lob-typescript-sdk"
+    name: '@lob/lob-typescript-sdk'
     url: https://www.npmjs.com/package/@lob/lob-typescript-sdk
-    install: npm install @lob/lob-typescript-sdk
+    install: npm i @lob/lob-typescript-sdk
     source: https://github.com/lob/lob-typescript-sdk
     official: true
+    version: 1.4.0
+    published: '2026-06-05'
+  - language: javascript
+    registry: npm
+    name: lob
+    url: https://www.npmjs.com/package/lob
+    install: npm install lob
+    source: https://github.com/lob/lob-node
+    official: true
+    version: 8.1.0
+    published: '2026-06-05'
+    note: Node.js wrapper (lob-node). Distinct from the generated TypeScript SDK.
+  - language: python
+    registry: pypi
+    name: lob-python
+    url: https://pypi.org/project/lob-python/
+    install: pip install lob-python
+    source: https://github.com/lob/lob-python
+    official: true
+    version: 5.2.0
+    published: '2026-06-05'
+    note: The maintained Python client. Lob's SDK docs page still advertises `pip install lob`.
   - language: python
     registry: pypi
     name: lob
@@ -16,6 +50,12 @@ packages:
     install: pip install lob
     source: https://github.com/lob/lob-python
     official: true
+    deprecated: true
+    version: 4.5.4
+    published: '2022-02-19'
+    note: >
+      Legacy Python distribution, unreleased for four years, but still the install command
+      printed on help.lob.com/developer-docs/sdks-and-libraries. Superseded by lob-python.
   - language: ruby
     registry: rubygems
     name: lob
@@ -23,6 +63,8 @@ packages:
     install: gem install lob
     source: https://github.com/lob/lob-ruby
     official: true
+    version: 6.1.0
+    published: '2026-06-05'
   - language: php
     registry: packagist
     name: lob/lob-php
@@ -30,6 +72,17 @@ packages:
     install: composer require lob/lob-php
     source: https://github.com/lob/lob-php
     official: true
+    version: 4.3.0
+    published: '2026-06-05'
+  - language: csharp
+    registry: nuget
+    name: lob.dotnet
+    url: https://www.nuget.org/packages/lob.dotnet
+    install: dotnet add package lob.dotnet
+    source: https://github.com/lob/lob-dotnet
+    official: true
+    version: 1.2.0
+    published: '2026-06-05'
   - language: csharp
     registry: nuget
     name: lob.net
@@ -37,6 +90,10 @@ packages:
     install: dotnet add package lob.net
     source: https://github.com/lob/lob-dotnet
     official: true
+    deprecated: true
+    version: 1.0.0-beta3
+    published: '2020-04-03'
+    note: Abandoned pre-release .NET package; superseded by lob.dotnet.
   - language: java
     registry: maven
     name: com.lob:lob-java
@@ -44,3 +101,64 @@ packages:
     install: "implementation 'com.lob:lob-java:13.4.6'"
     source: https://github.com/lob/lob-java
     official: true
+    version: 13.4.6
+    published: '2024-02-20'
+    note: >
+      Latest artifact on Maven Central is from 2024-02-20; the repo pom currently reads
+      13.4.8-SNAPSHOT, so work continues but nothing newer has been released to Central.
+  - language: go
+    registry: gomodules
+    name: github.com/lob/lob-go
+    url: https://pkg.go.dev/github.com/lob/lob-go
+    install: go get github.com/lob/lob-go
+    source: https://github.com/lob/lob-go
+    official: true
+    version: v1.1.2
+    published: '2026-08-04'
+  - language: elixir
+    registry: hex
+    name: lob_elixir
+    url: https://hex.pm/packages/lob_elixir
+    install: '{:lob_elixir, "~> 2.0.0"}'
+    source: https://github.com/lob/lob-elixir
+    official: true
+    version: 2.0.0
+    published: '2022-05-24'
+    note: >
+      Last Hex release 2022-05-24, though the repo was pushed 2026-08-04. Lob's SDK page still
+      documents `~> 1.5.0`.
+  - language: javascript
+    registry: npm
+    name: '@lob/react-address-autocomplete'
+    url: https://www.npmjs.com/package/@lob/react-address-autocomplete
+    install: npm install --save @lob/react-address-autocomplete
+    source: https://github.com/lob/react-address-autocomplete
+    official: true
+    version: 3.0.0
+    published: '2025-11-21'
+    note: UI component, not an API client — see components/lobcom-components.yml.
+  - language: javascript
+    registry: npm
+    name: '@lob/vue-address-autocomplete'
+    url: https://www.npmjs.com/package/@lob/vue-address-autocomplete
+    install: npm install @lob/vue-address-autocomplete
+    source: https://github.com/lob/vue-address-autocomplete
+    official: true
+    version: 2.0.0
+    published: '2025-11-18'
+    note: UI component, not an API client — see components/lobcom-components.yml.
+  - language: javascript
+    registry: cdn
+    name: address-elements
+    url: https://cdn.lob.com/lob/address-elements/2.2.0/address-elements.min.js
+    install: '<script src="https://cdn.lob.com/lob/address-elements/2.2.0/address-elements.min.js"></script>'
+    source: https://github.com/lob/address-elements
+    official: true
+    version: 2.2.0
+    published: null
+    note: >
+      CDN-distributed drop-in form enhancer with no package-registry entry, so no metadata
+      endpoint publishes a release date — version read from the pinned CDN path, which returned
+      HTTP 200 on 2026-08-13. The predecessor repo lob/lob-address-elements was archived
+      2022-03-17 and points here. Requesting an unpublished version (2.3.0) returns HTTP 403,
+      so the CDN does not float to latest.

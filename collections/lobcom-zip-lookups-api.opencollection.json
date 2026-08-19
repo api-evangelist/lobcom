@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Zip Lookups API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Zip Lookups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lookups",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/us_zip_lookups",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns information about a ZIP code"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

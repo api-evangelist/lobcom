@@ -1,0 +1,1127 @@
+{
+  "item": [
+    {
+      "id": "3fa56a6c-3bc3-49df-95a7-c0228f3aa9d7",
+      "name": "Campaigns",
+      "description": {
+        "content": "The campaigns endpoint allows you to create and view campaigns that can be used to send multiple letters or postcards.\nThe API provides endpoints for creating campaigns, updating campaigns, retrieving individual campaigns, listing campaigns, and deleting\ncampaigns.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4b5a5e95-97f3-420d-8838-11ba6ad28c50",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your campaigns. The campaigns are returned sorted by creation date, with the most recently created campaigns appearing first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f4eebcd1-e8a0-4ddd-8cf6-aee6835fd44e",
+              "name": "A dictionary with a data property that contains an array of up to `limit` campaigns. Each entry in the array is a separate campaign. The previous and next page of campaigns can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more campaigns are available beyond the current set of returned results, the `next_url` field will be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"cmp_e05ee61ff80764b\",\n      \"billing_group_id\": \"bg_fe3079dcdd80e5ae\",\n      \"name\": \"My Campaign\",\n      \"description\": \"My Campaign's description\",\n      \"schedule_type\": \"immediate\",\n      \"send_date\": null,\n      \"target_delivery_date\": null,\n      \"cancel_window_campaign_minutes\": 60,\n      \"metadata\": {},\n      \"use_type\": \"marketing\",\n      \"is_draft\": true,\n      \"deleted\": false,\n      \"creatives\": [],\n      \"uploads\": [],\n      \"auto_cancel_if_ncoa\": false,\n      \"date_created\": \"2017-09-05T17:47:53.767Z\",\n      \"date_modified\": \"2017-09-05T17:47:53.767Z\",\n      \"object\": \"campaign\"\n    }\n  ],\n  \"object\": \"list\",\n  \"previous_url\": null,\n  \"next_url\": null,\n  \"count\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2437a893-9af8-4484-afed-ff5aa7dff9d1",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new campaign with the provided properties. See how to launch your first campaign [here](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/launch-your-first-campaign).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "* `native` - Translate response to the native language of the country in the request\n* `match` - match the response to the language in the request\n\nDefault response is in English.\n",
+                "key": "x-lang-output",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "(Required) Name of the campaign."
+                },
+                {
+                  "disabled": false,
+                  "key": "schedule_type",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "use_type",
+                  "value": "<string,null>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "billing_group_id",
+                  "value": "<string,null>",
+                  "description": "Unique identifier prefixed with `bg_`."
+                },
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "target_delivery_date",
+                  "value": "<string,null-date-time>",
+                  "description": "If `schedule_type` is `target_delivery_date`, provide a targeted delivery date for mail pieces in this campaign."
+                },
+                {
+                  "disabled": false,
+                  "key": "send_date",
+                  "value": "<string,null-date-time>",
+                  "description": "If `schedule_type` is `scheduled_send_date`, provide a date to send this campaign."
+                },
+                {
+                  "disabled": false,
+                  "key": "cancel_window_campaign_minutes",
+                  "value": "<integer,null>",
+                  "description": "A window, in minutes, within which the campaign can be canceled."
+                },
+                {
+                  "disabled": false,
+                  "key": "metadata",
+                  "value": "gXX4$yvbA)Id>ciZa*nZ:bJ46a<B1G@@Pfo}TxU I-j;zaB`c5q5H27p"
+                },
+                {
+                  "disabled": false,
+                  "key": "auto_cancel_if_ncoa",
+                  "value": "<boolean>",
+                  "description": "Whether or not a mail piece should be automatically canceled and not sent if the address is updated via NCOA."
+                },
+                {
+                  "disabled": false,
+                  "key": "print_speed",
+                  "value": "core"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "51a7d045-9175-4f16-a808-ba9f2425e306",
+              "name": "Campaign created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "* `native` - Translate response to the native language of the country in the request\n* `match` - match the response to the language in the request\n\nDefault response is in English.\n",
+                    "key": "x-lang-output",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Name of the campaign.",
+                        "type": "text/plain"
+                      },
+                      "key": "name",
+                      "value": "My Demo Campaign"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "My Campaign's description"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "schedule_type",
+                      "value": "immediate"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "print_speed",
+                      "value": "core"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "52eb3419-1d50-4fb6-8757-8dd276af7bab",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "* `native` - Translate response to the native language of the country in the request\n* `match` - match the response to the language in the request\n\nDefault response is in English.\n",
+                    "key": "x-lang-output",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Name of the campaign.",
+                        "type": "text/plain"
+                      },
+                      "key": "name",
+                      "value": "My Demo Campaign"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "My Campaign's description"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "schedule_type",
+                      "value": "immediate"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "print_speed",
+                      "value": "core"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"campaign not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3320f5c9-9171-4a68-9db8-b9e1fec5c657",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing campaign. You need only supply the unique campaign identifier that was returned upon campaign creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns",
+                ":cmp_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cmp_id",
+                  "description": "(Required) id of the campaign"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "344f0df6-7f15-442c-ab04-0cf70745ccef",
+              "name": "Returns a campaign object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d2388a5f-7a9b-4352-b023-4dd94c710d3d",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"campaign not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "35883af4-4229-4266-9120-e115d2af5e40",
+          "name": "Update",
+          "request": {
+            "name": "Update",
+            "description": {
+              "content": "Update the details of an existing campaign. You need only supply the unique identifier that was returned upon campaign creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns",
+                ":cmp_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cmp_id",
+                  "description": "(Required) id of the campaign"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "description",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "schedule_type",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "target_delivery_date",
+                  "value": "<dateTime>",
+                  "description": "If `schedule_type` is `target_delivery_date`, provide a targeted delivery date for mail pieces in this campaign."
+                },
+                {
+                  "disabled": false,
+                  "key": "send_date",
+                  "value": "<dateTime>",
+                  "description": "If `schedule_type` is `scheduled_send_date`, provide a date to send this campaign."
+                },
+                {
+                  "disabled": false,
+                  "key": "cancel_window_campaign_minutes",
+                  "value": "<integer>",
+                  "description": "A window, in minutes, within which the campaign can be canceled."
+                },
+                {
+                  "disabled": false,
+                  "key": "metadata",
+                  "value": "l@ f%dZ?H!u.b%D.p4`x~X h{wYi{&MwD.[t!D|.MuP>^Mz@.;Z@XNR ZV)MK)A;!YR+gl6w=W0yz-xc-ml]<M,=>i,8IZ>G~>7,]x+eY9)=K-)7cZ{2.[ 7h}#P$B{$v%YxTd?BW(Tn*!/!Ab}^fY):<kyoiZT]Qpq'bnFX4.C7]6|G?OD-[/HdY=8Qs:z`6Ly_~W]E&v6X?{QbyF{IIP)- mRf3NNA~Kt$FWhuN?U|4lPkViV=0ITI@:8vA49*/|3/X|*##g0?Jr+r&~T34i#s`qLu$6P+D@:|qRdRq=98kJK.6'`l0c)J=Jy|taI2zi`n9="
+                },
+                {
+                  "disabled": false,
+                  "key": "is_draft",
+                  "value": "<boolean>",
+                  "description": "Whether or not the campaign is still a draft. Can either be excluded or `false`."
+                },
+                {
+                  "disabled": false,
+                  "key": "use_type",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "auto_cancel_if_ncoa",
+                  "value": "<boolean>",
+                  "description": "Whether or not a mail piece should be automatically canceled and not sent if the address is updated via NCOA."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f9cd2bd7-d8b2-4435-b170-cde364e0ce26",
+              "name": "Returns a campaign object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test campaign"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "caffb45a-2707-469b-9506-b01a11cd0392",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Test campaign"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"campaign not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5148b24a-b4f2-4635-8467-38ade700c388",
+          "name": "Delete",
+          "request": {
+            "name": "Delete",
+            "description": {
+              "content": "Delete an existing campaign. You need only supply the unique identifier that was returned upon campaign creation. Deleting a campaign also deletes any associated mail pieces that have been created but not sent. A campaign's `send_date` matches its associated mail pieces' `send_date`s.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns",
+                ":cmp_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cmp_id",
+                  "description": "(Required) id of the campaign"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "43deb1d2-d0e2-4482-ba76-b1e1c251825e",
+              "name": "Deleted the campaign.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"cmp_e05ee61ff80764b\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5398f708-2874-4233-9ccf-4747e5c93355",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"campaign not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "85270e4a-9493-4f6d-8112-93c378215819",
+          "name": "Send Campaign",
+          "request": {
+            "name": "Send Campaign",
+            "description": {
+              "content": "Sends a campaign. You need only supply the unique campaign identifier that was returned upon campaign creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns",
+                ":cmp_id",
+                "send"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cmp_id",
+                  "description": "(Required) id of the campaign"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b32db230-f965-4c53-aed1-44173e9319c2",
+              "name": "Returns a campaign object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id",
+                    "send"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1ab780dc-1c56-456b-af86-b3dc88e11f43",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":cmp_id",
+                    "send"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cmp_id",
+                      "description": "(Required) id of the campaign"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"campaign not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "610275c6-7fee-4857-841e-9fc6f784291d",
+    "name": "Lob Campaigns API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

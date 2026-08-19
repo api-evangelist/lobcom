@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts Card Orders API
+  title: Lob Card Orders API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -134,37 +134,28 @@ paths:
         source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\n\nvar cardOrderCreate = *lob.NewCardOrderEditable()\ncardOrderCreate.SetQuantity(\"10000\")\n\n\n\ncreatedcardOrder, _, err := apiClient.CardOrdersApi.Create(context, \"card_6afffd19045076c\").CardOrderEditable(cardOrderCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
         label: GO
 components:
-  responses:
-    card_order_error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: not_found
-              message: card not found
-              status_code: 404
-    mailpiece_error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: not_found
-              message: to address not found
-              status_code: 404
   schemas:
-    object:
-      type: string
-      description: Value is resource type.
-    date_created:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was created.
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    card_order_editable:
+      type: object
+      required:
+      - quantity
+      properties:
+        quantity:
+          type: integer
+          description: The quantity of cards in the order (minimum 10,000).
+          minimum: 10000
+          maximum: 10000000
     lob_base:
       type: object
       required:
@@ -180,50 +171,10 @@ components:
           $ref: '#/components/schemas/deleted'
         object:
           $ref: '#/components/schemas/object'
-    list:
-      type: object
-      description: Multiple items returned in order
-      properties:
-        object:
-          $ref: '#/components/schemas/object'
-        next_url:
-          type: string
-          description: Url of next page of items in list.
-          nullable: true
-        previous_url:
-          type: string
-          description: Url of previous page of items in list.
-          nullable: true
-        count:
-          $ref: '#/components/schemas/count'
-        total_count:
-          type: integer
-          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
-    card_order_editable:
-      type: object
-      required:
-      - quantity
-      properties:
-        quantity:
-          type: integer
-          description: The quantity of cards in the order (minimum 10,000).
-          minimum: 10000
-          maximum: 10000000
     date_modified:
       type: string
       format: date-time
       description: A timestamp in ISO 8601 format of the date the resource was last modified.
-    card_id:
-      type: string
-      description: Unique identifier prefixed with `card_`.
-      pattern: ^card_[a-zA-Z0-9]+$
-    deleted:
-      type: boolean
-      description: Only returned if the resource has been successfully deleted.
-    co_id:
-      type: string
-      description: Unique identifier prefixed with `co_`.
-      pattern: ^co_[a-zA-Z0-9]+$
     card_order:
       allOf:
       - $ref: '#/components/schemas/lob_base'
@@ -265,9 +216,10 @@ components:
             type: string
             format: date-time
             description: The fixed deadline for the cards to be printed.
-    count:
-      type: integer
-      description: number of resources in a set
+    card_id:
+      type: string
+      description: Unique identifier prefixed with `card_`.
+      pattern: ^card_[a-zA-Z0-9]+$
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -446,37 +398,44 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    failure_status_code:
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type:
+          - string
+          - 'null'
+          description: Url of next page of items in list.
+        previous_url:
+          type:
+          - string
+          - 'null'
+          description: Url of previous page of items in list.
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    count:
       type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
-  parameters:
-    offset:
-      in: query
-      name: offset
-      required: false
-      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
-      schema:
-        type: integer
-        default: 0
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: How many results to return.
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
+      description: number of resources in a set
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    object:
+      type: string
+      description: Value is resource type.
+    co_id:
+      type: string
+      description: Unique identifier prefixed with `co_`.
+      pattern: ^co_[a-zA-Z0-9]+$
   mediaTypes:
     all_card_orders:
       application/json:
@@ -527,31 +486,53 @@ components:
               date_created: '2021-10-07T21:03:18.871Z'
               date_modified: '2021-10-16T01:00:30.144Z'
               object: card_order
+  parameters:
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    offset:
+      in: query
+      name: offset
+      required: false
+      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
+      schema:
+        type: integer
+        default: 0
+  responses:
+    mailpiece_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: to address not found
+              status_code: 404
+    card_order_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: card not found
+              status_code: 404
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

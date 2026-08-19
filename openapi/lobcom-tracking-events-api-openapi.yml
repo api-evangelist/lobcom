@@ -1,0 +1,361 @@
+openapi: 3.2.0
+info:
+  title: Lob Tracking Events API
+  version: 1.22.0
+  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
+
+    '
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  contact:
+    name: Lob Developer Experience
+    url: https://support.lob.com/
+    email: lob-openapi@lob.com
+  termsOfService: https://www.lob.com/legal
+servers:
+- url: https://api.lob.com/v1
+  description: production
+security:
+- basicAuth: []
+tags:
+- name: Tracking Events
+  description: "As mailpieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes these mail scans to generate tracking events.\n\n<h3>Certified Tracking Event Details</h3>\n\nLetters sent with USPS Certified Mail are fully tracked by USPS, and\ntherefore their [tracking events](#operation/tracking_event) have an\nadditional `details` object with more detailed information about the\ntracking event. The following table shows the potential values for\nthe fields in the `details` object mapped to the tracking event `name`.\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">NAME</th>\n    <th style=\"white-space: nowrap\">EVENT</th>\n    <th style=\"white-space: nowrap\">DESCRIPTION</th>\n    <th style=\"white-space: nowrap\">ACTION REQUIRED</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Mailed</td>\n    <td style=\"white-space: nowrap\"><code>package_accepted</code></td>\n    <td>Package has been accepted into the carrier network for delivery.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">In Transit</td>\n    <td style=\"white-space: nowrap\"><code>package_arrived</code></td>\n    <td>Package has arrived at an intermediate location in the carrier network.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">In Transit</td>\n    <td style=\"white-space: nowrap\"><code>package_departed</code></td>\n    <td>Package has departed from an intermediate location in the carrier network.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">In Transit</td>\n    <td style=\"white-space: nowrap\"><code>package_processing</code></td>\n    <td>Package is processing at an intermediate location in the carrier network.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">In Transit</td>\n    <td style=\"white-space: nowrap\"><code>package_processed</code></td>\n    <td>Package has been processed at an intermediate location.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">In Local Area</td>\n    <td style=\"white-space: nowrap\"><code>package_in_local_area</code></td>\n    <td>Package is at a location near the end destination.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Processed For Delivery</td>\n    <td style=\"white-space: nowrap\"><code>delivery_scheduled</code></td>\n    <td>Package is scheduled for delivery.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Processed For Delivery</td>\n    <td style=\"white-space: nowrap\"><code>out_for_delivery</code></td>\n    <td>Package is out for delivery.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Pickup Available</td>\n    <td style=\"white-space: nowrap\"><code>pickup_available</code></td>\n    <td>Package is available for pickup at carrier location.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Delivered</td>\n    <td style=\"white-space: nowrap\"><code>delivered</code></td>\n    <td>Package has been delivered.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Re-Routed</td>\n    <td style=\"white-space: nowrap\"><code>package_forwarded</code></td>\n    <td>Package has been forwarded.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Returned to Sender</td>\n    <td style=\"white-space: nowrap\"><code>returned_to_sender</code></td>\n    <td>Package is to be returned to sender.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>address_issue</code></td>\n    <td>Address information is incorrect. Contact carrier to ensure delivery.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>contact_carrier</code></td>\n    <td>Contact the carrier for more information.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>delayed</code></td>\n    <td>Delivery of package is delayed.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>delivery_attempted</code></td>\n    <td>Delivery of package has been attempted. Contact carrier to ensure delivery.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>delivery_rescheduled</code></td>\n    <td>Delivery of package has been rescheduled.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>location_inaccessible</code></td>\n    <td>Delivery location inaccessible to carrier. Contact carrier to ensure delivery.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>notice_left</code></td>\n    <td>Carrier left notice during attempted delivery. Follow carrier instructions on notice.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>package_damaged</code></td>\n    <td>Package has been damaged. Contact carrier for more details.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>package_disposed</code></td>\n    <td>Package has been disposed.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>package_held</code></td>\n    <td>Package held at carrier location. Contact carrier for more details.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>package_lost</code></td>\n    <td>Package has been lost. Contact carrier for more details.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>package_unclaimed</code></td>\n    <td>Package is unclaimed.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>package_undeliverable</code></td>\n    <td>Package is not able to be delivered.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>reschedule_delivery</code></td>\n    <td>Contact carrier to reschedule delivery.</td>\n    <td style=\"white-space: nowrap\"><code>true</code></td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\">Issue</td>\n    <td style=\"white-space: nowrap\"><code>other</code></td>\n    <td>Unrecognized carrier status.</td>\n    <td style=\"white-space: nowrap\"><code>false</code></td>\n  </tr>\n</table>\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n"
+paths: {}
+webhooks:
+  tracking_events:
+    post:
+      summary: Tracking Events
+      description: Information about tracking events
+      operationId: tracking_event
+      tags:
+      - Tracking Events
+      responses:
+        '200':
+          $ref: '#/components/responses/tracking_events'
+components:
+  schemas:
+    tracking_event_certified:
+      allOf:
+      - $ref: '#/components/schemas/tracking_event_base'
+      - type: object
+        required:
+        - type
+        - name
+        properties:
+          type:
+            description: a Certified letter tracking event
+            type: string
+            enum:
+            - certified
+          name:
+            type: string
+            enum:
+            - Mailed
+            - In Transit
+            - In Local Area
+            - Processed for Delivery
+            - Pickup Available
+            - Delivered
+            - Re-Routed
+            - Returned to Sender
+            - Issue
+            description: "Name of tracking event for Certified letters. Letters sent with USPS Certified Mail are fully tracked by USPS, therefore their tracking events have an additional details object with more detailed information about the tracking event. Some certified tracking event names have multiple meanings, noted in the list here. See the description of the details object for the full set of combined certified tracking event name meanings.\n\n  * `Mailed` - Package has been accepted into the carrier network for delivery.\n\n  * `In Transit` - Maps to four distinct stages of transit.\n\n  * `In Local Area` - Package is at a location near the end destination.\n\n  * `Processed for Delivery` - Maps to two distinct stages of delivery.\n\n  * `Pickup Available` - Package is available for pickup at carrier location.\n\n  * `Delivered` - Package has been delivered.\n\n  * `Re-Routed` - Package has been forwarded.\n\n  * `Returned to Sender` - Package is to be returned to sender.\n\n  * `Issue` - Maps to (at least) 15 possible issues, some of which are actionable.\n"
+          details:
+            $ref: '#/components/schemas/tracking_event_details'
+          location:
+            type:
+            - string
+            - 'null'
+            description: 'The zip code in which the event occurred if it exists, otherwise will be the name of a Regional Distribution Center if it exists, otherwise will be null.
+
+              '
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    evnt_id:
+      type: string
+      description: Unique identifier prefixed with `evnt_`.
+      pattern: ^evnt_[a-zA-Z0-9]+$
+    object:
+      type: string
+      description: Value is resource type.
+    tracking_event_base:
+      type: object
+      description: As mail pieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes these mail scans to generate tracking events.
+      required:
+      - id
+      - date_created
+      - date_modified
+      - object
+      properties:
+        id:
+          $ref: '#/components/schemas/evnt_id'
+        time:
+          type: string
+          format: date-time
+          description: A timestamp in ISO 8601 format of the date USPS registered the event.
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        object:
+          allOf:
+          - $ref: '#/components/schemas/object'
+          - type: string
+            enum:
+            - tracking_event
+            default: tracking_event
+    tracking_event_normal:
+      allOf:
+      - $ref: '#/components/schemas/tracking_event_base'
+      - type: object
+        required:
+        - type
+        - name
+        properties:
+          type:
+            description: non-Certified postcards, self mailers, letters, checks and snap packs
+            type: string
+            enum:
+            - normal
+          name:
+            type: string
+            enum:
+            - Mailed
+            - In Transit
+            - In Local Area
+            - Processed for Delivery
+            - Delivered
+            - Re-Routed
+            - Returned to Sender
+            - International Exit
+            description: "Name of tracking event (for normal postcards, self mailers, letters, checks and snap packs):\n\n  * `Mailed` - The mailpiece has been handed off to and accepted by USPS\n    and is en route. <a href=\"https://help.lob.com/print-and-mail/getting-data-and-results/tracking-your-mail#mailed-tracking-events-4\" target=\"_blank\">More about\n    Mailed.</a>\n    Note this data is only available in Enterprise editions of\n    Lob. <a href=\"https://lob.com/support/contact#contact\" target=\"_blank\">Contact Sales</a> if\n    you want access to this feature.\n\n  * `In Transit` - The mailpiece is being processed at the entry/origin facility.\n\n  * `In Local Area` - The mailpiece is being processed at the destination facility.\n\n  * `Processed for Delivery` - The mailpiece has been greenlit for\n    delivery at the recipient's nearest postal facility. The mailpiece\n    should reach the mailbox within 1 business day of this tracking\n    event.\n\n  * `Delivered` - The mail piece has been delivered to \n    the recipient’s address. The final scan is generated when the mail \n    carrier's GPS unit leaves the delivery area.\n\n  * `Re-Routed` - The mailpiece is re-routed due to recipient change of\n    address, address errors, or USPS relabeling of barcode/ID tag\n    area.\n\n  * `Returned to Sender` - The mailpiece is being returned to sender due\n    to barcode, ID tag area, or address errors.\n  \n  * `International Exit` - The mail piece has been processed to \n    ship to a destination abroad. This is typically the last \n    scan a US-originated international mail piece will receive \n    from the USPS.\n\n<a href=\"https://help.lob.com/print-and-mail/getting-data-and-results/tracking-your-mail#mailed-tracking-events-4\" target=\"_blank\">More about tracking</a>\n"
+          details:
+            description: Will be `null` for `type=normal` events
+            type:
+            - object
+            - 'null'
+            enum:
+            - null
+          location:
+            type:
+            - string
+            - 'null'
+            description: 'The zip code in which the scan event occurred. Null for `Mailed` events.
+
+              '
+    tracking_event_details:
+      type: object
+      required:
+      - event
+      - description
+      - action_required
+      properties:
+        event:
+          type: string
+          enum:
+          - package_accepted
+          - package_arrived
+          - package_departed
+          - package_processing
+          - package_processed
+          - package_in_local_area
+          - delivery_scheduled
+          - out_for_delivery
+          - pickup_available
+          - delivered
+          - package_forwarded
+          - returned_to_sender
+          - address_issue
+          - contact_carrier
+          - delayed
+          - delivery_attempted
+          - delivery_rescheduled
+          - location_inaccessible
+          - notice_left
+          - package_damaged
+          - package_disposed
+          - package_held
+          - package_lost
+          - package_unclaimed
+          - package_undeliverable
+          - reschedule_delivery
+          - other
+          description: 'Find the full table [here](#tag/Tracking-Events). A detailed substatus about the event:
+
+            * `package_accepted` - Package has been accepted into the carrier network for delivery.
+
+            * `package_arrived` - Package has arrived at an intermediate location in the carrier network.
+
+            * `package_departed` - Package has departed from an intermediate location in the carrier network.
+
+            * `package_processing` - Package is processing at an intermediate location in the carrier network.
+
+            * `package_processed` - Package has been processed at an intermediate location.
+
+            * `package_in_local_area` - Package is at a location near the end destination.
+
+            * `delivery_scheduled` - Package is scheduled for delivery.
+
+            * `out_for_delivery` - Package is out for delivery.
+
+            * `pickup_available` - Package is available for pickup at carrier location.
+
+            * `delivered` - Package has been delivered.
+
+            * `package_forwarded` - Package has been forwarded.
+
+            * `returned_to_sender` - Package is to be returned to sender.
+
+            * `address_issue` - Address information is incorrect. Contact carrier to ensure delivery.
+
+            * `contact_carrier` - Contact the carrier for more information.
+
+            * `delayed` - Delivery of package is delayed.
+
+            * `delivery_attempted` - Delivery of package has been attempted. Contact carrier to ensure delivery.
+
+            * `delivery_rescheduled` - Delivery of package has been rescheduled.
+
+            * `location_inaccessible` - Delivery location inaccessible to carrier. Contact carrier to ensure delivery.
+
+            * `notice_left` - Carrier left notice during attempted delivery. Follow carrier instructions on notice.
+
+            * `package_damaged` - Package has been damaged. Contact carrier for more details.
+
+            * `package_disposed` - Package has been disposed.
+
+            * `package_held` - Package held at carrier location. Contact carrier for more details.
+
+            * `package_lost` - Package has been lost. Contact carrier for more details.
+
+            * `package_unclaimed` - Package is unclaimed.
+
+            * `package_undeliverable` - Package is not able to be delivered.
+
+            * `reschedule_delivery` - Contact carrier to reschedule delivery.
+
+            * `other` - Unrecognized carrier status.
+
+            '
+        description:
+          type: string
+          description: The description as listed in the description for event.
+        notes:
+          type: string
+          description: Event-specific notes from USPS about the tracking event.
+        action_required:
+          type: boolean
+          description: '`true` if action is required by the end recipient, `false` otherwise.
+
+            '
+  responses:
+    tracking_events:
+      description: Returns a `tracking_event` object to the specified server.
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/tracking_event_normal'
+            - $ref: '#/components/schemas/tracking_event_certified'
+          examples:
+            normal:
+              value:
+                id: evnt_9e84094c9368cfb
+                type: normal
+                name: In Local Area
+                details: null
+                location: '72231'
+                time: '2016-06-30T15:51:41.000Z'
+                date_created: '2016-06-30T17:41:59.771Z'
+                date_modified: '2016-06-30T17:41:59.771Z'
+                object: tracking_event
+            certified:
+              value:
+                id: evnt_9e84094c9368cfb
+                type: certified
+                name: Delivered
+                details:
+                  event: delivered
+                  description: Package has been delivered.
+                  notes: Delivered, Front Desk/Reception/Mail Room
+                  action_required: false
+                location: '33408'
+                time: '2019-10-08T19:41:00Z'
+                date_created: '2019-10-08T19:41:00Z'
+                date_modified: '2019-10-08T19:41:00Z'
+                object: tracking_event
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - Getting Started
+  - SDKs and Tools
+- name: Address Book
+  tags:
+  - Addresses
+  - National Change of Address
+- name: Print and Mail API
+  tags:
+  - Postcards
+  - Self Mailers
+  - Letters
+  - Checks
+  - Snap Packs
+  - Booklets
+  - Bank Accounts
+  - Templates
+  - Resource Proofs
+  - Template Versions
+  - Template Design
+  - Manage Mail
+- name: Campaigns API (BETA)
+  tags:
+  - Campaigns
+  - Creatives
+  - Uploads
+- name: Informed Delivery Campaign API
+  tags:
+  - Informed Delivery Campaign
+- name: Address Verification API
+  tags:
+  - US Verifications
+  - US Verification Types
+  - US Autocompletions
+  - Reverse Geocode Lookups
+  - Zip Lookups
+  - Identity Validation
+  - Intl Verifications
+- name: Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Tracking Events
+- name: Special Features
+  tags:
+  - Billing Groups
+  - Buckslips
+  - Buckslip Orders
+  - Cards
+  - Card Orders
+  - QR Codes
+  - URL Shortener
+- name: Appendix
+  tags:
+  - Beta Program
+  - Errors
+  - Rate Limiting
+  - Requests and Responses
+  - Test and Live Environments
+  - Versioning and Changelog

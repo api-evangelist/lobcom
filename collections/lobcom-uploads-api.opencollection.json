@@ -1,0 +1,234 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Uploads API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Uploads",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/uploads",
+            "params": [
+              {
+                "name": "campaignId",
+                "value": "",
+                "type": "query",
+                "description": "id of the campaign"
+              }
+            ]
+          },
+          "docs": "Returns a list of your uploads. Optionally, filter uploads by campaign."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/uploads",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new upload with the provided properties."
+        },
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/uploads/:upl_id",
+            "params": [
+              {
+                "name": "upl_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the upload"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing upload. You need only supply the unique upload identifier that was returned upon upload creation."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.lob.com/v1/uploads/:upl_id",
+            "params": [
+              {
+                "name": "upl_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the upload"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the details of an existing upload. You need only supply the unique identifier that was returned upon upload creation."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/uploads/:upl_id",
+            "params": [
+              {
+                "name": "upl_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the upload"
+              }
+            ]
+          },
+          "docs": "Delete an existing upload. You need only supply the unique identifier that was returned upon upload creation."
+        },
+        {
+          "info": {
+            "name": "Upload file",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/uploads/:upl_id/file",
+            "params": [
+              {
+                "name": "upl_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the upload"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Upload an [audience file](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/campaign-audience-guide) and associate it with an upload."
+        },
+        {
+          "info": {
+            "name": "Create Export",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/uploads/:upl_id/exports",
+            "params": [
+              {
+                "name": "upl_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the upload"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Campaign Exports can help you understand exactly which records in a campaign could not be created. By initiating and retrieving an export, you will get row-by-row errors for your campaign. For a step-by-step walkthrough of creating a campaign and exporting failures, see our [Campaigns Guide](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/launch-your-first-campaign).\n\nCreate an export file associated with an upload."
+        },
+        {
+          "info": {
+            "name": "Retrieve Line Item Report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/uploads/:upl_id/report",
+            "params": [
+              {
+                "name": "upl_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the upload"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "The status of line items to filter and retrieve. By default all line items are returned."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "An integer that designates the offset at which to begin returning results. Defaults to 0."
+              }
+            ]
+          },
+          "docs": "Retrieves the line item data for each row from the csv file associated with the upload id record. NOTE: This endpoint is currently feature flagged. Please reach out to Lob's support team if you  would like access to this API endpoint."
+        },
+        {
+          "info": {
+            "name": "Retrieve Export",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/uploads/:upl_id/exports/:ex_id",
+            "params": [
+              {
+                "name": "upl_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the upload"
+              },
+              {
+                "name": "ex_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the export"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing export. You need only supply the unique export identifier that was returned upon export creation. If you try retrieving an export immediately after creating one (i.e., before we're done processing the export), you will get back an export object with `state = in_progress`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

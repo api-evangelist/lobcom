@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts Buckslip Orders API
+  title: Lob Buckslip Orders API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -93,27 +93,17 @@ paths:
         label: CURL
 components:
   schemas:
-    buckslip_order_editable:
-      type: object
-      required:
-      - quantity
-      properties:
-        quantity:
-          type: integer
-          description: The quantity of buckslips in the order (minimum 5,000).
-          minimum: 5000
-          maximum: 10000000
-    buckslip_id:
-      type: string
-      description: Unique identifier prefixed with `bck_`.
-      pattern: ^bck_[a-zA-Z0-9]+$
-    object:
-      type: string
-      description: Value is resource type.
-    date_created:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was created.
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
     lob_base:
       type: object
       required:
@@ -129,39 +119,51 @@ components:
           $ref: '#/components/schemas/deleted'
         object:
           $ref: '#/components/schemas/object'
-    list:
-      type: object
-      description: Multiple items returned in order
-      properties:
-        object:
-          $ref: '#/components/schemas/object'
-        next_url:
-          type: string
-          description: Url of next page of items in list.
-          nullable: true
-        previous_url:
-          type: string
-          description: Url of previous page of items in list.
-          nullable: true
-        count:
-          $ref: '#/components/schemas/count'
-        total_count:
-          type: integer
-          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
     date_modified:
       type: string
       format: date-time
       description: A timestamp in ISO 8601 format of the date the resource was last modified.
-    bo_id:
-      type: string
-      description: Unique identifier prefixed with `bo_`.
-      pattern: ^bo_[a-zA-Z0-9]+$
-    deleted:
-      type: boolean
-      description: Only returned if the resource has been successfully deleted.
-    count:
-      type: integer
-      description: number of resources in a set
+    buckslip_order:
+      allOf:
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/bo_id'
+          buckslip_id:
+            $ref: '#/components/schemas/buckslip_id'
+          status:
+            description: The status of the buckslip order.
+            enum:
+            - pending
+            - printing
+            - available
+            - cancelled
+            - depleted
+            type: string
+          quantity_ordered:
+            description: The quantity of buckslips ordered.
+            type: number
+            default: 0
+          unit_price:
+            description: The unit price for the buckslip order.
+            type: number
+            default: 0
+          inventory:
+            description: The inventory of the buckslip order.
+            type: number
+            default: 0
+          cancelled_reason:
+            description: The reason for cancellation.
+            type: string
+          availability_date:
+            type: string
+            format: date-time
+            description: A timestamp in ISO 8601 format of the date the resource was created.
+          expected_availability_date:
+            type: string
+            format: date-time
+            description: The fixed deadline for the buckslips to be printed.
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -340,77 +342,59 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    failure_status_code:
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type:
+          - string
+          - 'null'
+          description: Url of next page of items in list.
+        previous_url:
+          type:
+          - string
+          - 'null'
+          description: Url of previous page of items in list.
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    count:
       type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
-    buckslip_order:
-      allOf:
-      - $ref: '#/components/schemas/lob_base'
-      - type: object
-        properties:
-          id:
-            $ref: '#/components/schemas/bo_id'
-          buckslip_id:
-            $ref: '#/components/schemas/buckslip_id'
-          status:
-            description: The status of the buckslip order.
-            enum:
-            - pending
-            - printing
-            - available
-            - cancelled
-            - depleted
-            type: string
-          quantity_ordered:
-            description: The quantity of buckslips ordered.
-            type: number
-            default: 0
-          unit_price:
-            description: The unit price for the buckslip order.
-            type: number
-            default: 0
-          inventory:
-            description: The inventory of the buckslip order.
-            type: number
-            default: 0
-          cancelled_reason:
-            description: The reason for cancellation.
-            type: string
-          availability_date:
-            type: string
-            format: date-time
-            description: A timestamp in ISO 8601 format of the date the resource was created.
-          expected_availability_date:
-            type: string
-            format: date-time
-            description: The fixed deadline for the buckslips to be printed.
+      description: number of resources in a set
+    buckslip_order_editable:
+      type: object
+      required:
+      - quantity
+      properties:
+        quantity:
+          type: integer
+          description: The quantity of buckslips in the order (minimum 5,000).
+          minimum: 5000
+          maximum: 10000000
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    object:
+      type: string
+      description: Value is resource type.
+    buckslip_id:
+      type: string
+      description: Unique identifier prefixed with `bck_`.
+      pattern: ^bck_[a-zA-Z0-9]+$
+    bo_id:
+      type: string
+      description: Unique identifier prefixed with `bo_`.
+      pattern: ^bo_[a-zA-Z0-9]+$
   mediaTypes:
-    buckslip_order:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/buckslip_order'
-        examples:
-          basic:
-            value:
-              id: bo_e0f8a0562a06bea7f
-              buckslip_id: bck_6afffd19045076c
-              status: available
-              quantity_ordered: 10000
-              unit_price: 0.75
-              cancelled_reason: No longer needed
-              availability_date: '2021-10-12T21:41:48.326Z'
-              expected_availability_date: '2021-11-04T21:03:18.871Z'
-              date_created: '2021-10-07T21:03:18.871Z'
-              date_modified: '2021-10-16T01:00:30.144Z'
-              object: buckslip_order
     all_buckslip_orders:
       application/json:
         schema:
@@ -440,26 +424,24 @@ components:
           next_url: null
           previous_url: null
           count: 1
-  parameters:
-    offset:
-      in: query
-      name: offset
-      required: false
-      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
-      schema:
-        type: integer
-        default: 0
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: How many results to return.
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
+    buckslip_order:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/buckslip_order'
+        examples:
+          basic:
+            value:
+              id: bo_e0f8a0562a06bea7f
+              buckslip_id: bck_6afffd19045076c
+              status: available
+              quantity_ordered: 10000
+              unit_price: 0.75
+              cancelled_reason: No longer needed
+              availability_date: '2021-10-12T21:41:48.326Z'
+              expected_availability_date: '2021-11-04T21:03:18.871Z'
+              date_created: '2021-10-07T21:03:18.871Z'
+              date_modified: '2021-10-16T01:00:30.144Z'
+              object: buckslip_order
   responses:
     buckslip_order_error:
       description: Error
@@ -483,31 +465,30 @@ components:
               code: invalid
               message: message about incorrect parameter
               status_code: 422
+  parameters:
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    offset:
+      in: query
+      name: offset
+      required: false
+      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
+      schema:
+        type: integer
+        default: 0
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

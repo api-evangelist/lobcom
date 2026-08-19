@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts URL Shortener API
+  title: Lob URL Shortener API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -487,19 +487,36 @@ paths:
         label: GO
 components:
   schemas:
-    links_response:
-      allOf:
-      - $ref: '#/components/schemas/list'
-      - type: object
-        properties:
-          data:
-            type: array
-            description: List of links
-            items:
-              $ref: '#/components/schemas/link_response'
-    redirect_link:
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    link_delete_response:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for a link.
+          type: string
+        deleted:
+          description: Only returned if the link was successfully deleted.
+          type: boolean
+    campaign_id:
+      title: campaign_id
+      description: Denotes resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
+      type:
+      - string
+      - 'null'
+      pattern: ^(cmp|camp)_[a-zA-Z0-9]+$
+    domain:
       type: string
-      description: The original target URL.
+      description: The registered domain/hostname.
     link_single:
       type: object
       required:
@@ -519,48 +536,13 @@ components:
           type: string
         metadata:
           $ref: '#/components/schemas/metadata'
-    link_update:
+    metadata:
       type: object
-      required:
-      - redirect_link
-      properties:
-        title:
-          description: The title of the URL.
-          type: string
-        redirect_link:
-          $ref: '#/components/schemas/redirect_link'
-        metadata:
-          $ref: '#/components/schemas/metadata'
-    object:
-      type: string
-      description: Value is resource type.
-    domain_response:
-      type: object
-      properties:
-        id:
-          description: Unique identifier for a domain.
-          type: string
-        domain:
-          description: The registered domain/hostname.
-          type: string
-        error_redirect_link:
-          description: URL to redirect customers if a short link is broken or inactive.
-          type: string
-        status:
-          description: The configuration status of the domain.
-          type: string
-          enum:
-          - configured
-          - not_configured
-        created_at:
-          description: The date and time the domain was created.
-          type: string
-        updated_at:
-          description: The date and time the domain was last updated.
-          type: string
-    domain:
-      type: string
-      description: The registered domain/hostname.
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
     domains:
       type: object
       required:
@@ -570,63 +552,31 @@ components:
           $ref: '#/components/schemas/domain'
         error_redirect_link:
           $ref: '#/components/schemas/error_redirect_link'
-    error_redirect_link:
-      type: string
-      description: URL to redirect customers if a short link is broken or inactive.
-    list:
-      type: object
-      description: Multiple items returned in order
-      properties:
-        object:
-          $ref: '#/components/schemas/object'
-        next_url:
-          type: string
-          description: Url of next page of items in list.
-          nullable: true
-        previous_url:
-          type: string
-          description: Url of previous page of items in list.
-          nullable: true
-        count:
-          $ref: '#/components/schemas/count'
-        total_count:
-          type: integer
-          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
-    domains_response:
-      allOf:
-      - $ref: '#/components/schemas/list'
-      - type: object
-        properties:
-          data:
-            type: array
-            description: List of domains.
-            items:
-              $ref: '#/components/schemas/domain_response'
-    metadata:
-      type: object
-      additionalProperties:
-        type: string
-      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
-      maxLength: 500
-      pattern: '[^"\\]{0,500}'
-    campaign_id:
-      title: campaign_id
-      description: Denotes resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
-      type: string
-      pattern: ^(cmp|camp)_[a-zA-Z0-9]+$
-      nullable: true
-    link_delete_response:
+    link_response:
       type: object
       properties:
         id:
-          description: Unique identifier for a link.
+          description: Unique identifier prefixed with `lnk_`.
           type: string
-        deleted:
-          description: Only returned if the link was successfully deleted.
-          type: boolean
-    count:
-      type: integer
-      description: number of resources in a set
+        title:
+          description: The title of the URL.
+          type: string
+        domain_id:
+          description: A unique identifier for the registered domain.
+          type: string
+        redirect_link:
+          $ref: '#/components/schemas/redirect_link'
+        short_link:
+          description: The shortened URL for the associated original URL.
+          type: string
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        created_at:
+          description: The date and time the link was created.
+          type: string
+        updated_at:
+          description: The date and time the link was last updated.
+          type: string
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -805,17 +755,95 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    failure_status_code:
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type:
+          - string
+          - 'null'
+          description: Url of next page of items in list.
+        previous_url:
+          type:
+          - string
+          - 'null'
+          description: Url of previous page of items in list.
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    count:
       type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+      description: number of resources in a set
+    link_update:
+      type: object
+      required:
+      - redirect_link
+      properties:
+        title:
+          description: The title of the URL.
+          type: string
+        redirect_link:
+          $ref: '#/components/schemas/redirect_link'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+    object:
+      type: string
+      description: Value is resource type.
+    domains_response:
+      allOf:
+      - $ref: '#/components/schemas/list'
+      - type: object
+        properties:
+          data:
+            type: array
+            description: List of domains.
+            items:
+              $ref: '#/components/schemas/domain_response'
+    links_response:
+      allOf:
+      - $ref: '#/components/schemas/list'
+      - type: object
+        properties:
+          data:
+            type: array
+            description: List of links
+            items:
+              $ref: '#/components/schemas/link_response'
+    domain_response:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for a domain.
+          type: string
+        domain:
+          description: The registered domain/hostname.
+          type: string
+        error_redirect_link:
+          description: URL to redirect customers if a short link is broken or inactive.
+          type: string
+        status:
+          description: The configuration status of the domain.
+          type: string
+          enum:
+          - configured
+          - not_configured
+        created_at:
+          description: The date and time the domain was created.
+          type: string
+        updated_at:
+          description: The date and time the domain was last updated.
+          type: string
+    error_redirect_link:
+      type: string
+      description: URL to redirect customers if a short link is broken or inactive.
+    redirect_link:
+      type: string
+      description: The original target URL.
     domain_delete:
       type: object
       properties:
@@ -825,39 +853,7 @@ components:
         deleted:
           description: Only returned if the domain was successfully deleted.
           type: boolean
-    link_response:
-      type: object
-      properties:
-        id:
-          description: Unique identifier prefixed with `lnk_`.
-          type: string
-        title:
-          description: The title of the URL.
-          type: string
-        domain_id:
-          description: A unique identifier for the registered domain.
-          type: string
-        redirect_link:
-          $ref: '#/components/schemas/redirect_link'
-        short_link:
-          description: The shortened URL for the associated original URL.
-          type: string
-        metadata:
-          $ref: '#/components/schemas/metadata'
-        created_at:
-          description: The date and time the link was created.
-          type: string
-        updated_at:
-          description: The date and time the link was last updated.
-          type: string
   parameters:
-    campaign_id:
-      in: query
-      name: campaign_id
-      required: false
-      description: Filters resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
-      schema:
-        $ref: '#/components/schemas/campaign_id'
     limit:
       in: query
       name: limit
@@ -869,6 +865,13 @@ components:
         default: 10
         maximum: 100
         example: 10
+    campaign_id:
+      in: query
+      name: campaign_id
+      required: false
+      description: Filters resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
+      schema:
+        $ref: '#/components/schemas/campaign_id'
     before_after:
       in: query
       name: before/after
@@ -899,27 +902,6 @@ components:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

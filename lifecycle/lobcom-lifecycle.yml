@@ -1,19 +1,68 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: searched
-source: https://docs.lob.com/ (Versioning and Changelog, Test and Live Environments) + status.lob.com
+source: >-
+  https://docs.lob.com/#tag/Versioning-and-Changelog and #tag/Test-and-Live-Environments (both
+  published verbatim in Lob's own OpenAPI at github.com/lob/lob-openapi) +
+  https://github.com/lob/lob-openapi/releases + https://status.lob.com/ + https://help.lob.com/
 versioning:
-  scheme: date-header
-  current: '1.22.0'
+  scheme: date-versioned-api + semver-spec
+  api_version: '2020-02-11'
+  spec_version: 1.22.3
+  current: '2020-02-11'
+  header: Lob-Version
   mechanism: >
-    API version is pinned per-account in the dashboard and can be overridden per-request
-    with the Lob-Version header (date-based). Breaking changes ship under a new dated version.
+    The account's API version is pinned in Dashboard Settings and can be overridden per-request
+    with the Lob-Version header (e.g. `-H "Lob-Version: 2020-02-11"`). Backwards-incompatible
+    changes ship as a new dated version, explicitly following the Stripe versioning model. The
+    API rejects a version older than the account's current pin. The OpenAPI specification is
+    versioned separately with semver, because backward-compatible spec changes do not require a
+    new API version; SDK releases are cut from the spec version.
+  url_versioning: /v1 path prefix on api.lob.com, stable since launch
   docs: https://docs.lob.com/#tag/Versioning-and-Changelog
 deprecation:
+  policy_published: true
   policy_url: https://docs.lob.com/#tag/Versioning-and-Changelog
   sunset_header: false
-  note: Breaking changes are versioned; older pinned versions continue to function.
-status_page: https://status.lob.com/
+  deprecation_header: false
+  rfc8594: false
+  sunsetted_versions: All API versions up to and including 2019-02-11 have been sunsetted.
+  notice_period: not published
+  note: >
+    Lob states a real deprecation outcome (everything through 2019-02-11 is sunsetted) and
+    guarantees that a pinned older version keeps working until it is sunsetted, but publishes no
+    notice window and emits neither the RFC 8594 Sunset nor the Deprecation response header. Beta
+    APIs are documented as going through "more frequent versioning and version deprecation
+    cycles" than GA APIs.
+beta_policy:
+  documented: true
+  note: >
+    Lob marks APIs as Beta in the spec and warns that Beta surfaces version and deprecate more
+    frequently. Observed in practice at spec v1.20.8, where `rapid` was pulled from print_speed
+    "for time-being as testing in beta".
+  source: https://github.com/lob/lob-openapi/releases/tag/v1.20.8
+environments:
+  - name: test
+    key_prefix: test_
+    billed: false
+    note: >
+      Validates arguments, simulates live behaviour and enforces rate limits, but never prints,
+      mails or truly verifies. Objects cannot cross between environments.
+  - name: live
+    key_prefix: live_
+    billed: true
+    note: >
+      Requires a payment method on file, except for the first 300 live requests per month to
+      POST /v1/us_verifications; past that the endpoint returns 403.
+status_page:
+  url: https://status.lob.com/
+  probe:
+    status: 200
+    checked: '2026-08-13'
 support:
   help_center: https://help.lob.com/
   email: support@lob.com
+release_history: changelog/lobcom-changelog.yml
 deprecated_operations: []
+deprecated_operations_note: >
+  Derived check across all 31 refined specs (105 operations): no operation carries
+  `deprecated: true`.

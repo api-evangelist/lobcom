@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts QR Codes API
+  title: Lob QR Codes API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -73,18 +73,6 @@ paths:
           '
 components:
   schemas:
-    scans:
-      type: object
-      properties:
-        ip_location:
-          type: string
-        scan_date:
-          type: string
-    date_filter:
-      type: object
-      additionalProperties:
-        type: string
-      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
     qr_code_scans:
       allOf:
       - type: object
@@ -102,55 +90,28 @@ components:
             description: Detailed scan information associated with each mail piece.
             items:
               $ref: '#/components/schemas/scans'
-    count:
-      type: integer
-      description: number of resources in a set
-    object:
-      type: string
-      description: Value is resource type.
     date_created:
       type: string
       format: date-time
       description: A timestamp in ISO 8601 format of the date the resource was created.
-  parameters:
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: How many results to return.
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
-    include:
-      in: query
-      name: include
-      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
-
-        '
-      schema:
-        type: array
-        items:
+    scans:
+      type: object
+      properties:
+        ip_location:
           type: string
-      explode: true
-    date_created:
-      in: query
-      name: date_created
-      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-      schema:
-        $ref: '#/components/schemas/date_filter'
-      style: deepObject
-      explode: true
-    offset:
-      in: query
-      name: offset
-      required: false
-      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
-      schema:
-        type: integer
-        default: 0
+        scan_date:
+          type: string
+    object:
+      type: string
+      description: Value is resource type.
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    count:
+      type: integer
+      description: number of resources in a set
   mediaTypes:
     all_qr_codes:
       application/json:
@@ -193,31 +154,49 @@ components:
           count: 2
           scanned_count: 2
           total_count: 2
+  parameters:
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    offset:
+      in: query
+      name: offset
+      required: false
+      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
+      schema:
+        type: integer
+        default: 0
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

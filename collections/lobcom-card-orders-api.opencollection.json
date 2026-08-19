@@ -1,0 +1,79 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Card Orders API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Card Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/cards/:card_id/orders",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card to which the card orders belong."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "An integer that designates the offset at which to begin returning results. Defaults to 0."
+              }
+            ]
+          },
+          "docs": "Retrieves the card orders associated with the given card id."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/cards/:card_id/orders",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the card to which the card orders belong."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new card order given information"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

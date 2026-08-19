@@ -1,0 +1,82 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://help.lob.com/developer-docs/sdks-and-libraries + github.com/lob (react-address-autocomplete,
+  vue-address-autocomplete, address-elements, lob-address-elements, ui-components) + npm registry
+  metadata + a live HTTP probe of the Lob CDN on 2026-08-13
+note: >
+  Every client-side component Lob ships serves ONE job: putting address autocomplete and
+  verification into a form before the address ever reaches the API. There is no embedded
+  dashboard, no hosted checkout, no mail-preview element — the print-and-mail side of Lob is
+  API-only. Components are distinct from the SDKs in packages/lobcom-packages.yml: these render
+  UI in a browser and call the US Autocompletions / US Verifications endpoints on the user's
+  behalf.
+families:
+  - name: Address Autocomplete & Verification
+    description: >
+      Drop-in address entry that autocompletes a partial US address and verifies deliverability
+      inline, backed by POST /v1/us_autocompletions and POST /v1/us_verifications.
+    backing_operations:
+      - us_autocompletion
+      - us_verification
+    components:
+      - name: Address Elements
+        kind: script-tag
+        distribution: cdn
+        loader: https://cdn.lob.com/lob/address-elements/2.2.0/address-elements.min.js
+        version: 2.2.0
+        source: https://github.com/lob/address-elements
+        official: true
+        framework: vanilla-js
+        integration: >
+          Added with a single <script> tag plus data attributes on an existing HTML form; no
+          build step and no framework required.
+        probe:
+          url: https://cdn.lob.com/lob/address-elements/2.2.0/address-elements.min.js
+          status: 200
+          checked: '2026-08-13'
+        note: >
+          Version pinned in the path — requesting an unpublished 2.3.0 returns HTTP 403, so
+          the CDN does not silently float to latest.
+      - name: React Address Autocomplete
+        kind: react-component
+        distribution: npm
+        package: '@lob/react-address-autocomplete'
+        version: 3.0.0
+        published: '2025-11-21'
+        install: npm install --save @lob/react-address-autocomplete
+        source: https://github.com/lob/react-address-autocomplete
+        official: true
+        framework: react
+      - name: Vue Address Autocomplete
+        kind: vue-component
+        distribution: npm
+        package: '@lob/vue-address-autocomplete'
+        version: 2.0.0
+        published: '2025-11-18'
+        install: npm install @lob/vue-address-autocomplete
+        source: https://github.com/lob/vue-address-autocomplete
+        official: true
+        framework: vue
+retired:
+  - name: Lob Address Elements (legacy)
+    package: lob-address-elements
+    loader: https://cdn.lob.com/lob-address-elements/2.1.3/lob-address-elements.min.js
+    source: https://github.com/lob/lob-address-elements
+    status: archived
+    archived: '2022-03-17'
+    superseded_by: address-elements
+    note: Repository is read-only and its README redirects to lob/address-elements.
+  - name: Lob UI Components
+    source: https://github.com/lob/ui-components
+    status: archived
+    framework: vue
+    note: >
+      Lob's internal Vue component library. Archived, and never presented on the developer
+      docs as an integration surface — recorded here so a later pass does not mistake it for a
+      shipped product component.
+cross_reference:
+  packages: packages/lobcom-packages.yml
+  openapi:
+    - openapi/lobcom-us-autocompletions-api-openapi.yml
+    - openapi/lobcom-us-verifications-api-openapi.yml

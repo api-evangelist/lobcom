@@ -1,0 +1,96 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.lob.com/pricing
+currency: USD
+billing_period: month
+plan_count: 4
+note: >
+  Lob prices two products on one page and they tier independently: Print & Mail (the
+  subscription tiers below, with per-piece print+postage rates attached to each) and Address
+  Verification (a separate per-tier bundle with its own included volume and overage). The
+  subscription price is a floor ("starting at") — Lob quotes annual mailing volume, not API
+  call quota, so the metered unit is a physical mailpiece rather than a request. Enterprise is
+  the only tier without a published price.
+plans:
+  - name: Developer
+    price: 0
+    price_display: Starting at $0/month
+    currency: USD
+    period: month
+    limits:
+      mailings_per_year: 6000
+      users: 1
+    unit_rates:
+      postcard: 0.905
+      letter: 0.828
+      check: 1.190
+    address_verification:
+      us:
+        included: 0
+        overage_per_lookup: 0.05
+      international:
+        included: 0
+        overage_per_lookup: 0.07
+  - name: Startup
+    price: 260
+    price_display: Starting at $260/month
+    currency: USD
+    period: month
+    limits:
+      mailings_per_year: 75000
+      users: 3
+    unit_rates:
+      postcard: 0.645
+      letter: 0.658
+      check: 1.040
+    address_verification:
+      us:
+        included: 1000
+        bundle_price: 25
+        overage_per_lookup: 0.025
+      international:
+        included: 500
+        bundle_price: 30
+        overage_per_lookup: 0.06
+  - name: Growth
+    price: 550
+    price_display: Starting at $550/month
+    currency: USD
+    period: month
+    limits:
+      mailings_per_year: 150000
+      users: 5
+    unit_rates:
+      postcard: 0.615
+      letter: 0.628
+      check: 1.040
+    address_verification:
+      us:
+        included: 50000
+        bundle_price: 450
+        overage_per_lookup: 0.009
+      international:
+        included: 10000
+        bundle_price: 550
+        overage_per_lookup: 0.055
+  - name: Enterprise
+    price: null
+    price_display: Custom Pricing
+    currency: USD
+    period: month
+    limits:
+      mailings_per_year: '150000+'
+      users: '20+'
+    unit_rates: custom
+    address_verification: contact sales
+    note: >
+      SSO (SAML 2.0) and role-based access control are Enterprise-only per
+      https://www.lob.com/security.
+free_tier:
+  available: true
+  note: >
+    The Developer plan is $0/month. Separately, the OpenAPI documents that a payment method is
+    not required for the first 300 live requests per month to POST /v1/us_verifications; after
+    that the endpoint returns HTTP 403. Test-mode (test_ prefixed keys) is never charged.
+signup: https://dashboard.lob.com/register
+pricing_page: https://www.lob.com/pricing

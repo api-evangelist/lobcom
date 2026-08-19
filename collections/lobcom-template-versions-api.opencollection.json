@@ -1,0 +1,170 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Template Versions API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Template Versions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id/versions/:vrsn_id",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the template to which the version belongs."
+              },
+              {
+                "name": "vrsn_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the template_version"
+              }
+            ]
+          },
+          "docs": "Retrieves the template version with the given template and version ids."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id/versions/:vrsn_id",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the template to which the version belongs."
+              },
+              {
+                "name": "vrsn_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the template_version"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the template version with the given template and version ids."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id/versions/:vrsn_id",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the template to which the version belongs."
+              },
+              {
+                "name": "vrsn_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the template_version"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a template version. A template's `published_version` can not be deleted."
+        },
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id/versions",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the template associated with the retrieved versions"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              },
+              {
+                "name": "date_created",
+                "value": "",
+                "type": "query",
+                "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+              }
+            ]
+          },
+          "docs": "Returns a list of template versions for the given template ID. The template versions are sorted by creation date, with the most recently created appearing first.\n"
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id/versions",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the template the new version will be attached to"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new template version attached to the specified template."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

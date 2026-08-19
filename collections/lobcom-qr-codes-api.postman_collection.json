@@ -1,0 +1,201 @@
+{
+  "item": [
+    {
+      "id": "5765ca45-914f-4180-a9b0-0f4c30639dd3",
+      "name": "QR Codes",
+      "description": {
+        "content": "\nLob QR codes allow you to generate a QR code that is unique to each mailpiece, thereby allowing each and every customers to receive a personalized link. See the Create endpoint for <a href=\"#tag/Letters/operation/letter_create\">Letters</a>, <a href=\"#tag/Postcards/operation/postcard_create\">Postcards</a> or <a href=\"#tag/Self-Mailers/operation/self_mailer_create\">Self Mailers</a> to learn how to embed a QR code into your mail piece.\n\nWebhooks can be used to integrate Lob QR code scans into your omni channel marketing strategy. See the <a href=\"#tag/Webhooks\">Webhooks</a> section of our documentation to learn how to enable the `letter.viewed`, `postcard.viewed` and `self_mailer.viewed` event notifications for your mail pieces.\n\nFurthermore, our QR code Analytics endpoint can be used to track the impact and engagement rate of your mail sends. Lob can tell you exactly which recipients opened your mailpiece. Our Analytics endpoint allows you to see exactly which recipient scanned a mailpiece, when they scanned it, and more!\n\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ead23a5f-a2b8-4ba8-b5ff-7e4aac249d46",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your QR codes. The QR codes are returned sorted by scan date, with the most recently scanned QR codes appearing first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "qr_code_analytics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "An integer that designates the offset at which to begin returning results. Defaults to 0."
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_0]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_1]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_2]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "scanned",
+                  "value": "<boolean>",
+                  "description": "Filter list of responses to only include QR codes with at least one scan event."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "558e936a-cf9f-4f79-a847-a401288185b5",
+              "name": "Returns a list of QR Codes and their analytics.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "qr_code_analytics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_1]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "scanned",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4536a208-426b-4611-ae1f-c7f4f34d39f0",
+    "name": "Lob QR Codes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Resource Proofs API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Resource Proofs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/resource_proofs/:res_prf_id",
+            "params": [
+              {
+                "name": "res_prf_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the resource proof"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing resource proof. You need only supply the unique resource proof identifier."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.lob.com/v1/resource_proofs/:res_prf_id",
+            "params": [
+              {
+                "name": "res_prf_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the resource proof"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the specified resource proof."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/resource_proofs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new resource proof with the provided properties."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

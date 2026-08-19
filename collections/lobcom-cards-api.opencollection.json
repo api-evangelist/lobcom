@@ -1,0 +1,132 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Cards API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/cards",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of your cards. The cards are returned sorted by creation date, with the most recently created addresses appearing first."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/cards",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new card given information"
+        },
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/cards/:card_id",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the card"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing card. You need only supply the unique customer identifier that was returned upon card creation."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/cards/:card_id",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the card"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the details of an existing card. You need only supply the unique identifier that was returned upon card creation."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/cards/:card_id",
+            "params": [
+              {
+                "name": "card_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the card"
+              }
+            ]
+          },
+          "docs": "Delete an existing card. You need only supply the unique identifier that was returned upon card creation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

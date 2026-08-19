@@ -1,0 +1,74 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob QR Codes API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "QR Codes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/qr_code_analytics",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "An integer that designates the offset at which to begin returning results. Defaults to 0."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              },
+              {
+                "name": "date_created",
+                "value": "",
+                "type": "query",
+                "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+              },
+              {
+                "name": "scanned",
+                "value": "",
+                "type": "query",
+                "description": "Filter list of responses to only include QR codes with at least one scan event."
+              },
+              {
+                "name": "resource_ids",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the resource ID."
+              }
+            ]
+          },
+          "docs": "Returns a list of your QR codes. The QR codes are returned sorted by scan date, with the most recently scanned QR codes appearing first."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

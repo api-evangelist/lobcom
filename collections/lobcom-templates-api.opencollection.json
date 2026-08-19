@@ -1,0 +1,144 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Templates API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Templates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the template"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing template. You need only supply the unique template identifier that was returned upon template creation."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the template"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the description and/or published version of the template with the given id. To update the template's html, create a new version of the template."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/templates/:tmpl_id",
+            "params": [
+              {
+                "name": "tmpl_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the template"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a template. Deleting a template also deletes its associated versions. Deleted templates can not be used to create postcard, letter, or check resources."
+        },
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/templates",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              },
+              {
+                "name": "date_created",
+                "value": "",
+                "type": "query",
+                "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+              },
+              {
+                "name": "metadata",
+                "value": "",
+                "type": "query",
+                "description": "Filter by metadata key-value pair`."
+              }
+            ]
+          },
+          "docs": "Returns a list of your templates. The templates are returned sorted by creation date, with the most recently created templates appearing first."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/templates",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new template for use with the Print & Mail API. In Live mode, you can only have as many non-deleted templates as allotted in your current <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Edition</a>. If you attempt to create a template past your limit, you will receive a `403` error. There is no limit in Test mode."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

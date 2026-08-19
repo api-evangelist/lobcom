@@ -1,0 +1,507 @@
+{
+  "item": [
+    {
+      "id": "275c6907-cbdc-44f9-be27-151650313d84",
+      "name": "Intl Verifications",
+      "description": {
+        "content": "Address verification for non-US addresses\n<br>\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n\n## Intl Verifications Test Env\n\nWhen verifying international addresses, you'll likely want to test against\na wide array of addresses to ensure you're handling responses correctly.\nWith your test API key, requests that use specific values for `primary_line`\nlet you explore the responses to many types of addresses:\n\n<table>\n  <tr>\n    <th style=\"white-space: nowrap\">DELIVERABILITY OF SAMPLE RESPONSE</th>\n    <th style=\"white-space: nowrap\">SET <code>primary_line</code> TO</th>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>deliverable</code></td>\n    <td style=\"white-space: nowrap\">deliverable</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>deliverable_missing_info</code></td>\n    <td style=\"white-space: nowrap\">deliverable missing info</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>undeliverable</code></td>\n    <td style=\"white-space: nowrap\">undeliverable</td>\n  </tr>\n  <tr>\n    <td style=\"white-space: nowrap\"><code>no_match</code></td>\n    <td style=\"white-space: nowrap\">no match</td>\n  </tr>\n</table>\n\nSee the `test` request & response examples under [Intl Verification Examples](#operation/intl_verification) within the\n\"Verify an international address section\" in Intl Verifications.\n\nYou can rely on the response from these examples generally matching the response\nyou'd see in the live environment with an address of that type (excluding the `recipient` field).\n\nThe test API key does not perform any verification, automatic correction, or standardization\nfor addresses. If you wish to try these features out, use our <a href=\"https://lob.com/address-verification\" target=\"_blank\">live demo</a>\nor the free plan (see <a href=\"https://lob.com/pricing/address-verification\" target=\"_blank\">our pricing</a> for details).\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f92956d5-f69a-471c-9a8a-f42c2895b72e",
+          "name": "Bulk Verify",
+          "request": {
+            "name": "Bulk Verify",
+            "description": {
+              "content": "Verify a list of international (except US or US territories) address _with a live API key_. Requests to this endpoint with a test API key will return a dummy response based on the primary line you input.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "bulk",
+                "intl_verifications"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "addresses",
+                  "value": "[{\"primary_line\":\"<string>\",\"country\":\"<string>\",\"recipient\":\"<string,null>\",\"secondary_line\":\"<string>\",\"city\":\"<string>\",\"state\":\"<string>\",\"postal_code\":\"<string>\"}]",
+                  "type": "text",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "57f17974-a6a8-4483-a37a-1f99776eb0ee",
+              "name": "Returns an array of international verification objects.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bulk",
+                    "intl_verifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "addresses",
+                      "value": "[{\"recipient\":\"John Doe\",\"primary_line\":\"370 Water St\",\"secondary_line\":\"\",\"city\":\"Summerside\",\"state\":\"Prince Edwards Island\",\"postal_code\":\"C1N 1C4\",\"country\":\"CA\"},{\"recipient\":\"Jane Doe\",\"primary_line\":\"UL. DOLSKAYA 1\",\"secondary_line\":\"\",\"city\":\"MOSCOW\",\"state\":\"MOSCOW G\",\"postal_code\":\"115569\",\"country\":\"RU\"}]",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"addresses\": [\n    {\n      \"id\": \"intl_ver_c7cb63d68f8d6\",\n      \"recipient\": null,\n      \"primary_line\": \"370 WATER ST\",\n      \"secondary_line\": \"\",\n      \"last_line\": \"SUMMERSIDE PE C1N 1C4\",\n      \"country\": \"CA\",\n      \"coverage\": \"SUBBUILDING\",\n      \"deliverability\": \"deliverable\",\n      \"status\": \"LV4\",\n      \"components\": {\n        \"primary_number\": \"370\",\n        \"street_name\": \"WATER ST\",\n        \"city\": \"SUMMERSIDE\",\n        \"state\": \"PE\",\n        \"postal_code\": \"C1N 1C4\"\n      },\n      \"object\": \"intl_verification\"\n    }\n  ],\n  \"errors\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ece7fc71-bc6d-4361-a74f-b3aae8c970be",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "bulk",
+                    "intl_verifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "addresses",
+                      "value": "[{\"recipient\":\"John Doe\",\"primary_line\":\"370 Water St\",\"secondary_line\":\"\",\"city\":\"Summerside\",\"state\":\"Prince Edwards Island\",\"postal_code\":\"C1N 1C4\",\"country\":\"CA\"},{\"recipient\":\"Jane Doe\",\"primary_line\":\"UL. DOLSKAYA 1\",\"secondary_line\":\"\",\"city\":\"MOSCOW\",\"state\":\"MOSCOW G\",\"postal_code\":\"115569\",\"country\":\"RU\"}]",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"country is required\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "33f94238-2656-4bae-b64e-7d50e69dd5bf",
+          "name": "Single Verify",
+          "request": {
+            "name": "Single Verify",
+            "description": {
+              "content": "Verify an international (except US or US territories) address _with a live API key_. Requests to this endpoint with a test API key will return a dummy response based on the primary line you input.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "intl_verifications"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "* `native` - Translate response to the native language of the country in the request\n* `match` - match the response to the language in the request\n\nDefault response is in English.\n",
+                "key": "x-lang-output",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "primary_line",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "recipient",
+                  "value": "<string,null>"
+                },
+                {
+                  "disabled": false,
+                  "key": "secondary_line",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "city",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "state",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "postal_code",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "548e9b83-eecb-4576-b475-57571eb52d3b",
+              "name": "Returns an international verification object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "intl_verifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "* `native` - Translate response to the native language of the country in the request\n* `match` - match the response to the language in the request\n\nDefault response is in English.\n",
+                    "key": "x-lang-output",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "recipient",
+                      "value": "Harry Zhang"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "primary_line",
+                      "value": "370 Water St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "secondary_line",
+                      "value": ""
+                    },
+                    {
+                      "disabled": false,
+                      "key": "city",
+                      "value": "Summerside"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "state",
+                      "value": "Prince Edward Island"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "postal code",
+                      "value": "C1N 1C4"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "country",
+                      "value": "CA"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"intl_ver_c7cb63d68f8d6\",\n  \"recipient\": null,\n  \"primary_line\": \"370 WATER ST\",\n  \"secondary_line\": \"\",\n  \"last_line\": \"SUMMERSIDE PE C1N 1C4\",\n  \"country\": \"CA\",\n  \"coverage\": \"SUBBUILDING\",\n  \"deliverability\": \"deliverable\",\n  \"status\": \"LV4\",\n  \"components\": {\n    \"primary_number\": \"370\",\n    \"street_name\": \"WATER ST\",\n    \"city\": \"SUMMERSIDE\",\n    \"state\": \"PE\",\n    \"postal_code\": \"C1N 1C4\"\n  },\n  \"object\": \"intl_verification\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7a722637-9c3c-46bf-b0c0-ed01fbe8e7ab",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "intl_verifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "* `native` - Translate response to the native language of the country in the request\n* `match` - match the response to the language in the request\n\nDefault response is in English.\n",
+                    "key": "x-lang-output",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "recipient",
+                      "value": "Harry Zhang"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "primary_line",
+                      "value": "370 Water St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "secondary_line",
+                      "value": ""
+                    },
+                    {
+                      "disabled": false,
+                      "key": "city",
+                      "value": "Summerside"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "state",
+                      "value": "Prince Edward Island"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "postal code",
+                      "value": "C1N 1C4"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "country",
+                      "value": "CA"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid\",\n    \"message\": \"country is required\",\n    \"status_code\": 422\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f933bd86-4b4c-43bb-b4e0-f274e1a55dd3",
+    "name": "Lob Intl Verifications API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

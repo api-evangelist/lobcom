@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts Zip Lookups API
+  title: Lob Zip Lookups API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -86,70 +86,73 @@ paths:
         source: "var context = context.Background()\ncontext = context.WithValue(context, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nvar zipEditable = *lob.NewZipEditable()\nzipEditable.SetZipCode(\"94107\")\n\nresp, _, err := apiClient.ZipLookupsApi.Lookup(context).ZipEditable(zipEditable).Execute()\n\nif err != nil {\n    return err\n}\n"
         label: GO
 components:
-  responses:
-    zip_lookups_error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: invalid
-              message: zip_code is required
-              status_code: 422
-    zip_lookups:
-      description: Returns a zip lookup object if a valid zip was provided.
-      headers:
-        ratelimit-limit:
-          $ref: '#/components/headers/ratelimit-limit'
-        ratelimit-remaining:
-          $ref: '#/components/headers/ratelimit-remaining'
-        ratelimit-reset:
-          $ref: '#/components/headers/ratelimit-reset'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/zip'
-          example:
-            id: us_zip_c7cb63d68f8d6
-            cities:
-            - city: SAN FRANCISCO
-              state: CA
-              county: SAN FRANCISCO
-              county_fips: '06075'
-              preferred: true
-            zip_code_type: standard
-            object: us_zip_lookup
-            zip_code: '94107'
-  headers:
-    ratelimit-reset:
-      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
-
-        '
-      schema:
-        type: integer
-        example: 1528749846
-    ratelimit-remaining:
-      description: The number of requests remaining in the current window.
-      schema:
-        type: integer
-        example: 100
-    ratelimit-limit:
-      description: The rate limit for a given endpoint.
-      schema:
-        type: integer
-        example: 150
   schemas:
-    city_no_description:
-      type: string
-      maxLength: 200
-    county_fips:
-      type: string
-      description: 'A 5-digit <a href="https://en.wikipedia.org/wiki/FIPS_county_code" target="_blank">FIPS county code</a> which uniquely identifies `components[county]`. It consists of a 2-digit state code and a 3-digit county code.
+    zip_lookup_city:
+      type: object
+      required:
+      - city
+      - state
+      - county
+      - county_fips
+      - preferred
+      properties:
+        city:
+          $ref: '#/components/schemas/city'
+        state:
+          $ref: '#/components/schemas/state'
+        county:
+          $ref: '#/components/schemas/county'
+        county_fips:
+          $ref: '#/components/schemas/county_fips'
+        preferred:
+          type: boolean
+          description: 'Indicates whether or not the city is the <a href="https://en.wikipedia.org/wiki/ZIP_Code#ZIP_Codes_and_previous_zoning_lines" target="_blank">USPS default city</a> (preferred city) of a ZIP code. There is only one preferred city per ZIP code, which will always be in position 0 in the array of cities.
 
-        '
-      pattern: \d{5}
+            '
+          example: true
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    zip:
+      allOf:
+      - $ref: '#/components/schemas/zip5'
+      - type: object
+        required:
+        - id
+        - cities
+        - zip_code_type
+        - object
+        properties:
+          id:
+            $ref: '#/components/schemas/zip_id'
+          cities:
+            type: array
+            items:
+              $ref: '#/components/schemas/zip_lookup_city'
+            description: 'An array of city objects containing valid cities for the `zip_code`. Multiple cities will be returned if more than one city is associated with the input ZIP code.
+
+              '
+          zip_code_type:
+            $ref: '#/components/schemas/zip_code_type'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - us_zip_lookup
+            default: us_zip_lookup
+    city:
+      allOf:
+      - $ref: '#/components/schemas/city_no_description'
+      - type: string
+        description: The name of the city.
     zip_id:
       type: string
       description: Unique identifier prefixed with `us_zip_`.
@@ -332,51 +335,9 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    failure_status_code:
-      type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
-    city:
-      allOf:
-      - $ref: '#/components/schemas/city_no_description'
-      - type: string
-        description: The name of the city.
-    state:
+    county:
       type: string
-      description: 'The <a href="https://en.wikipedia.org/wiki/ISO_3166-2" target="_blank">ISO 3166-2</a> two letter code for the state.
-
-        '
-      maxLength: 2
-    zip_lookup_city:
-      type: object
-      required:
-      - city
-      - state
-      - county
-      - county_fips
-      - preferred
-      properties:
-        city:
-          $ref: '#/components/schemas/city'
-        state:
-          $ref: '#/components/schemas/state'
-        county:
-          $ref: '#/components/schemas/county'
-        county_fips:
-          $ref: '#/components/schemas/county_fips'
-        preferred:
-          type: boolean
-          description: 'Indicates whether or not the city is the <a href="https://en.wikipedia.org/wiki/ZIP_Code#ZIP_Codes_and_previous_zoning_lines" target="_blank">USPS default city</a> (preferred city) of a ZIP code. There is only one preferred city per ZIP code, which will always be in position 0 in the array of cities.
-
-            '
-          example: true
+      description: County name of the address city.
     zip_code_type:
       type: string
       enum:
@@ -390,36 +351,21 @@ components:
         each ZIP code type, see [US Verification Details](#tag/US-Verification-Types).
 
         '
-    zip:
-      allOf:
-      - $ref: '#/components/schemas/zip5'
-      - type: object
-        required:
-        - id
-        - cities
-        - zip_code_type
-        - object
-        properties:
-          id:
-            $ref: '#/components/schemas/zip_id'
-          cities:
-            type: array
-            items:
-              $ref: '#/components/schemas/zip_lookup_city'
-            description: 'An array of city objects containing valid cities for the `zip_code`. Multiple cities will be returned if more than one city is associated with the input ZIP code.
-
-              '
-          zip_code_type:
-            $ref: '#/components/schemas/zip_code_type'
-          object:
-            type: string
-            description: Value is resource type.
-            enum:
-            - us_zip_lookup
-            default: us_zip_lookup
-    county:
+    county_fips:
       type: string
-      description: County name of the address city.
+      description: 'A 5-digit <a href="https://en.wikipedia.org/wiki/FIPS_county_code" target="_blank">FIPS county code</a> which uniquely identifies `components[county]`. It consists of a 2-digit state code and a 3-digit county code.
+
+        '
+      pattern: \d{5}
+    city_no_description:
+      type: string
+      maxLength: 200
+    state:
+      type: string
+      description: 'The <a href="https://en.wikipedia.org/wiki/ISO_3166-2" target="_blank">ISO 3166-2</a> two letter code for the state.
+
+        '
+      maxLength: 2
     zip5:
       type: object
       required:
@@ -430,31 +376,64 @@ components:
           description: A 5-digit ZIP code.
           pattern: ^\d{5}$
           example: '94107'
+  headers:
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+  responses:
+    zip_lookups:
+      description: Returns a zip lookup object if a valid zip was provided.
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/zip'
+          example:
+            id: us_zip_c7cb63d68f8d6
+            cities:
+            - city: SAN FRANCISCO
+              state: CA
+              county: SAN FRANCISCO
+              county_fips: '06075'
+              preferred: true
+            zip_code_type: standard
+            object: us_zip_lookup
+            zip_code: '94107'
+    zip_lookups_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: zip_code is required
+              status_code: 422
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

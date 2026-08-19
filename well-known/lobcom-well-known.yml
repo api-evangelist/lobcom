@@ -1,8 +1,19 @@
-generated: '2026-07-20'
-method: searched
-source: live probes of Lob hosts
+generated: '2026-08-13'
+method: probed
+source: live HTTP probes of every Lob host named in apis.yml and in the OpenAPI servers[] block
+result: none
+summary: >
+  Lob serves NO RFC 8615 well-known documents. 32 probes across four hosts returned zero real
+  documents. Because there is no hit, NO `WellKnown` or `SecurityTxt` pointer is emitted in
+  apis.yml — an earlier round wired a WellKnown pointer at this file even though every path
+  404d, which credited a recorded absence as a presence. That pointer has been removed.
 hosts:
   - host: https://api.lob.com
+    verdict: clean-404
+    note: >
+      Returns Lob's own JSON error envelope
+      ({"error":{"message":"Unrecognized request URL...","status_code":404}}) — an honest 404,
+      not a shell.
     documents:
       - path: /.well-known/security.txt
         status: 404
@@ -10,15 +21,93 @@ hosts:
         status: 404
       - path: /.well-known/oauth-authorization-server
         status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
       - path: /.well-known/api-catalog
         status: 404
       - path: /.well-known/ai-plugin.json
         status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
   - host: https://www.lob.com
+    verdict: clean-404
+    note: 'Webflow site returns a short "Invalid .well-known request" page with a real 404 status.'
     documents:
       - path: /.well-known/security.txt
         status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://docs.lob.com
+    verdict: clean-404
+    note: Redoc documentation host; returns its HTML shell with a real 404 status.
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://dashboard.lob.com
+    verdict: soft-200-spa-catchall
+    note: >
+      FALSE POSITIVE TRAP — this host answers HTTP 200 for EVERY path, including
+      /.well-known/zzz-nonsense. All eight well-known probes returned byte-identical HTML
+      (md5 a9b9cc388933cf85e599602ab25333ee), the same 2,523-byte single-page-app shell served
+      at /login and /register. None of these is a document. Recorded here so a future round does
+      not read the 200s as eight served well-known surfaces, or the agent-card.json 200 as an
+      A2A agent card.
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        real_document: false
+      - path: /.well-known/openid-configuration
+        status: 200
+        real_document: false
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        real_document: false
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        real_document: false
+      - path: /.well-known/api-catalog
+        status: 200
+        real_document: false
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        real_document: false
+      - path: /.well-known/agent-card.json
+        status: 200
+        real_document: false
+      - path: /.well-known/agent.json
+        status: 200
+        real_document: false
+checked: '2026-08-13'
 notes: >
-  No /.well-known/ discovery documents are published on api.lob.com or www.lob.com.
-  A security contact is exposed instead via the lob.com CAA iodef record
-  (mailto:security@lob.com) — see security/lobcom-domain-security.yml.
+  Lob's only machine-readable security contact is the DNS CAA iodef record on lob.com
+  (see security/lobcom-domain-security.yml). Lob's API uses HTTP Basic auth with an API key,
+  not OAuth or OIDC, so the absence of openid-configuration and oauth-authorization-server is
+  expected rather than a gap.

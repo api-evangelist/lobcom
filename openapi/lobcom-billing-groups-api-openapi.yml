@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts Billing Groups API
+  title: Lob Billing Groups API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -218,151 +218,26 @@ paths:
         source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\n\nvar bgCreate = *lob.NewBillingGroupEditable()\nbgCreate.SetDescription(\"Usage group used for the Marketing Department's resource sends\")\nbgCreate.SetName(\"Marketing Department\")\n\n\n\ncreatedbg, _, err := apiClient.BillingGroupsApi.Create(context).BillingGroupEditable(bgCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
         label: GO
 components:
-  parameters:
-    include:
-      in: query
-      name: include
-      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
-
-        '
-      schema:
-        type: array
-        items:
-          type: string
-      explode: true
-    date_created:
-      in: query
-      name: date_created
-      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-      schema:
-        $ref: '#/components/schemas/date_filter'
-      style: deepObject
-      explode: true
-    offset:
-      in: query
-      name: offset
-      required: false
-      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
-      schema:
-        type: integer
-        default: 0
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: How many results to return.
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
-    date_modified:
-      in: query
-      name: date_modified
-      description: 'Filter by date modified. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-      schema:
-        $ref: '#/components/schemas/date_filter'
-      style: deepObject
-      explode: true
-  headers:
-    ratelimit-limit:
-      description: The rate limit for a given endpoint.
-      schema:
-        type: integer
-        example: 150
-    ratelimit-reset:
-      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
-
-        '
-      schema:
-        type: integer
-        example: 1528749846
-    ratelimit-remaining:
-      description: The number of requests remaining in the current window.
-      schema:
-        type: integer
-        example: 100
   schemas:
-    object:
-      type: string
-      description: Value is resource type.
-    date_created:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was created.
-    bg_id:
-      type: string
-      description: Unique identifier prefixed with `bg_`.
-      pattern: ^bg_[a-zA-Z0-9]+$
-    date_filter:
-      type: object
-      additionalProperties:
-        type: string
-      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-    billing_group_editable:
-      allOf:
-      - $ref: '#/components/schemas/billing_group_base'
-      - required:
-        - name
-    bg_description:
-      type: string
-      description: Description of the billing group.
-      maxLength: 255
-    list:
-      type: object
-      description: Multiple items returned in order
-      properties:
-        object:
-          $ref: '#/components/schemas/object'
-        next_url:
-          type: string
-          description: Url of next page of items in list.
-          nullable: true
-        previous_url:
-          type: string
-          description: Url of previous page of items in list.
-          nullable: true
-        count:
-          $ref: '#/components/schemas/count'
-        total_count:
-          type: integer
-          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
-    date_modified:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was last modified.
-    billing_group_base:
-      type: object
-      properties:
-        description:
-          $ref: '#/components/schemas/bg_description'
-        name:
-          $ref: '#/components/schemas/name'
     name:
       type: string
       description: Name of the billing group.
       maxLength: 255
-    billing_group:
-      allOf:
-      - $ref: '#/components/schemas/billing_group_base'
-      - type: object
-        properties:
-          id:
-            $ref: '#/components/schemas/bg_id'
-          date_created:
-            $ref: '#/components/schemas/date_created'
-          date_modified:
-            $ref: '#/components/schemas/date_modified'
-          object:
-            type: string
-            description: Value is resource type.
-            enum:
-            - billing_group
-            default: billing_group
-    count:
+    failure_status_code:
       type: integer
-      description: number of resources in a set
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -541,17 +416,79 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    failure_status_code:
+    billing_group_base:
+      type: object
+      properties:
+        description:
+          $ref: '#/components/schemas/bg_description'
+        name:
+          $ref: '#/components/schemas/name'
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type:
+          - string
+          - 'null'
+          description: Url of next page of items in list.
+        previous_url:
+          type:
+          - string
+          - 'null'
+          description: Url of previous page of items in list.
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    count:
       type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+      description: number of resources in a set
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    object:
+      type: string
+      description: Value is resource type.
+    billing_group_editable:
+      allOf:
+      - $ref: '#/components/schemas/billing_group_base'
+      - required:
+        - name
+    bg_id:
+      type: string
+      description: Unique identifier prefixed with `bg_`.
+      pattern: ^bg_[a-zA-Z0-9]+$
+    billing_group:
+      allOf:
+      - $ref: '#/components/schemas/billing_group_base'
+      - type: object
+        properties:
+          id:
+            $ref: '#/components/schemas/bg_id'
+          date_created:
+            $ref: '#/components/schemas/date_created'
+          date_modified:
+            $ref: '#/components/schemas/date_modified'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - billing_group
+            default: billing_group
+    bg_description:
+      type: string
+      description: Description of the billing group.
+      maxLength: 255
   responses:
     billing_group_list_error:
       description: Error
@@ -586,6 +523,71 @@ components:
               code: invalid
               message: message about incorrect parameter
               status_code: 422
+  parameters:
+    date_modified:
+      in: query
+      name: date_modified
+      description: 'Filter by date modified. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    offset:
+      in: query
+      name: offset
+      required: false
+      description: An integer that designates the offset at which to begin returning results. Defaults to 0.
+      schema:
+        type: integer
+        default: 0
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+  headers:
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
   mediaTypes:
     all_billing_groups:
       application/json:
@@ -632,27 +634,6 @@ components:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

@@ -1,0 +1,88 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Creatives API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Creatives",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/creatives",
+            "headers": [
+              {
+                "name": "x-lang-output",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new creative with the provided properties"
+        },
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/creatives/:crv_id",
+            "params": [
+              {
+                "name": "crv_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the creative"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing creative. You need only supply the unique creative identifier that was returned upon creative creation."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.lob.com/v1/creatives/:crv_id",
+            "params": [
+              {
+                "name": "crv_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the creative"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the details of an existing creative. You need only supply the unique identifier that was returned upon creative creation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

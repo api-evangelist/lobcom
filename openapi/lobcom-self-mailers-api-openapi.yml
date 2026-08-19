@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts Self Mailers API
+  title: Lob Self Mailers API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -320,181 +320,435 @@ paths:
         source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\nvar to = *lob.NewAddressEditable()\nto.SetAddressLine1(\"210 King St\")\nto.SetAddressLine2(\"# 6100\")\nto.SetAddressCity(\"San Francisco\")\nto.SetAddressState(\"CA\")\nto.SetAddressZip(\"94107\")\nto.SetAddressCountry(lob.COUNTRYEXTENDED_US)\nto.SetDescription(\"\")\nto.SetName(\"Harry Zhang\")\n\nvar selfMailerCreate = *lob.NewSelfMailerEditable()\nselfMailerCreate.SetDescription(\"Demo Self Mailer job\")\nselfMailerCreate.SetFrom(\"adr_210a8d4b0b76d77b\")\nselfMailerCreate.SetInside(\"<html style='padding: 1in; font-size: 50;'>Inside HTML for {{name}}</html>\")\nselfMailerCreate.SetOutside(\"<html style='padding: 1in; font-size: 20;'>Outside HTML for {{name}}</html>\")\nselfMailerCreate.SetTo(to)\nselfMailerCreate.SetFsc(true)\nselfMailerCreate.SetPrintSpeed(\"core\")\n\n\ncreatedselfMailer, _, err := apiClient.SelfMailersApi.Create(context).SelfMailerEditable(selfMailerCreate).Execute()\n\nif err != nil {\n    return err\n}\n"
         label: GO
 components:
-  parameters:
-    metadata:
-      in: query
-      name: metadata
-      description: Filter by metadata key-value pair`.
-      schema:
-        $ref: '#/components/schemas/metadata'
-      style: deepObject
-      explode: true
-    idem-header:
-      in: header
-      name: Idempotency-Key
-      required: false
-      description: 'A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12" target="_blank">implementation guide</a>.
-
-        '
-      schema:
-        type: string
-        maxLength: 256
-        example: 026e7634-24d7-486c-a0bb-4a17fd0eebc5
-    status:
-      in: query
-      name: status
-      description: 'A string describing the render status:
-
-        * `processed` - the rendering process is currently underway.
-
-        * `rendered` - the rendering process has completed successfully.
-
-        * `failed` - the rendering process has failed.
-
-        '
-      schema:
-        $ref: '#/components/schemas/status'
-    send_date:
-      in: query
-      name: send_date
-      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.
-
-        '
-      schema:
-        $ref: '#/components/schemas/send_date'
-    date_created:
-      in: query
-      name: date_created
-      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-      schema:
-        $ref: '#/components/schemas/date_filter'
-      style: deepObject
-      explode: true
-    idem-query:
-      in: query
-      name: idempotency_key
-      required: false
-      description: 'A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12" target="_blank">implementation guide</a>.
-
-        '
-      schema:
-        type: string
-        maxLength: 256
-        example: 026e7634-24d7-486c-a0bb-4a17fd0eebc5
-    include:
-      in: query
-      name: include
-      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
-
-        '
-      schema:
-        type: array
-        items:
-          type: string
-      explode: true
-    campaign_id:
-      in: query
-      name: campaign_id
-      required: false
-      description: Filters resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
-      schema:
-        $ref: '#/components/schemas/campaign_id'
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: How many results to return.
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
-    scheduled:
-      in: query
-      name: scheduled
-      description: '* `true` - only return orders (past or future) where `send_date` is
-
-        greater than `date_created`
-
-        * `false` - only return orders where `send_date` is equal to `date_created`
-
-        '
-      schema:
-        type: boolean
-    mail_type:
-      in: query
-      name: mail_type
-      description: 'A string designating the mail postage type: * `usps_first_class` - (default) * `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6` postcards or for any postcards sent outside of the United States.
-
-        '
-      schema:
-        $ref: '#/components/schemas/mail_type'
-    sort_by:
-      in: query
-      name: sort_by
-      description: 'Sorts items by ascending or descending dates. Use either `date_created` or `send_date`, not both.
-
-        '
-      schema:
-        allOf:
-        - type: object
-          properties:
-            date_created:
-              type: string
-              enum:
-              - asc
-              - desc
-            send_date:
-              type: string
-              enum:
-              - asc
-              - desc
-        - oneOf:
-          - required:
-            - date_created
-          - required:
-            - send_date
-    before_after:
-      in: query
-      name: before/after
-      required: false
-      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
-
-        '
-      schema:
-        allOf:
-        - type: object
-          properties:
-            before:
-              type: string
-              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
-
-                '
-            after:
-              type: string
-              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
-
-                '
-        - oneOf:
-          - required:
-            - before
-          - required:
-            - after
   schemas:
-    send_date:
+    sfm_id:
       type: string
-      description: A timestamp in ISO 8601 format which specifies a date after the current time and up to 180 days in the future to send the letter off for production. Setting a send date overrides the default [cancellation window](#section/Cancellation-Windows) applied to the mailpiece. Until the `send_date` has passed, the mailpiece can be canceled. If a date in the format `2017-11-01` is passed, it will evaluate to midnight UTC of that date (`2017-11-01T00:00:00.000Z`). If a datetime is passed, that exact time will be used. A `send_date` passed with no time zone will default to UTC, while a `send_date` passed with a time zone will be converted to UTC.
-      anyOf:
-      - format: date-time
-      - format: date
-    self_mailer_deletion:
-      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      description: Unique identifier prefixed with `sfm_`.
+      pattern: ^sfm_[a-zA-Z0-9]+$
+    thumbnail:
+      type: object
+      properties:
+        small:
+          $ref: '#/components/schemas/signed_link'
+        medium:
+          $ref: '#/components/schemas/signed_link'
+        large:
+          $ref: '#/components/schemas/signed_link'
+    mail_type:
+      type: string
+      enum:
+      - usps_first_class
+      - usps_standard
+      description: 'A string designating the mail postage type:
+
+        * `usps_first_class` - (default)
+
+        * `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is
+
+        less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6`
+
+        postcards or for any postcards sent outside of the United States.
+
+        '
+      default: usps_first_class
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
+    inline_address_intl:
+      allOf:
+      - $ref: '#/components/schemas/address_editable_intl'
+      - type: object
+        required:
+        - address_line1
+        - address_country
+      - type: object
+        oneOf:
+        - required:
+          - address_city
+          - address_state
+        - required:
+          - address_zip
+    print_speed:
+      type:
+      - string
+      - 'null'
+      enum:
+      - core
+      description: 'A string designating the mail speed type:
+
+        * `core` - 2 production business days
+
+        '
+      default: core
+    failure_reason_error:
+      type: object
+      description: Failure error details
+      properties:
+        url:
+          type:
+          - string
+          - 'null'
+          description: Failed URL of asset
+        host:
+          type:
+          - string
+          - 'null'
+          description: URL host
+        path:
+          type:
+          - string
+          - 'null'
+          description: URL path
+        protocol:
+          type:
+          - string
+          - 'null'
+          description: Network protocol
+        remediation:
+          type:
+          - string
+          - 'null'
+          description: Instructions on how to resolve the error
+        error_type:
+          type:
+          - string
+          - 'null'
+          description: HTTP response status code message or service defined error
+        status_code:
+          type:
+          - number
+          - 'null'
+          description: HTTP response status codes if the error is asset related
+    address_editable_us:
+      allOf:
+      - $ref: '#/components/schemas/address_fields_us'
+      - type: object
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type:
+            - string
+            - 'null'
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
+
+              '
+            maxLength: 40
+          company:
+            $ref: '#/components/schemas/company'
+          phone:
+            type:
+            - string
+            - 'null'
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+          email:
+            type:
+            - string
+            - 'null'
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+          address_country:
+            type: string
+            enum:
+            - US
+            default: US
+          metadata:
+            $ref: '#/components/schemas/metadata'
+    adr_id:
+      type: string
+      description: Unique identifier prefixed with `adr_`.
+      pattern: ^adr_[a-zA-Z0-9]+$
+    tmpl_id:
+      type: string
+      description: Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).
+      pattern: ^tmpl_[a-zA-Z0-9]+$
+    country_extended:
+      type: string
+      description: Must be a 2 letter country short-name code (ISO 3166). Does not accept `US`, `AS`, `PR`, `FM`, `GU`, `MH`, `MP`, `PW`, or `VI`. For these addresses, please use the US verification API. Also does not accept `PS`, which is not currently supported.
+      enum:
+      - AD
+      - AE
+      - AF
+      - AG
+      - AI
+      - AL
+      - AN
+      - AO
+      - AQ
+      - AR
+      - AT
+      - AU
+      - AW
+      - AZ
+      - BA
+      - BB
+      - BD
+      - BE
+      - BF
+      - BG
+      - BH
+      - BI
+      - BJ
+      - BM
+      - BN
+      - BO
+      - BQ
+      - BR
+      - BS
+      - BT
+      - BW
+      - BY
+      - BZ
+      - CA
+      - CD
+      - CG
+      - CH
+      - CI
+      - CK
+      - CL
+      - CM
+      - CN
+      - CO
+      - CR
+      - CS
+      - CU
+      - CV
+      - CW
+      - CY
+      - CZ
+      - DE
+      - DJ
+      - DK
+      - DM
+      - DO
+      - DZ
+      - EC
+      - EE
+      - EG
+      - EH
+      - ER
+      - ES
+      - ET
+      - FI
+      - FJ
+      - FK
+      - FO
+      - FR
+      - GA
+      - GB
+      - GD
+      - GE
+      - GH
+      - GI
+      - GL
+      - GM
+      - GN
+      - GQ
+      - GR
+      - GS
+      - GT
+      - GW
+      - GY
+      - HK
+      - HN
+      - HR
+      - HT
+      - HU
+      - ID
+      - IE
+      - IL
+      - IN
+      - IO
+      - IQ
+      - IR
+      - IS
+      - IT
+      - JM
+      - JO
+      - JP
+      - KE
+      - KG
+      - KH
+      - KI
+      - KM
+      - KN
+      - KP
+      - KR
+      - KW
+      - KY
+      - KZ
+      - LA
+      - LB
+      - LC
+      - LI
+      - LK
+      - LR
+      - LS
+      - LT
+      - LU
+      - LV
+      - LY
+      - MA
+      - MC
+      - MD
+      - ME
+      - MG
+      - MK
+      - ML
+      - MM
+      - MN
+      - MO
+      - MR
+      - MS
+      - MT
+      - MU
+      - MV
+      - MW
+      - MX
+      - MY
+      - MZ
+      - NA
+      - NE
+      - NF
+      - NG
+      - NI
+      - NL
+      - 'NO'
+      - NP
+      - NR
+      - NU
+      - NZ
+      - OM
+      - PA
+      - PE
+      - PG
+      - PH
+      - PK
+      - PL
+      - PN
+      - PT
+      - PY
+      - QA
+      - RO
+      - RS
+      - RU
+      - RW
+      - SA
+      - SB
+      - SC
+      - SD
+      - SE
+      - SG
+      - SH
+      - SI
+      - SK
+      - SL
+      - SM
+      - SN
+      - SO
+      - SR
+      - SS
+      - ST
+      - SV
+      - SX
+      - SY
+      - SZ
+      - TC
+      - TD
+      - TG
+      - TH
+      - TJ
+      - TK
+      - TL
+      - TM
+      - TN
+      - TO
+      - TR
+      - TT
+      - TV
+      - TW
+      - TZ
+      - UA
+      - UG
+      - UY
+      - UZ
+      - VA
+      - VC
+      - VE
+      - VG
+      - VN
+      - VU
+      - WS
+      - YE
+      - ZA
+      - ZM
+      - ZW
+    tracking_event_base:
+      type: object
+      description: As mail pieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes these mail scans to generate tracking events.
+      required:
+      - id
+      - date_created
+      - date_modified
+      - object
       properties:
         id:
-          $ref: '#/components/schemas/sfm_id'
+          $ref: '#/components/schemas/evnt_id'
+        time:
+          type: string
+          format: date-time
+          description: A timestamp in ISO 8601 format of the date USPS registered the event.
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        object:
+          allOf:
+          - $ref: '#/components/schemas/object'
+          - type: string
+            enum:
+            - tracking_event
+            default: tracking_event
+    remote_file_url:
+      type: string
+      description: 'The location of a remote file. Remote URLs have a 5 MB file size limit and must be downloaded within 40 seconds.
+
+        '
+      pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
         deleted:
           $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
+    inline_address:
+      oneOf:
+      - $ref: '#/components/schemas/inline_address_us'
+      - $ref: '#/components/schemas/inline_address_intl'
+    billing_group_id:
+      type: string
+      description: An optional string with the billing group ID to tag your usage with. Is used for billing purposes. Requires special activation to use. See <a href="#tag/Billing-Groups">Billing Group API</a> for more information.
     input_to:
       type: object
       properties:
@@ -503,13 +757,375 @@ components:
           oneOf:
           - $ref: '#/components/schemas/adr_id'
           - $ref: '#/components/schemas/inline_address'
-    date_modified:
+    failure_reason:
+      type: object
+      description: An object describing the reason for failure if the resource failed to render.
+      properties:
+        remediation:
+          type: string
+          description: Instructions on how to resolve the error
+        failure_reason:
+          type: string
+          description: Reason failure occurred
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/failure_reason_error'
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type:
+          - string
+          - 'null'
+          description: Url of next page of items in list.
+        previous_url:
+          type:
+          - string
+          - 'null'
+          description: Url of previous page of items in list.
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    html_string:
       type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was last modified.
-    deleted:
-      type: boolean
-      description: Only returned if the resource has been successfully deleted.
+      description: An HTML string of under 10,000 characters.
+      maxLength: 10000
+      pattern: <
+    address_fields_intl:
+      type: object
+      required:
+      - address_line1
+      - address_country
+      properties:
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 200
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 200
+        address_city:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        address_state:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        address_zip:
+          type:
+          - string
+          - 'null'
+          description: Optional postal code.
+          maxLength: 40
+    merge_variables:
+      type:
+      - object
+      - 'null'
+      description: 'You can input a merge variable payload object to your template or QR code redirect URLs to render dynamic content. For example, if you have a template like: `{{variable_name}}`, pass in `{"variable_name": "Harry"}` to render `Harry`. `merge_variables` must be an object. Any type of value is accepted as long as the object is valid JSON; you can use `strings`, `numbers`, `booleans`, `arrays`, `objects`, or `null`. The max length of the object is 25,000 characters. If you call `JSON.stringify` on your object, it can be no longer than 25,000 characters. Your variable names cannot contain any whitespace or any of the following special characters: `!`, `"`, `#`, `%`, `&`, `''`, `(`, `)`, `*`, `+`, `,`, `/`, `;`, `<`, `=`, `>`, `@`, `[`, `\`, `]`, `^`, `` ` ``, `{`, `|`, `}`, `~`. More instructions can be found in <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/dynamic-personalization#using-html-and-merge-variables-10" target="_blank">our guide to using html and merge variables</a>. Depending on your <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Merge Variable strictness</a> setting, if you define variables in your HTML but do not pass them here, you will either receive an error or the variable will render as an empty string. These settings only apply on HTML templates and not on QR code redirect URLs.'
+      maxLength: 25000
+    address:
+      oneOf:
+      - $ref: '#/components/schemas/address_us'
+      - $ref: '#/components/schemas/address_intl'
+    input_from_us:
+      type: object
+      properties:
+        from:
+          description: '*Required* if `to` address is international. Must either be an address ID or an inline object with correct address parameters. Must either be an address ID or an inline object with correct address parameters. All addresses will be standardized into uppercase without being modified by verification.'
+          oneOf:
+          - $ref: '#/components/schemas/adr_id'
+          - $ref: '#/components/schemas/inline_address_us'
+    resource_description:
+      type:
+      - string
+      - 'null'
+      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+
+        '
+      maxLength: 255
+    self_mailer_editable:
+      allOf:
+      - $ref: '#/components/schemas/self_mailer_base'
+      - $ref: '#/components/schemas/input_to'
+      - $ref: '#/components/schemas/input_from_us'
+      - type: object
+        required:
+        - to
+        - inside
+        - outside
+        - use_type
+        properties:
+          inside:
+            description: "The artwork to use as the inside of your self mailer.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6\"x18\" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/6x18_sfm_bifold_template.pdf\" target=\"_blank\">6x18 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/12x9_sfm_bifold_template.pdf\" target=\"_blank\">12x9 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/17_75x9_trifold_sfm_template.pdf\" target=\"_blank\">17.75x9 trifold template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n"
+            oneOf:
+            - $ref: '#/components/schemas/html_string'
+            - $ref: '#/components/schemas/tmpl_id'
+            - $ref: '#/components/schemas/remote_file_url'
+            - $ref: '#/components/schemas/local_file_path'
+          outside:
+            description: 'The artwork to use as the outside of your self mailer.
+
+
+              Notes:
+
+              - HTML merge variables should not include delimiting whitespace.
+
+              - PDF, PNG, and JPGs must be sized at 6"x18" at 300 DPI, while supplied HTML will be rendered to the specified `size`.
+
+
+              See [here](#section/HTML-Examples) for HTML examples.
+
+              '
+            oneOf:
+            - $ref: '#/components/schemas/html_string'
+            - $ref: '#/components/schemas/tmpl_id'
+            - $ref: '#/components/schemas/remote_file_url'
+            - $ref: '#/components/schemas/local_file_path'
+          billing_group_id:
+            $ref: '#/components/schemas/billing_group_id'
+          qr_code:
+            $ref: '#/components/schemas/qr_code'
+          use_type:
+            $ref: '#/components/schemas/sfm_use_type'
+          fsc:
+            type: boolean
+            description: This is in beta. Contact support@lob.com or your account contact to learn more. Not available for `11x9_bifold` self-mailer size.
+            default: false
+          print_speed:
+            $ref: '#/components/schemas/print_speed'
+    vrsn_id:
+      type: string
+      description: Unique identifier prefixed with `vrsn_`.
+      pattern: ^vrsn_[a-zA-Z0-9]+$
+    self_mailer_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/sfm_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    generated:
+      type: object
+      required:
+      - to
+      - carrier
+      properties:
+        to:
+          $ref: '#/components/schemas/address'
+        carrier:
+          type: string
+          enum:
+          - USPS
+          default: USPS
+        thumbnails:
+          type: array
+          items:
+            $ref: '#/components/schemas/thumbnail'
+        expected_delivery_date:
+          $ref: '#/components/schemas/expected_delivery_date'
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    self_mailer_base:
+      allOf:
+      - $ref: '#/components/schemas/editable'
+      - type: object
+        properties:
+          size:
+            $ref: '#/components/schemas/self_mailer_size'
+    local_file_path:
+      type: string
+      description: The path to a local file.
+      pattern: ^(?!https://)[a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+    inline_address_us:
+      allOf:
+      - $ref: '#/components/schemas/address_editable_us'
+      - type: object
+        required:
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+    status:
+      type: string
+      enum:
+      - processed
+      - rendered
+      - failed
+      description: 'A string describing the PDF render status:
+
+        * `processed` - the rendering process is currently in progress.
+
+        * `rendered` - a PDF has been successfully rendered of the mailpiece.
+
+        * `failed` - one or more issues has caused the rendering process to fail.
+
+        '
+    evnt_id:
+      type: string
+      description: Unique identifier prefixed with `evnt_`.
+      pattern: ^evnt_[a-zA-Z0-9]+$
+    self_mailer:
+      allOf:
+      - $ref: '#/components/schemas/self_mailer_base'
+      - $ref: '#/components/schemas/generated'
+      - $ref: '#/components/schemas/from_us'
+      - type: object
+        required:
+        - id
+        - url
+        - use_type
+        properties:
+          id:
+            $ref: '#/components/schemas/sfm_id'
+          outside_template_id:
+            description: The unique ID of the HTML template used for the outside of the self mailer.
+            allOf:
+            - $ref: '#/components/schemas/tmpl_id'
+            - type:
+              - string
+              - 'null'
+          inside_template_id:
+            description: The unique ID of the HTML template used for the inside of the self mailer.
+            allOf:
+            - $ref: '#/components/schemas/tmpl_id'
+            - type:
+              - string
+              - 'null'
+          outside_template_version_id:
+            description: The unique ID of the specific version of the HTML template used for the outside of the self mailer.
+            allOf:
+            - $ref: '#/components/schemas/vrsn_id'
+            - type:
+              - string
+              - 'null'
+          inside_template_version_id:
+            description: The unique ID of the specific version of the HTML template used for the inside of the self mailer.
+            allOf:
+            - $ref: '#/components/schemas/vrsn_id'
+            - type:
+              - string
+              - 'null'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - self_mailer
+            default: self_mailer
+          tracking_events:
+            description: An array of certified tracking events ordered by ascending `time`. Not populated in test mode.
+            type: array
+            items:
+              $ref: '#/components/schemas/tracking_event_certified'
+          use_type:
+            $ref: '#/components/schemas/sfm_use_type'
+          url:
+            $ref: '#/components/schemas/signed_link'
+          fsc:
+            type: boolean
+            description: This is in beta. Contact support@lob.com or your account contact to learn more. Not available for `11x9_bifold` self-mailer size.
+            default: false
+          status:
+            $ref: '#/components/schemas/status'
+          campaign_id:
+            $ref: '#/components/schemas/campaign_id'
+          failure_reason:
+            type:
+            - object
+            - 'null'
+            allOf:
+            - $ref: '#/components/schemas/failure_reason'
+    qr_code:
+      type: object
+      description: Customize and place a QR code on the creative at the required position.
+      required:
+      - position
+      - redirect_url
+      - width
+      properties:
+        position:
+          type: string
+          enum:
+          - relative
+          description: Sets how a QR code is being positioned in the document. Together with this, you should provide one of 'top' or 'bottom', and one of 'left' or 'right'.
+        top:
+          type: number
+          description: Vertical distance (in inches) to place QR code from the top. Only allowed if "bottom" isn't provided.
+        right:
+          type: number
+          description: Horizontal distance (in inches) to place QR code from the right. Only allowed if "left" isn't provided.
+        left:
+          type: number
+          description: Horizontal distance (in inches) to place QR code from the left. Only allowed if "right" isn't provided.
+        bottom:
+          type: number
+          description: Vertical distance (in inches) to place QR code from the bottom. Only allowed if "top" isn't provided.
+        redirect_url:
+          type: string
+          description: The url to redirect the user when a QR code is scanned. The URL can be a literal URL, a template URL containing merge variables, or consist entirely of merge variables. For example, `https://www.example.com` or `https://www.example.com?q={{name}}` or `{{name}}`, respectively. When a merge variable exists in the URL, it is replaced with data from merge_variables. If the variable does not exist, then nothing with be replaced and the destination URL will be the same as the input URL. More details on merge variables can be found in <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/adding-qr-codes#destination-url-and-redirects" target="_blank">our help center</a>.
+        width:
+          type: number
+          description: The size (in inches) of the QR code with a minimum of 1 inch. All QR codes are generated as a square.
+        pages:
+          type: string
+          description: Specify the pages where the QR code should be stamped in a comma separated format. Your QR code can be printed in the same position on multiple pages. For postcards, the values should either be "front", "back" (for either front or back) or "front,back" (for the QR code to be printed on both sides). For self-mailers and snap packs, the values should either be "inside", "outside" (for either inside or outside) or "inside,outside" (for the QR code to be printed on both sides). For letters and booklets, the values can be specific page numbers ("1", "3"), page number ranges such as "1-3", or a comma separated combination of both ("1,3,5-7").
+        logo:
+          type: object
+          description: Allows specifying a logo to be placed over the center of the QR code.  Logos must be in PNG or JPEG format and have a maximum file size of 1 MB.
+          properties:
+            url:
+              type: string
+              description: The public URL of the logo image to be retrieved and placed over the center of the QR code.
+              pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(png|jpe?g)$
+        style:
+          type: object
+          description: Customizes the appearance of the QR code.
+          properties:
+            background_color:
+              type: string
+              description: The background color of the QR code in hexadecimal format. For example, `#000000` is black and `#FFFFFF` is white.
+              pattern: ^#[A-Fa-f0-9]{6}$
+            foreground_color:
+              type: string
+              description: The foreground color of the QR code in hexadecimal format. For example, `#000000` is black and `#FFFFFF` is white.
+              pattern: ^#[A-Fa-f0-9]{6}$
+    expected_delivery_date:
+      type: string
+      description: A date in YYYY-MM-DD format of the mailpiece's expected delivery date based on its `send_date`.
+      format: date
     tracking_event_certified:
       allOf:
       - $ref: '#/components/schemas/tracking_event_base'
@@ -539,26 +1155,67 @@ components:
           details:
             $ref: '#/components/schemas/tracking_event_details'
           location:
-            type: string
+            type:
+            - string
+            - 'null'
             description: 'The zip code in which the event occurred if it exists, otherwise will be the name of a Regional Distribution Center if it exists, otherwise will be null.
 
               '
-            nullable: true
-    editable:
+    sfm_use_type:
+      description: The use type for each mailpiece. Can be one of marketing, operational, or null. Null use_type is only allowed if an account default use_type is selected in Account Settings. For more information on use_type, see our  [Help Center article](https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings/declaring-mail-use-type).
+      type:
+      - string
+      - 'null'
+      enum:
+      - marketing
+      - operational
+      - null
+    address_fields_us:
       type: object
+      required:
+      - address_line1
+      - address_city
+      - address_state
+      - address_zip
       properties:
-        description:
-          $ref: '#/components/schemas/resource_description'
-        metadata:
-          $ref: '#/components/schemas/metadata'
-        mail_type:
-          $ref: '#/components/schemas/mail_type'
-        merge_variables:
-          $ref: '#/components/schemas/merge_variables'
-        send_date:
-          $ref: '#/components/schemas/send_date'
-        print_speed:
-          $ref: '#/components/schemas/print_speed'
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 64
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 64
+        address_city:
+          type: string
+          maxLength: 200
+        address_state:
+          type: string
+          description: 2 letter state short-name code
+          pattern: ^[a-zA-Z]{2}$
+        address_zip:
+          type: string
+          description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+            '
+          pattern: ^\d{5}(-\d{4})?$
+    campaign_id:
+      title: campaign_id
+      description: Denotes resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
+      type:
+      - string
+      - 'null'
+      pattern: ^(cmp|camp)_[a-zA-Z0-9]+$
+    signed_link:
+      type: string
+      description: A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.
+      pattern: ^https://lob-assets.com/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
     address_editable_intl:
       allOf:
       - $ref: '#/components/schemas/address_fields_intl'
@@ -574,113 +1231,261 @@ components:
           description:
             $ref: '#/components/schemas/resource_description'
           name:
-            type: string
+            type:
+            - string
+            - 'null'
             description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
 
               '
             maxLength: 40
-            nullable: true
           company:
             $ref: '#/components/schemas/company'
           phone:
-            type: string
+            type:
+            - string
+            - 'null'
             description: Must be no longer than 40 characters.
             maxLength: 40
-            nullable: true
           email:
-            type: string
+            type:
+            - string
+            - 'null'
             description: Must be no longer than 100 characters.
             maxLength: 100
-            nullable: true
           address_country:
             $ref: '#/components/schemas/country_extended'
           metadata:
             $ref: '#/components/schemas/metadata'
-    local_file_path:
+    company:
+      type:
+      - string
+      - 'null'
+      description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+        '
+      maxLength: 40
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    count:
+      type: integer
+      description: number of resources in a set
+    editable:
+      type: object
+      properties:
+        description:
+          $ref: '#/components/schemas/resource_description'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        mail_type:
+          $ref: '#/components/schemas/mail_type'
+        merge_variables:
+          $ref: '#/components/schemas/merge_variables'
+        send_date:
+          $ref: '#/components/schemas/send_date'
+        print_speed:
+          $ref: '#/components/schemas/print_speed'
+    send_date:
       type: string
-      description: The path to a local file.
-      pattern: ^(?!https://)[a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
-    input_from_us:
-      type: object
-      properties:
-        from:
-          description: '*Required* if `to` address is international. Must either be an address ID or an inline object with correct address parameters. Must either be an address ID or an inline object with correct address parameters. All addresses will be standardized into uppercase without being modified by verification.'
-          oneOf:
-          - $ref: '#/components/schemas/adr_id'
-          - $ref: '#/components/schemas/inline_address_us'
-    failure_reason_error:
-      type: object
-      description: Failure error details
-      properties:
-        url:
-          type: string
-          description: Failed URL of asset
-          nullable: true
-        host:
-          type: string
-          description: URL host
-          nullable: true
-        path:
-          type: string
-          description: URL path
-          nullable: true
-        protocol:
-          type: string
-          description: Network protocol
-          nullable: true
-        remediation:
-          type: string
-          description: Instructions on how to resolve the error
-          nullable: true
-        error_type:
-          type: string
-          description: HTTP response status code message or service defined error
-          nullable: true
-        status_code:
-          type: number
-          description: HTTP response status codes if the error is asset related
-          nullable: true
+      description: A timestamp in ISO 8601 format which specifies a date after the current time and up to 180 days in the future to send the letter off for production. Setting a send date overrides the default [cancellation window](#section/Cancellation-Windows) applied to the mailpiece. Until the `send_date` has passed, the mailpiece can be canceled. If a date in the format `2017-11-01` is passed, it will evaluate to midnight UTC of that date (`2017-11-01T00:00:00.000Z`). If a datetime is passed, that exact time will be used. A `send_date` passed with no time zone will default to UTC, while a `send_date` passed with a time zone will be converted to UTC.
+      anyOf:
+      - format: date-time
+      - format: date
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
     object:
       type: string
       description: Value is resource type.
-    lob_base:
-      type: object
-      required:
-      - date_created
-      - date_modified
-      - object
-      properties:
-        date_created:
-          $ref: '#/components/schemas/date_created'
-        date_modified:
-          $ref: '#/components/schemas/date_modified'
-        deleted:
-          $ref: '#/components/schemas/deleted'
-        object:
-          $ref: '#/components/schemas/object'
-    evnt_id:
-      type: string
-      description: Unique identifier prefixed with `evnt_`.
-      pattern: ^evnt_[a-zA-Z0-9]+$
-    failure_reason:
-      type: object
-      description: An object describing the reason for failure if the resource failed to render.
-      properties:
-        remediation:
-          type: string
-          description: Instructions on how to resolve the error
-        failure_reason:
-          type: string
-          description: Reason failure occurred
-        errors:
-          type: array
-          nullable: true
-          items:
-            $ref: '#/components/schemas/failure_reason_error'
-    address_editable_us:
+    address_us:
       allOf:
-      - $ref: '#/components/schemas/address_fields_us'
+      - $ref: '#/components/schemas/lob_base'
       - type: object
+        required:
+        - id
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
         anyOf:
         - title: address obj with `name` defined
           required:
@@ -689,80 +1494,106 @@ components:
           required:
           - company
         properties:
+          id:
+            $ref: '#/components/schemas/adr_id'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - address
+            default: address
           description:
             $ref: '#/components/schemas/resource_description'
           name:
-            type: string
+            type:
+            - string
+            - 'null'
             description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
 
               '
             maxLength: 40
-            nullable: true
           company:
-            $ref: '#/components/schemas/company'
+            type:
+            - string
+            - 'null'
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+              '
+            maxLength: 40
           phone:
-            type: string
+            type:
+            - string
+            - 'null'
             description: Must be no longer than 40 characters.
             maxLength: 40
-            nullable: true
           email:
-            type: string
+            type:
+            - string
+            - 'null'
             description: Must be no longer than 100 characters.
             maxLength: 100
-            nullable: true
+          address_line1:
+            type: string
+            description: The primary number, street name, and directional information.
+            maxLength: 64
+          address_line2:
+            type:
+            - string
+            - 'null'
+            description: An optional field containing any information which can't fit into line 1.
+            maxLength: 64
+          address_city:
+            type: string
+            maxLength: 200
+          address_state:
+            type: string
+            description: 2 letter state short-name code
+            pattern: ^[a-zA-Z]{2}$
+          address_zip:
+            type: string
+            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+              '
+            pattern: ^\d{5}(-\d{4})?$
           address_country:
             type: string
             enum:
-            - US
-            default: US
+            - UNITED STATES
+            description: Full name of country
+            minLength: 13
+            maxLength: 13
           metadata:
             $ref: '#/components/schemas/metadata'
-    self_mailer_size:
-      type: string
-      enum:
-      - 6x18_bifold
-      - 11x9_bifold
-      - 12x9_bifold
-      - 17.75x9_trifold
-      description: Specifies the size of the self mailer. The `17.75x9_trifold` size is in beta. Contact support@lob.com or your account contact to learn more.
-      default: 6x18_bifold
-    vrsn_id:
-      type: string
-      description: Unique identifier prefixed with `vrsn_`.
-      pattern: ^vrsn_[a-zA-Z0-9]+$
-    resource_description:
-      type: string
-      description: 'An internal description that identifies this resource. Must be no longer than 255 characters.
+          recipient_moved:
+            type:
+            - boolean
+            - 'null'
+            description: 'Only returned for accounts on certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print &amp; Mail Editions</a>. Value is `true` if the address was altered because the recipient filed for a <a href="#tag/National-Change-of-Address">National Change of Address Linkage (NCOALink)</a>, `false` if the NCOALink check was run but no altered address was found, and `null` if the NCOALink check was not run. The NCOALink check does not happen for non-US addresses, for non-deliverable US addresses, or for addresses created before the NCOALink feature was added to your account.
 
-        '
-      maxLength: 255
-      nullable: true
-    tracking_event_base:
+              '
+        example:
+          id: adr_e68217bd744d65c8
+          description: Harry - Office
+          name: HARRY ZHANG
+          company: LOB
+          phone: '5555555555'
+          email: harry@lob.com
+          address_line1: 210 KING ST STE 6100
+          address_line2: null
+          address_city: SAN FRANCISCO
+          address_state: CA
+          address_zip: 94107-1741
+          address_country: UNITED STATES
+          metadata: {}
+          recipient_moved: false
+          date_created: '2019-08-12T00:16:00.361Z'
+          date_modified: '2019-08-12T00:16:00.361Z'
+          object: address
+    from_us:
       type: object
-      description: As mail pieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes these mail scans to generate tracking events.
-      required:
-      - id
-      - date_created
-      - date_modified
-      - object
       properties:
-        id:
-          $ref: '#/components/schemas/evnt_id'
-        time:
-          type: string
-          format: date-time
-          description: A timestamp in ISO 8601 format of the date USPS registered the event.
-        date_created:
-          $ref: '#/components/schemas/date_created'
-        date_modified:
-          $ref: '#/components/schemas/date_modified'
-        object:
-          allOf:
-          - $ref: '#/components/schemas/object'
-          - type: string
-            enum:
-            - tracking_event
-            default: tracking_event
+        from:
+          $ref: '#/components/schemas/address_us'
     address_intl:
       allOf:
       - $ref: '#/components/schemas/lob_base'
@@ -784,47 +1615,54 @@ components:
           description:
             $ref: '#/components/schemas/resource_description'
           name:
-            type: string
+            type:
+            - string
+            - 'null'
             description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
 
               '
             maxLength: 40
-            nullable: true
           company:
             $ref: '#/components/schemas/company'
           phone:
-            type: string
+            type:
+            - string
+            - 'null'
             description: Must be no longer than 40 characters.
             maxLength: 40
-            nullable: true
           email:
-            type: string
+            type:
+            - string
+            - 'null'
             description: Must be no longer than 100 characters.
             maxLength: 100
-            nullable: true
           metadata:
             $ref: '#/components/schemas/metadata'
           address_line1:
             type: string
             maxLength: 200
           address_line2:
-            type: string
+            type:
+            - string
+            - 'null'
             maxLength: 200
-            nullable: true
           address_city:
-            type: string
+            type:
+            - string
+            - 'null'
             maxLength: 200
-            nullable: true
           address_state:
             description: Will be returned as a full string
-            type: string
+            type:
+            - string
+            - 'null'
             maxLength: 200
-            nullable: true
           address_zip:
-            type: string
+            type:
+            - string
+            - 'null'
             description: Optional postal code.
             maxLength: 40
-            nullable: true
           address_country:
             description: Full name of country
             type: string
@@ -1068,354 +1906,15 @@ components:
           address_state: PRINCE EDWARD ISLAND
           address_zip: C1N 1C4
           address_country: CANADA
-    self_mailer_editable:
-      allOf:
-      - $ref: '#/components/schemas/self_mailer_base'
-      - $ref: '#/components/schemas/input_to'
-      - $ref: '#/components/schemas/input_from_us'
-      - type: object
-        required:
-        - to
-        - inside
-        - outside
-        - use_type
-        properties:
-          inside:
-            description: "The artwork to use as the inside of your self mailer.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6\"x18\" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/6x18_sfm_bifold_template.pdf\" target=\"_blank\">6x18 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/12x9_sfm_bifold_template.pdf\" target=\"_blank\">12x9 bifold template</a>\n  - <a href=\"https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/17_75x9_trifold_sfm_template.pdf\" target=\"_blank\">17.75x9 trifold template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n"
-            oneOf:
-            - $ref: '#/components/schemas/html_string'
-            - $ref: '#/components/schemas/tmpl_id'
-            - $ref: '#/components/schemas/remote_file_url'
-            - $ref: '#/components/schemas/local_file_path'
-          outside:
-            description: 'The artwork to use as the outside of your self mailer.
-
-
-              Notes:
-
-              - HTML merge variables should not include delimiting whitespace.
-
-              - PDF, PNG, and JPGs must be sized at 6"x18" at 300 DPI, while supplied HTML will be rendered to the specified `size`.
-
-
-              See [here](#section/HTML-Examples) for HTML examples.
-
-              '
-            oneOf:
-            - $ref: '#/components/schemas/html_string'
-            - $ref: '#/components/schemas/tmpl_id'
-            - $ref: '#/components/schemas/remote_file_url'
-            - $ref: '#/components/schemas/local_file_path'
-          billing_group_id:
-            $ref: '#/components/schemas/billing_group_id'
-          qr_code:
-            $ref: '#/components/schemas/qr_code'
-          use_type:
-            $ref: '#/components/schemas/sfm_use_type'
-          fsc:
-            type: boolean
-            description: This is in beta. Contact support@lob.com or your account contact to learn more. Not available for `11x9_bifold` self-mailer size.
-            default: false
-          print_speed:
-            $ref: '#/components/schemas/print_speed'
-    inline_address_intl:
-      allOf:
-      - $ref: '#/components/schemas/address_editable_intl'
-      - type: object
-        required:
-        - address_line1
-        - address_country
-      - type: object
-        oneOf:
-        - required:
-          - address_city
-          - address_state
-        - required:
-          - address_zip
-    inline_address:
-      oneOf:
-      - $ref: '#/components/schemas/inline_address_us'
-      - $ref: '#/components/schemas/inline_address_intl'
-    qr_code:
-      type: object
-      description: Customize and place a QR code on the creative at the required position.
-      required:
-      - position
-      - redirect_url
-      - width
-      properties:
-        position:
-          type: string
-          enum:
-          - relative
-          description: Sets how a QR code is being positioned in the document. Together with this, you should provide one of 'top' or 'bottom', and one of 'left' or 'right'.
-        top:
-          type: number
-          description: Vertical distance (in inches) to place QR code from the top. Only allowed if "bottom" isn't provided.
-        right:
-          type: number
-          description: Horizontal distance (in inches) to place QR code from the right. Only allowed if "left" isn't provided.
-        left:
-          type: number
-          description: Horizontal distance (in inches) to place QR code from the left. Only allowed if "right" isn't provided.
-        bottom:
-          type: number
-          description: Vertical distance (in inches) to place QR code from the bottom. Only allowed if "top" isn't provided.
-        redirect_url:
-          type: string
-          description: The url to redirect the user when a QR code is scanned. The URL can be a literal URL, a template URL containing merge variables, or consist entirely of merge variables. For example, `https://www.example.com` or `https://www.example.com?q={{name}}` or `{{name}}`, respectively. When a merge variable exists in the URL, it is replaced with data from merge_variables. If the variable does not exist, then nothing with be replaced and the destination URL will be the same as the input URL. More details on merge variables can be found in <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/adding-qr-codes#destination-url-and-redirects" target="_blank">our help center</a>.
-        width:
-          type: number
-          description: The size (in inches) of the QR code with a minimum of 1 inch. All QR codes are generated as a square.
-        pages:
-          type: string
-          description: Specify the pages where the QR code should be stamped in a comma separated format. Your QR code can be printed in the same position on multiple pages. For postcards, the values should either be "front", "back" (for either front or back) or "front,back" (for the QR code to be printed on both sides). For self-mailers and snap packs, the values should either be "inside", "outside" (for either inside or outside) or "inside,outside" (for the QR code to be printed on both sides). For letters and booklets, the values can be specific page numbers ("1", "3"), page number ranges such as "1-3", or a comma separated combination of both ("1,3,5-7").
-        logo:
-          type: object
-          description: Allows specifying a logo to be placed over the center of the QR code.  Logos must be in PNG or JPEG format and have a maximum file size of 1 MB.
-          properties:
-            url:
-              type: string
-              description: The public URL of the logo image to be retrieved and placed over the center of the QR code.
-              pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(png|jpe?g)$
-        style:
-          type: object
-          description: Customizes the appearance of the QR code.
-          properties:
-            background_color:
-              type: string
-              description: The background color of the QR code in hexadecimal format. For example, `#000000` is black and `#FFFFFF` is white.
-              pattern: ^#[A-Fa-f0-9]{6}$
-            foreground_color:
-              type: string
-              description: The foreground color of the QR code in hexadecimal format. For example, `#000000` is black and `#FFFFFF` is white.
-              pattern: ^#[A-Fa-f0-9]{6}$
-    campaign_id:
-      title: campaign_id
-      description: Denotes resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
-      type: string
-      pattern: ^(cmp|camp)_[a-zA-Z0-9]+$
-      nullable: true
-    failure_status_code:
-      type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
-    status:
+    self_mailer_size:
       type: string
       enum:
-      - processed
-      - rendered
-      - failed
-      description: 'A string describing the PDF render status:
-
-        * `processed` - the rendering process is currently in progress.
-
-        * `rendered` - a PDF has been successfully rendered of the mailpiece.
-
-        * `failed` - one or more issues has caused the rendering process to fail.
-
-        '
-    sfm_id:
-      type: string
-      description: Unique identifier prefixed with `sfm_`.
-      pattern: ^sfm_[a-zA-Z0-9]+$
-    company:
-      type: string
-      description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
-
-        '
-      maxLength: 40
-      nullable: true
-    adr_id:
-      type: string
-      description: Unique identifier prefixed with `adr_`.
-      pattern: ^adr_[a-zA-Z0-9]+$
-    tmpl_id:
-      type: string
-      description: Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).
-      pattern: ^tmpl_[a-zA-Z0-9]+$
-    inline_address_us:
-      allOf:
-      - $ref: '#/components/schemas/address_editable_us'
-      - type: object
-        required:
-        - address_line1
-        - address_city
-        - address_state
-        - address_zip
-    list:
-      type: object
-      description: Multiple items returned in order
-      properties:
-        object:
-          $ref: '#/components/schemas/object'
-        next_url:
-          type: string
-          description: Url of next page of items in list.
-          nullable: true
-        previous_url:
-          type: string
-          description: Url of previous page of items in list.
-          nullable: true
-        count:
-          $ref: '#/components/schemas/count'
-        total_count:
-          type: integer
-          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
-    thumbnail:
-      type: object
-      properties:
-        small:
-          $ref: '#/components/schemas/signed_link'
-        medium:
-          $ref: '#/components/schemas/signed_link'
-        large:
-          $ref: '#/components/schemas/signed_link'
-    mail_type:
-      type: string
-      enum:
-      - usps_first_class
-      - usps_standard
-      description: 'A string designating the mail postage type:
-
-        * `usps_first_class` - (default)
-
-        * `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is
-
-        less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6`
-
-        postcards or for any postcards sent outside of the United States.
-
-        '
-      default: usps_first_class
-    html_string:
-      type: string
-      description: An HTML string of under 10,000 characters.
-      maxLength: 10000
-      pattern: <
-    signed_link:
-      type: string
-      description: A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.
-      pattern: ^https://lob-assets.com/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+
-    self_mailer:
-      allOf:
-      - $ref: '#/components/schemas/self_mailer_base'
-      - $ref: '#/components/schemas/generated'
-      - $ref: '#/components/schemas/from_us'
-      - type: object
-        required:
-        - id
-        - url
-        - use_type
-        properties:
-          id:
-            $ref: '#/components/schemas/sfm_id'
-          outside_template_id:
-            description: The unique ID of the HTML template used for the outside of the self mailer.
-            allOf:
-            - $ref: '#/components/schemas/tmpl_id'
-            - type: string
-              nullable: true
-          inside_template_id:
-            description: The unique ID of the HTML template used for the inside of the self mailer.
-            allOf:
-            - $ref: '#/components/schemas/tmpl_id'
-            - type: string
-              nullable: true
-          outside_template_version_id:
-            description: The unique ID of the specific version of the HTML template used for the outside of the self mailer.
-            allOf:
-            - $ref: '#/components/schemas/vrsn_id'
-            - type: string
-              nullable: true
-          inside_template_version_id:
-            description: The unique ID of the specific version of the HTML template used for the inside of the self mailer.
-            allOf:
-            - $ref: '#/components/schemas/vrsn_id'
-            - type: string
-              nullable: true
-          object:
-            type: string
-            description: Value is resource type.
-            enum:
-            - self_mailer
-            default: self_mailer
-          tracking_events:
-            description: An array of certified tracking events ordered by ascending `time`. Not populated in test mode.
-            type: array
-            items:
-              $ref: '#/components/schemas/tracking_event_certified'
-          use_type:
-            $ref: '#/components/schemas/sfm_use_type'
-          url:
-            $ref: '#/components/schemas/signed_link'
-          fsc:
-            type: boolean
-            description: This is in beta. Contact support@lob.com or your account contact to learn more. Not available for `11x9_bifold` self-mailer size.
-            default: false
-          status:
-            $ref: '#/components/schemas/status'
-          campaign_id:
-            $ref: '#/components/schemas/campaign_id'
-          failure_reason:
-            type: object
-            nullable: true
-            allOf:
-            - $ref: '#/components/schemas/failure_reason'
-    metadata:
-      type: object
-      additionalProperties:
-        type: string
-      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
-      maxLength: 500
-      pattern: '[^"\\]{0,500}'
-    address:
-      oneOf:
-      - $ref: '#/components/schemas/address_us'
-      - $ref: '#/components/schemas/address_intl'
-    address_fields_us:
-      type: object
-      required:
-      - address_line1
-      - address_city
-      - address_state
-      - address_zip
-      properties:
-        address_line1:
-          type: string
-          description: The primary number, street name, and directional information.
-          maxLength: 64
-        address_line2:
-          type: string
-          description: An optional field containing any information which can't fit into line 1.
-          maxLength: 64
-          nullable: true
-        address_city:
-          type: string
-          maxLength: 200
-        address_state:
-          type: string
-          description: 2 letter state short-name code
-          pattern: ^[a-zA-Z]{2}$
-        address_zip:
-          type: string
-          description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
-
-            '
-          pattern: ^\d{5}(-\d{4})?$
-    remote_file_url:
-      type: string
-      description: 'The location of a remote file. Remote URLs have a 5 MB file size limit and must be downloaded within 40 seconds.
-
-        '
-      pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+      - 6x18_bifold
+      - 11x9_bifold
+      - 12x9_bifold
+      - 17.75x9_trifold
+      description: Specifies the size of the self mailer. The `17.75x9_trifold` size is in beta. Contact support@lob.com or your account contact to learn more.
+      default: 6x18_bifold
     tracking_event_details:
       type: object
       required:
@@ -1521,632 +2020,27 @@ components:
           description: '`true` if action is required by the end recipient, `false` otherwise.
 
             '
-    date_created:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was created.
-    country_extended:
-      type: string
-      description: Must be a 2 letter country short-name code (ISO 3166). Does not accept `US`, `AS`, `PR`, `FM`, `GU`, `MH`, `MP`, `PW`, or `VI`. For these addresses, please use the US verification API. Also does not accept `PS`, which is not currently supported.
-      enum:
-      - AD
-      - AE
-      - AF
-      - AG
-      - AI
-      - AL
-      - AN
-      - AO
-      - AQ
-      - AR
-      - AT
-      - AU
-      - AW
-      - AZ
-      - BA
-      - BB
-      - BD
-      - BE
-      - BF
-      - BG
-      - BH
-      - BI
-      - BJ
-      - BM
-      - BN
-      - BO
-      - BQ
-      - BR
-      - BS
-      - BT
-      - BW
-      - BY
-      - BZ
-      - CA
-      - CD
-      - CG
-      - CH
-      - CI
-      - CK
-      - CL
-      - CM
-      - CN
-      - CO
-      - CR
-      - CS
-      - CU
-      - CV
-      - CW
-      - CY
-      - CZ
-      - DE
-      - DJ
-      - DK
-      - DM
-      - DO
-      - DZ
-      - EC
-      - EE
-      - EG
-      - EH
-      - ER
-      - ES
-      - ET
-      - FI
-      - FJ
-      - FK
-      - FO
-      - FR
-      - GA
-      - GB
-      - GD
-      - GE
-      - GH
-      - GI
-      - GL
-      - GM
-      - GN
-      - GQ
-      - GR
-      - GS
-      - GT
-      - GW
-      - GY
-      - HK
-      - HN
-      - HR
-      - HT
-      - HU
-      - ID
-      - IE
-      - IL
-      - IN
-      - IO
-      - IQ
-      - IR
-      - IS
-      - IT
-      - JM
-      - JO
-      - JP
-      - KE
-      - KG
-      - KH
-      - KI
-      - KM
-      - KN
-      - KP
-      - KR
-      - KW
-      - KY
-      - KZ
-      - LA
-      - LB
-      - LC
-      - LI
-      - LK
-      - LR
-      - LS
-      - LT
-      - LU
-      - LV
-      - LY
-      - MA
-      - MC
-      - MD
-      - ME
-      - MG
-      - MK
-      - ML
-      - MM
-      - MN
-      - MO
-      - MR
-      - MS
-      - MT
-      - MU
-      - MV
-      - MW
-      - MX
-      - MY
-      - MZ
-      - NA
-      - NE
-      - NF
-      - NG
-      - NI
-      - NL
-      - 'NO'
-      - NP
-      - NR
-      - NU
-      - NZ
-      - OM
-      - PA
-      - PE
-      - PG
-      - PH
-      - PK
-      - PL
-      - PN
-      - PT
-      - PY
-      - QA
-      - RO
-      - RS
-      - RU
-      - RW
-      - SA
-      - SB
-      - SC
-      - SD
-      - SE
-      - SG
-      - SH
-      - SI
-      - SK
-      - SL
-      - SM
-      - SN
-      - SO
-      - SR
-      - SS
-      - ST
-      - SV
-      - SX
-      - SY
-      - SZ
-      - TC
-      - TD
-      - TG
-      - TH
-      - TJ
-      - TK
-      - TL
-      - TM
-      - TN
-      - TO
-      - TR
-      - TT
-      - TV
-      - TW
-      - TZ
-      - UA
-      - UG
-      - UY
-      - UZ
-      - VA
-      - VC
-      - VE
-      - VG
-      - VN
-      - VU
-      - WS
-      - YE
-      - ZA
-      - ZM
-      - ZW
-    address_us:
-      allOf:
-      - $ref: '#/components/schemas/lob_base'
-      - type: object
-        required:
-        - id
-        - address_line1
-        - address_city
-        - address_state
-        - address_zip
-        anyOf:
-        - title: address obj with `name` defined
-          required:
-          - name
-        - title: address obj with `company` defined
-          required:
-          - company
-        properties:
-          id:
-            $ref: '#/components/schemas/adr_id'
-          object:
-            type: string
-            description: Value is resource type.
-            enum:
-            - address
-            default: address
-          description:
-            $ref: '#/components/schemas/resource_description'
-          name:
-            type: string
-            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
-
-              '
-            maxLength: 40
-            nullable: true
-          company:
-            type: string
-            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
-
-              '
-            maxLength: 40
-            nullable: true
-          phone:
-            type: string
-            description: Must be no longer than 40 characters.
-            maxLength: 40
-            nullable: true
-          email:
-            type: string
-            description: Must be no longer than 100 characters.
-            maxLength: 100
-            nullable: true
-          address_line1:
-            type: string
-            description: The primary number, street name, and directional information.
-            maxLength: 64
-          address_line2:
-            type: string
-            description: An optional field containing any information which can't fit into line 1.
-            maxLength: 64
-            nullable: true
-          address_city:
-            type: string
-            maxLength: 200
-          address_state:
-            type: string
-            description: 2 letter state short-name code
-            pattern: ^[a-zA-Z]{2}$
-          address_zip:
-            type: string
-            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
-
-              '
-            pattern: ^\d{5}(-\d{4})?$
-          address_country:
-            type: string
-            enum:
-            - UNITED STATES
-            description: Full name of country
-            minLength: 13
-            maxLength: 13
-          metadata:
-            $ref: '#/components/schemas/metadata'
-          recipient_moved:
-            type: boolean
-            description: 'Only returned for accounts on certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print &amp; Mail Editions</a>. Value is `true` if the address was altered because the recipient filed for a <a href="#tag/National-Change-of-Address">National Change of Address Linkage (NCOALink)</a>, `false` if the NCOALink check was run but no altered address was found, and `null` if the NCOALink check was not run. The NCOALink check does not happen for non-US addresses, for non-deliverable US addresses, or for addresses created before the NCOALink feature was added to your account.
-
-              '
-            nullable: true
-        example:
-          id: adr_e68217bd744d65c8
-          description: Harry - Office
-          name: HARRY ZHANG
-          company: LOB
-          phone: '5555555555'
-          email: harry@lob.com
-          address_line1: 210 KING ST STE 6100
-          address_line2: null
-          address_city: SAN FRANCISCO
-          address_state: CA
-          address_zip: 94107-1741
-          address_country: UNITED STATES
-          metadata: {}
-          recipient_moved: false
-          date_created: '2019-08-12T00:16:00.361Z'
-          date_modified: '2019-08-12T00:16:00.361Z'
-          object: address
-    date_filter:
-      type: object
-      additionalProperties:
-        type: string
-      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-    merge_variables:
-      type: object
-      description: 'You can input a merge variable payload object to your template or QR code redirect URLs to render dynamic content. For example, if you have a template like: `{{variable_name}}`, pass in `{"variable_name": "Harry"}` to render `Harry`. `merge_variables` must be an object. Any type of value is accepted as long as the object is valid JSON; you can use `strings`, `numbers`, `booleans`, `arrays`, `objects`, or `null`. The max length of the object is 25,000 characters. If you call `JSON.stringify` on your object, it can be no longer than 25,000 characters. Your variable names cannot contain any whitespace or any of the following special characters: `!`, `"`, `#`, `%`, `&`, `''`, `(`, `)`, `*`, `+`, `,`, `/`, `;`, `<`, `=`, `>`, `@`, `[`, `\`, `]`, `^`, `` ` ``, `{`, `|`, `}`, `~`. More instructions can be found in <a href="https://help.lob.com/print-and-mail/designing-mail-creatives/dynamic-personalization#using-html-and-merge-variables-10" target="_blank">our guide to using html and merge variables</a>. Depending on your <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Merge Variable strictness</a> setting, if you define variables in your HTML but do not pass them here, you will either receive an error or the variable will render as an empty string. These settings only apply on HTML templates and not on QR code redirect URLs.'
-      maxLength: 25000
-      nullable: true
-    print_speed:
-      type: string
-      enum:
-      - core
-      description: 'A string designating the mail speed type:
-
-        * `core` - 2 production business days
-
-        '
-      default: core
-      nullable: true
-    generated:
-      type: object
-      required:
-      - to
-      - carrier
-      properties:
-        to:
-          $ref: '#/components/schemas/address'
-        carrier:
-          type: string
-          enum:
-          - USPS
-          default: USPS
-        thumbnails:
-          type: array
-          items:
-            $ref: '#/components/schemas/thumbnail'
-        expected_delivery_date:
-          $ref: '#/components/schemas/expected_delivery_date'
-        date_created:
-          $ref: '#/components/schemas/date_created'
-        date_modified:
-          $ref: '#/components/schemas/date_modified'
-        deleted:
-          $ref: '#/components/schemas/deleted'
-    sfm_use_type:
-      description: The use type for each mailpiece. Can be one of marketing, operational, or null. Null use_type is only allowed if an account default use_type is selected in Account Settings. For more information on use_type, see our  [Help Center article](https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings/declaring-mail-use-type).
-      type: string
-      enum:
-      - marketing
-      - operational
-      - null
-      nullable: true
-    from_us:
-      type: object
-      properties:
-        from:
-          $ref: '#/components/schemas/address_us'
-    self_mailer_base:
-      allOf:
-      - $ref: '#/components/schemas/editable'
-      - type: object
-        properties:
-          size:
-            $ref: '#/components/schemas/self_mailer_size'
-    count:
-      type: integer
-      description: number of resources in a set
-    expected_delivery_date:
-      type: string
-      description: A date in YYYY-MM-DD format of the mailpiece's expected delivery date based on its `send_date`.
-      format: date
-    error:
-      type: object
-      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - message
-          - status_code
-          - code
-          properties:
-            message:
-              type: string
-              description: A human-readable message with more details about the error
-              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
-            status_code:
-              $ref: '#/components/schemas/failure_status_code'
-            code:
-              type: string
-              enum:
-              - bad_request
-              - conflict
-              - feature_limit_reached
-              - internal_server_error
-              - invalid
-              - not_deletable
-              - not_found
-              - request_timeout
-              - service_unavailable
-              - unrecognized_endpoint
-              - unsupported_lob_version
-              - address_length_exceeds_limit
-              - bank_account_already_verified
-              - bank_error
-              - billing_address_required
-              - custom_envelope_inventory_depleted
-              - deleted_bank_account
-              - failed_deliverability_strictness
-              - file_pages_below_min
-              - file_pages_exceed_max
-              - file_size_exceeds_limit
-              - foreign_return_address
-              - inconsistent_page_dimensions
-              - invalid_bank_account
-              - invalid_bank_account_verification
-              - invalid_check_international
-              - invalid_country_covid
-              - invalid_file
-              - invalid_file_dimensions
-              - invalid_file_download_time
-              - invalid_file_url
-              - invalid_image_dpi
-              - invalid_international_feature
-              - invalid_perforation_return_envelope
-              - invalid_template_html
-              - mail_use_type_can_not_be_null
-              - merge_variable_required
-              - merge_variable_whitespace
-              - payment_method_unverified
-              - pdf_encrypted
-              - special_characters_restricted
-              - unembedded_fonts
-              - email_required
-              - invalid_api_key
-              - publishable_key_not_allowed
-              - rate_limit_exceeded
-              - unauthorized
-              - unauthorized_token
-              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
-
-
-                **GENERIC**
-
-                * `bad_request` - 422: an invalid request was made. See error message for details.
-
-                * `conflict` - 409/422: this operation would leave data in a conflicted state.
-
-                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
-
-                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
-
-                * `invalid` - 422: an invalid request was made. See error message for details.
-
-                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
-
-                * `not_found` - 404: the requested resource was not found.
-
-                * `request_timeout` - 408: the request took too long. Please try again.
-
-                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
-
-                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
-
-                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
-
-
-                **ADVANCED**
-
-                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
-
-                * `bank_account_already_verified` - 422: the bank account has already been verified.
-
-                * `bank_error` - 422: there''s an issue with the bank account.
-
-                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
-
-                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
-
-                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
-
-                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
-
-                * `file_pages_below_min` - 422: not enough pages.
-
-                * `file_pages_exceed_max` - 422: too many pages.
-
-                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
-
-                * `foreign_return_address` - 422: the `from` address must be a US address.
-
-                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
-
-                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
-
-                * `invalid_bank_account_verification` - 422: verification amounts do not match.
-
-                * `invalid_check_international` - 422: checks cannot be sent internationally.
-
-                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
-
-                * `invalid_file` - 422: the file is invalid.
-
-                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
-
-                * `invalid_file_download_time` - 422: file download from remote server took too long.
-
-                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
-
-                * `invalid_image_dpi` - 422: DPI must be at least 300.
-
-                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
-
-                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
-
-                * `invalid_template_html` - 422: the provided HTML is invalid.
-
-                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
-
-                * `merge_variable_required` - 422: a required merge variable is missing.
-
-                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
-
-                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
-
-                * `pdf_encrypted` - 422: an encrypted PDF was provided.
-
-                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
-
-                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
-
-
-                **AUTHENTICATION**
-
-                * `email_required` - 401: account must have a verified email address before creating live resources.
-
-                * `invalid_api_key` - 401/403: the API key is invalid.
-
-                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
-
-                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
-
-                * `unauthorized` - 401: the request isn''t authorized.
-
-                * `unauthorized_token` - 401: token isn''t authorized.
-
-                '
-    address_fields_intl:
-      type: object
-      required:
-      - address_line1
-      - address_country
-      properties:
-        address_line1:
-          type: string
-          description: The primary number, street name, and directional information.
-          maxLength: 200
-        address_line2:
-          type: string
-          description: An optional field containing any information which can't fit into line 1.
-          maxLength: 200
-          nullable: true
-        address_city:
-          type: string
-          maxLength: 200
-          nullable: true
-        address_state:
-          type: string
-          maxLength: 200
-          nullable: true
-        address_zip:
-          type: string
-          description: Optional postal code.
-          maxLength: 40
-          nullable: true
-    billing_group_id:
-      type: string
-      description: An optional string with the billing group ID to tag your usage with. Is used for billing purposes. Requires special activation to use. See <a href="#tag/Billing-Groups">Billing Group API</a> for more information.
   responses:
-    post_self_mailer:
-      description: Returns a self_mailer object
-      headers:
-        ratelimit-limit:
-          $ref: '#/components/headers/ratelimit-limit'
-        ratelimit-remaining:
-          $ref: '#/components/headers/ratelimit-remaining'
-        ratelimit-reset:
-          $ref: '#/components/headers/ratelimit-reset'
+    self_mailer_deleted:
+      description: Deleted
       content:
-        $ref: '#/components/mediaTypes/self_mailer'
+        application/json:
+          schema:
+            $ref: '#/components/schemas/self_mailer_deletion'
+          example:
+            id: sfm_123456789
+            deleted: true
+    mailpiece_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: to address not found
+              status_code: 404
     all_self_mailers:
       description: A dictionary with a data property that contains an array of up to `limit` self_mailers. Each entry in the array is a separate self_mailer. The previous and next page of self_mailers can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more self_mailers are available beyond the current set of returned results, the `next_url` field will be empty.
       content:
@@ -2295,26 +2189,196 @@ components:
             next_url: null
             previous_url: null
             count: 2
-    mailpiece_error:
-      description: Error
+    post_self_mailer:
+      description: Returns a self_mailer object
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
       content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: not_found
-              message: to address not found
-              status_code: 404
-    self_mailer_deleted:
-      description: Deleted
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/self_mailer_deletion'
-          example:
-            id: sfm_123456789
-            deleted: true
+        $ref: '#/components/mediaTypes/self_mailer'
+  parameters:
+    idem-header:
+      in: header
+      name: Idempotency-Key
+      required: false
+      description: 'A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12" target="_blank">implementation guide</a>.
+
+        '
+      schema:
+        type: string
+        maxLength: 256
+        example: 026e7634-24d7-486c-a0bb-4a17fd0eebc5
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+    metadata:
+      in: query
+      name: metadata
+      description: Filter by metadata key-value pair`.
+      schema:
+        $ref: '#/components/schemas/metadata'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
+    sort_by:
+      in: query
+      name: sort_by
+      description: 'Sorts items by ascending or descending dates. Use either `date_created` or `send_date`, not both.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            date_created:
+              type: string
+              enum:
+              - asc
+              - desc
+            send_date:
+              type: string
+              enum:
+              - asc
+              - desc
+        - oneOf:
+          - required:
+            - date_created
+          - required:
+            - send_date
+    mail_type:
+      in: query
+      name: mail_type
+      description: 'A string designating the mail postage type: * `usps_first_class` - (default) * `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6` postcards or for any postcards sent outside of the United States.
+
+        '
+      schema:
+        $ref: '#/components/schemas/mail_type'
+    scheduled:
+      in: query
+      name: scheduled
+      description: '* `true` - only return orders (past or future) where `send_date` is
+
+        greater than `date_created`
+
+        * `false` - only return orders where `send_date` is equal to `date_created`
+
+        '
+      schema:
+        type: boolean
+    idem-query:
+      in: query
+      name: idempotency_key
+      required: false
+      description: 'A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href="https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12" target="_blank">implementation guide</a>.
+
+        '
+      schema:
+        type: string
+        maxLength: 256
+        example: 026e7634-24d7-486c-a0bb-4a17fd0eebc5
+    send_date:
+      in: query
+      name: send_date
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.
+
+        '
+      schema:
+        $ref: '#/components/schemas/send_date'
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    campaign_id:
+      in: query
+      name: campaign_id
+      required: false
+      description: Filters resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.
+      schema:
+        $ref: '#/components/schemas/campaign_id'
+    status:
+      in: query
+      name: status
+      description: 'A string describing the render status:
+
+        * `processed` - the rendering process is currently underway.
+
+        * `rendered` - the rendering process has completed successfully.
+
+        * `failed` - the rendering process has failed.
+
+        '
+      schema:
+        $ref: '#/components/schemas/status'
+  headers:
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
   mediaTypes:
     self_mailer:
       application/json:
@@ -2386,49 +2450,10 @@ components:
           fsc: false
           sla: '2'
           object: self_mailer
-  headers:
-    ratelimit-limit:
-      description: The rate limit for a given endpoint.
-      schema:
-        type: integer
-        example: 150
-    ratelimit-reset:
-      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
-
-        '
-      schema:
-        type: integer
-        example: 1528749846
-    ratelimit-remaining:
-      description: The number of requests remaining in the current window.
-      schema:
-        type: integer
-        example: 100
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

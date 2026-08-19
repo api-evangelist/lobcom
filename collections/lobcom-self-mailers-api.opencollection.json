@@ -1,0 +1,177 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Self Mailers API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Self Mailers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/self_mailers/:sfm_id",
+            "params": [
+              {
+                "name": "sfm_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the self_mailer"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing self_mailer. You need only supply the unique self_mailer identifier that was returned upon self_mailer creation."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/self_mailers/:sfm_id",
+            "params": [
+              {
+                "name": "sfm_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the self_mailer"
+              }
+            ]
+          },
+          "docs": "Completely removes a self mailer from production. This can only be done if the self mailer's `send_date` has not yet passed. If the self mailer is successfully canceled, you will not be charged for it. This feature is exclusive to certain customers. Upgrade to the appropriate <a href=\"https://dashboard.lob.com/#/settings/editions\" target=\"_blank\">Print & Mail Edition</a> to gain access."
+        },
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/self_mailers",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              },
+              {
+                "name": "date_created",
+                "value": "",
+                "type": "query",
+                "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+              },
+              {
+                "name": "metadata",
+                "value": "",
+                "type": "query",
+                "description": "Filter by metadata key-value pair`."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The self mailer sizes to be returned."
+              },
+              {
+                "name": "scheduled",
+                "value": "",
+                "type": "query",
+                "description": "* `true` - only return orders (past or future) where `send_date` is\ngreater than `date_created`\n* `false` - only return orders where `send_date` is equal to `date_created`\n"
+              },
+              {
+                "name": "send_date",
+                "value": "",
+                "type": "query",
+                "description": "Filter by ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.\n"
+              },
+              {
+                "name": "mail_type",
+                "value": "",
+                "type": "query",
+                "description": "A string designating the mail postage type: * `usps_first_class` - (default) * `usps_standard` - a <a href=\"https://lob.com/pricing/print-mail#compare\" target=\"_blank\">cheaper option</a> which is less predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6` postcards or for any postcards sent outside of the United States.\n"
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sorts items by ascending or descending dates. Use either `date_created` or `send_date`, not both.\n"
+              },
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "query",
+                "description": "Filters resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "A string describing the render status:\n* `processed` - the rendering process is currently underway.\n* `rendered` - the rendering process has completed successfully.\n* `failed` - the rendering process has failed.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of your self_mailers. The self_mailers are returned sorted by creation date, with the most recently created self_mailers appearing first."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/self_mailers",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "idempotency_key",
+                "value": "",
+                "type": "query",
+                "description": "A string of no longer than 256 characters that uniquely identifies this resource. For more help integrating idempotency keys, refer to our <a href=\"https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings#idempotent-requests-12\" target=\"_blank\">implementation guide</a>.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new self_mailer given information"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

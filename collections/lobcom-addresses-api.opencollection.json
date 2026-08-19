@@ -1,0 +1,121 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Addresses API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Addresses",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/addresses",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              },
+              {
+                "name": "date_created",
+                "value": "",
+                "type": "query",
+                "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+              },
+              {
+                "name": "metadata",
+                "value": "",
+                "type": "query",
+                "description": "Filter by metadata key-value pair`."
+              }
+            ]
+          },
+          "docs": "Returns a list of your addresses. The addresses are returned sorted by creation date, with the most recently created addresses appearing first."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/addresses",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new address given information"
+        },
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/addresses/:adr_id",
+            "params": [
+              {
+                "name": "adr_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the address"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing address. You need only supply the unique identifier that was returned upon address creation."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/addresses/:adr_id",
+            "params": [
+              {
+                "name": "adr_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the address"
+              }
+            ]
+          },
+          "docs": "Deletes the details of an existing address. You need only supply the unique identifier that was returned upon address creation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

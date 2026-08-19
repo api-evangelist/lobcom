@@ -1,0 +1,132 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Buckslips API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Buckslips",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/buckslips",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "How many results to return."
+              },
+              {
+                "name": "before/after",
+                "value": "",
+                "type": "query",
+                "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of your buckslips. The buckslips are returned sorted by creation date, with the most recently created buckslips appearing first."
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.lob.com/v1/buckslips",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new buckslip given information"
+        },
+        {
+          "info": {
+            "name": "Retrieve",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.lob.com/v1/buckslips/:buckslip_id",
+            "params": [
+              {
+                "name": "buckslip_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the buckslip"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing buckslip. You need only supply the unique customer identifier that was returned upon buckslip creation."
+        },
+        {
+          "info": {
+            "name": "Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.lob.com/v1/buckslips/:buckslip_id",
+            "params": [
+              {
+                "name": "buckslip_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the buckslip"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the details of an existing buckslip. You need only supply the unique identifier that was returned upon buckslip creation."
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.lob.com/v1/buckslips/:buckslip_id",
+            "params": [
+              {
+                "name": "buckslip_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the buckslip"
+              }
+            ]
+          },
+          "docs": "Delete an existing buckslip. You need only supply the unique identifier that was returned upon buckslip creation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

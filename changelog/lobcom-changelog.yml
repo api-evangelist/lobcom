@@ -1,12 +1,103 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: searched
-source: https://docs.lob.com/#tag/Versioning-and-Changelog
-scheme: date-based versions pinned per account via the Lob-Version header
-current_version: '1.22.0'
+source: >-
+  https://github.com/lob/lob-openapi/releases (dated, tagged release notes for Lob's own API
+  specification) + https://docs.lob.com/#tag/Versioning-and-Changelog
 docs: https://docs.lob.com/#tag/Versioning-and-Changelog
+scheme: >
+  Two independent version streams. The API itself is Stripe-style date-versioned — the latest
+  API version is 2020-02-11, pinned per account in the dashboard and overridable per-request
+  with the Lob-Version header; everything up to and including 2019-02-11 is sunsetted. The
+  SPECIFICATION is semver'd separately and moves far more often, because it carries
+  backward-compatible additions that need no API version bump. The dated release stream below
+  is the specification stream — it is the only dated changelog Lob actually publishes.
+api_version: '2020-02-11'
+api_version_header: Lob-Version
+spec_version: 1.22.3
+current_version: 1.22.3
 note: >
-  Lob maintains a dated changelog in its API reference. Versions are date-stamped and
-  pinned per account; breaking changes ship under a new dated version while older pinned
-  versions keep working. The spec bundle reports API version 1.22.0. A full dated entry
-  list was not machine-harvested in this pass — the live changelog is the source of truth.
-entries: []
+  Lob's own docs still say "We are in the process of renovating our changelog, and will link it
+  here shortly" under the Versioning and Changelog tag — there is no dated changelog on
+  docs.lob.com or lob.com. The tagged releases on the public lob-openapi repository are Lob's
+  de-facto published change record and are captured here. NOTE that the spec bundle vendored in
+  this repo (openapi/_original/) reports 1.22.0; upstream has since shipped 1.22.1–1.22.3,
+  which are tooling/documentation changes with no path or schema additions.
+release_cadence: 12 tagged specification releases between 2024-11 and 2026-07
+entries:
+  - version: v1.22.3
+    date: '2026-07-21'
+    breaking: false
+    type: documentation
+    highlights:
+      - Document service_request_number placement on mailpieces.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.22.3
+  - version: v1.22.2
+    date: '2026-06-24'
+    breaking: false
+    type: tooling
+    highlights:
+      - Migrate documentation build from redoc-cli to @redocly/cli.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.22.2
+  - version: v1.22.1
+    date: '2026-05-29'
+    breaking: false
+    type: tooling
+    highlights:
+      - Repository and CI runtime updated to Node 24.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.22.1
+  - version: v1.22.0
+    date: '2026-05-29'
+    breaking: false
+    type: additions
+    highlights:
+      - Bank account spec updated with a microdeposit_type response field.
+      - descriptor_code added as a verify input on bank account verification.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.22.0
+  - version: v1.21.0
+    date: '2026-03-16'
+    breaking: false
+    type: additions
+    highlights:
+      - Add Resource Proofs (new resource).
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.21.0
+  - version: v1.20.9
+    date: '2025-09-22'
+    breaking: false
+    type: additions
+    highlights:
+      - Add USPS Informed Delivery events.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.20.9
+  - version: v1.20.8
+    date: '2025-09-08'
+    breaking: false
+    type: removal
+    highlights:
+      - Remove `rapid` from print_speed while it remains in beta testing.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.20.8
+  - version: v1.20.7
+    date: '2025-08-01'
+    breaking: false
+    type: additions
+    highlights:
+      - Add print_speed to the documented request surface.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.20.7
+  - version: v1.20.6
+    date: '2025-03-24'
+    breaking: false
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.20.6
+  - version: v1.20.5
+    date: '2025-03-10'
+    breaking: false
+    highlights:
+      - Widely-available version change.
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.20.5
+  - version: v1.20.4
+    date: '2025-01-29'
+    breaking: false
+    url: https://github.com/lob/lob-openapi/releases/tag/v1.20.4
+  - version: 1.20.3
+    date: '2024-11-15'
+    breaking: false
+    highlights:
+      - Update deletion examples.
+    url: https://github.com/lob/lob-openapi/releases/tag/1.20.3

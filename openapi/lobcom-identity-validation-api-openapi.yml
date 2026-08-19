@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts Identity Validation API
+  title: Lob Identity Validation API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -77,234 +77,31 @@ paths:
         label: CURL
 components:
   schemas:
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
     identity_validation:
       oneOf:
       - $ref: '#/components/schemas/recipient_validation'
       - $ref: '#/components/schemas/company_validation'
-    urbanization:
-      type: string
-      description: 'Only present for addresses in Puerto Rico. An urbanization refers to an area, sector, or development within a city. See <a href="https://pe.usps.com/text/pub28/28api_008.htm#:~:text=I51.,-4%20Urbanizations&text=In%20Puerto%20Rico%2C%20identical%20street,placed%20before%20the%20urbanization%20name." target="_blank">USPS documentation</a> for clarification.
-
-        '
-      maxLength: 200
-    zip_code:
-      type: string
-      pattern: ^\d{5}((-)?\d{4})?$
-    primary_line_us:
-      type: string
-      description: 'The primary delivery line (usually the street address) of the address.
-
-        Combination of the following applicable `components`:
-
-        * `primary_number`
-
-        * `street_predirection`
-
-        * `street_name`
-
-        * `street_suffix`
-
-        * `street_postdirection`
-
-        * `secondary_designator`
-
-        * `secondary_number`
-
-        * `pmb_designator`
-
-        * `pmb_number`
-
-        '
-      maxLength: 200
-    recipient_validation:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/identity_validation_id'
-        recipient:
-          $ref: '#/components/schemas/identity_validation_recipient'
-        primary_line:
-          $ref: '#/components/schemas/primary_line_us'
-        secondary_line:
-          $ref: '#/components/schemas/secondary_line'
-        urbanization:
-          $ref: '#/components/schemas/urbanization'
-        last_line:
-          type: string
-          description: 'Combination of the following applicable `components`:
-
-            * City (`city`)
-
-            * State (`state`)
-
-            * ZIP code (`zip_code`)
-
-            * ZIP+4 (`zip_code_plus_4`)
-
-            '
-        score:
-          type: number
-          nullable: true
-          format: float
-          description: 'A numerical score between 0 and 100 that represents the likelihood the provided name is associated with a physical address.
-
-            '
-          default: null
-          minimum: 0
-          maximum: 100
-        confidence:
-          type: string
-          enum:
-          - high
-          - medium
-          - low
-          - ''
-          description: 'Indicates the likelihood the recipient name and address match based on our custom internal calculation. Possible values are:
-
-            - `high` — Has a Lob confidence score greater than 70.
-
-            - `medium` — Has a Lob confidence score between 40 and 70.
-
-            - `low` — Has a Lob confidence score less than 40.
-
-            - `""` — No tracking data exists for this address.
-
-            '
-        object:
-          type: string
-          description: Value is resource type.
-          enum:
-          - id_validation
-          default: id_validation
-    company_validation:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/identity_validation_id'
-        company:
-          $ref: '#/components/schemas/identity_validation_company'
-        primary_line:
-          $ref: '#/components/schemas/primary_line_us'
-        secondary_line:
-          $ref: '#/components/schemas/secondary_line'
-        urbanization:
-          $ref: '#/components/schemas/urbanization'
-        last_line:
-          type: string
-          description: 'Combination of the following applicable `components`:
-
-            * City (`city`)
-
-            * State (`state`)
-
-            * ZIP code (`zip_code`)
-
-            * ZIP+4 (`zip_code_plus_4`)
-
-            '
-        score:
-          type: number
-          nullable: true
-          format: float
-          description: 'A numerical score between 0 and 100 that represents the likelihood the provided name is associated with a physical address.
-
-            '
-          default: null
-          minimum: 0
-          maximum: 100
-        confidence:
-          type: string
-          enum:
-          - high
-          - medium
-          - low
-          - ''
-          description: 'Indicates the likelihood the recipient name and address match based on our custom internal calculation. Possible values are:
-
-            - `high` — Has a Lob confidence score greater than 70.
-
-            - `medium` — Has a Lob confidence score between 40 and 70.
-
-            - `low` — Has a Lob confidence score less than 40.
-
-            - `""` — No tracking data exists for this address.
-
-            '
-        object:
-          type: string
-          description: Value is resource type.
-          enum:
-          - id_validation
-          default: id_validation
-    city_no_description:
-      type: string
-      maxLength: 200
-    identity_validation_recipient:
-      type: string
-      description: The name of the person whose identity is being validated.
-      nullable: true
-      maxLength: 500
-    recipient:
-      type: string
-      description: The intended recipient, typically a person's or firm's name.
-      nullable: true
-      maxLength: 500
-    identity_validation_writable:
-      oneOf:
-      - $ref: '#/components/schemas/recipient_input'
-      - $ref: '#/components/schemas/company_input'
-    secondary_line:
-      type: string
-      description: 'The secondary delivery line of the address. This field is typically empty but may contain information if `primary_line` is too long.
-
-        '
-      maxLength: 200
-    identity_validation_company:
-      type: string
-      description: The name of the company or firm.
-      nullable: true
-      maxLength: 500
-    company_input:
-      allOf:
-      - anyOf:
-        - title: Address object with `city` and `state`
-          required:
-          - city
-          - state
-        - title: Address object with `zip_code`
-          required:
-          - zip_code
-      - type: object
-        required:
-        - company
-        - primary_line
-        properties:
-          company:
-            $ref: '#/components/schemas/identity_validation_company'
-          primary_line:
-            $ref: '#/components/schemas/primary_line_us'
-          secondary_line:
-            $ref: '#/components/schemas/secondary_line'
-          urbanization:
-            $ref: '#/components/schemas/urbanization'
-          city:
-            allOf:
-            - $ref: '#/components/schemas/city_no_description'
-            - type: string
-              description: The name of the city. `city` and `state` are required if no `zip_code` is passed.
-          state:
-            type: string
-            description: The <a href="https://en.wikipedia.org/wiki/ISO_3166-2:US" target="_blank">ISO 3166-2</a> two letter code or subdivision name for the state. `city` and `state` are required if no `zip_code` is passed.
-            maxLength: 50
-          zip_code:
-            allOf:
-            - type: string
-              description: Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).
-            - $ref: '#/components/schemas/zip_code'
     identity_validation_id:
       type: string
       description: Unique identifier prefixed with `id_validation_`.
       pattern: ^id_validation_[a-zA-Z0-9_]+$
+    identity_validation_recipient:
+      type:
+      - string
+      - 'null'
+      description: The name of the person whose identity is being validated.
+      maxLength: 500
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -483,17 +280,186 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    failure_status_code:
-      type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    company_validation:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/identity_validation_id'
+        company:
+          $ref: '#/components/schemas/identity_validation_company'
+        primary_line:
+          $ref: '#/components/schemas/primary_line_us'
+        secondary_line:
+          $ref: '#/components/schemas/secondary_line'
+        urbanization:
+          $ref: '#/components/schemas/urbanization'
+        last_line:
+          type: string
+          description: 'Combination of the following applicable `components`:
+
+            * City (`city`)
+
+            * State (`state`)
+
+            * ZIP code (`zip_code`)
+
+            * ZIP+4 (`zip_code_plus_4`)
+
+            '
+        score:
+          type:
+          - number
+          - 'null'
+          format: float
+          description: 'A numerical score between 0 and 100 that represents the likelihood the provided name is associated with a physical address.
+
+            '
+          default: null
+          minimum: 0
+          maximum: 100
+        confidence:
+          type: string
+          enum:
+          - high
+          - medium
+          - low
+          - ''
+          description: 'Indicates the likelihood the recipient name and address match based on our custom internal calculation. Possible values are:
+
+            - `high` — Has a Lob confidence score greater than 70.
+
+            - `medium` — Has a Lob confidence score between 40 and 70.
+
+            - `low` — Has a Lob confidence score less than 40.
+
+            - `""` — No tracking data exists for this address.
+
+            '
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - id_validation
+          default: id_validation
+    secondary_line:
+      type: string
+      description: 'The secondary delivery line of the address. This field is typically empty but may contain information if `primary_line` is too long.
+
+        '
+      maxLength: 200
+    recipient_validation:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/identity_validation_id'
+        recipient:
+          $ref: '#/components/schemas/identity_validation_recipient'
+        primary_line:
+          $ref: '#/components/schemas/primary_line_us'
+        secondary_line:
+          $ref: '#/components/schemas/secondary_line'
+        urbanization:
+          $ref: '#/components/schemas/urbanization'
+        last_line:
+          type: string
+          description: 'Combination of the following applicable `components`:
+
+            * City (`city`)
+
+            * State (`state`)
+
+            * ZIP code (`zip_code`)
+
+            * ZIP+4 (`zip_code_plus_4`)
+
+            '
+        score:
+          type:
+          - number
+          - 'null'
+          format: float
+          description: 'A numerical score between 0 and 100 that represents the likelihood the provided name is associated with a physical address.
+
+            '
+          default: null
+          minimum: 0
+          maximum: 100
+        confidence:
+          type: string
+          enum:
+          - high
+          - medium
+          - low
+          - ''
+          description: 'Indicates the likelihood the recipient name and address match based on our custom internal calculation. Possible values are:
+
+            - `high` — Has a Lob confidence score greater than 70.
+
+            - `medium` — Has a Lob confidence score between 40 and 70.
+
+            - `low` — Has a Lob confidence score less than 40.
+
+            - `""` — No tracking data exists for this address.
+
+            '
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - id_validation
+          default: id_validation
+    recipient:
+      type:
+      - string
+      - 'null'
+      description: The intended recipient, typically a person's or firm's name.
+      maxLength: 500
+    company_input:
+      allOf:
+      - anyOf:
+        - title: Address object with `city` and `state`
+          required:
+          - city
+          - state
+        - title: Address object with `zip_code`
+          required:
+          - zip_code
+      - type: object
+        required:
+        - company
+        - primary_line
+        properties:
+          company:
+            $ref: '#/components/schemas/identity_validation_company'
+          primary_line:
+            $ref: '#/components/schemas/primary_line_us'
+          secondary_line:
+            $ref: '#/components/schemas/secondary_line'
+          urbanization:
+            $ref: '#/components/schemas/urbanization'
+          city:
+            allOf:
+            - $ref: '#/components/schemas/city_no_description'
+            - type: string
+              description: The name of the city. `city` and `state` are required if no `zip_code` is passed.
+          state:
+            type: string
+            description: The <a href="https://en.wikipedia.org/wiki/ISO_3166-2:US" target="_blank">ISO 3166-2</a> two letter code or subdivision name for the state. `city` and `state` are required if no `zip_code` is passed.
+            maxLength: 50
+          zip_code:
+            allOf:
+            - type: string
+              description: Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).
+            - $ref: '#/components/schemas/zip_code'
+    urbanization:
+      type: string
+      description: 'Only present for addresses in Puerto Rico. An urbanization refers to an area, sector, or development within a city. See <a href="https://pe.usps.com/text/pub28/28api_008.htm#:~:text=I51.,-4%20Urbanizations&text=In%20Puerto%20Rico%2C%20identical%20street,placed%20before%20the%20urbanization%20name." target="_blank">USPS documentation</a> for clarification.
+
+        '
+      maxLength: 200
+    city_no_description:
+      type: string
+      maxLength: 200
     recipient_input:
       allOf:
       - anyOf:
@@ -530,36 +496,46 @@ components:
             allOf:
             - description: Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).
             - $ref: '#/components/schemas/zip_code'
-  headers:
-    ratelimit-limit:
-      description: The rate limit for a given endpoint.
-      schema:
-        type: integer
-        example: 150
-    ratelimit-reset:
-      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+    primary_line_us:
+      type: string
+      description: 'The primary delivery line (usually the street address) of the address.
+
+        Combination of the following applicable `components`:
+
+        * `primary_number`
+
+        * `street_predirection`
+
+        * `street_name`
+
+        * `street_suffix`
+
+        * `street_postdirection`
+
+        * `secondary_designator`
+
+        * `secondary_number`
+
+        * `pmb_designator`
+
+        * `pmb_number`
 
         '
-      schema:
-        type: integer
-        example: 1528749846
-    ratelimit-remaining:
-      description: The number of requests remaining in the current window.
-      schema:
-        type: integer
-        example: 100
+      maxLength: 200
+    identity_validation_company:
+      type:
+      - string
+      - 'null'
+      description: The name of the company or firm.
+      maxLength: 500
+    identity_validation_writable:
+      oneOf:
+      - $ref: '#/components/schemas/recipient_input'
+      - $ref: '#/components/schemas/company_input'
+    zip_code:
+      type: string
+      pattern: ^\d{5}((-)?\d{4})?$
   responses:
-    identity_validation_error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: invalid
-              message: recipient is required
-              status_code: 422
     identity_validation:
       description: Returns the likelihood a given name is associated with an address.
       headers:
@@ -583,31 +559,39 @@ components:
             score: 100
             confidence: high
             object: id_validation
+    identity_validation_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: recipient is required
+              status_code: 422
+  headers:
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
+      schema:
+        type: integer
+        example: 100
+    ratelimit-reset:
+      description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
+
+        '
+      schema:
+        type: integer
+        example: 1528749846
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
+      schema:
+        type: integer
+        example: 150
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:

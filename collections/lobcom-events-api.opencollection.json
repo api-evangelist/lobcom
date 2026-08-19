@@ -1,0 +1,16 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lob Events API",
+    "version": "1.22.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [],
+  "bundled": true
+}

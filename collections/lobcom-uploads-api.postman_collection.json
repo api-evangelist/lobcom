@@ -1,0 +1,1489 @@
+{
+  "item": [
+    {
+      "id": "4a28b50f-ce44-4bcc-a115-3c9678284f71",
+      "name": "Uploads",
+      "description": {
+        "content": "The uploads endpoint allows you to upload audience files that are then associated with a given campaign.\nAt this time, only CSV files are allowed. The API provides endpoints for creating uploads, uploading audience files,\nand marking uploaded files as ready for processing. The API also provides endpoints for downloading files that\ndescribe the results, both successful and not, of the processing.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7410a5e8-7983-47b9-aae2-51522a7d5012",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your uploads. Optionally, filter uploads by campaign.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "campaignId",
+                  "value": "<string>",
+                  "description": "id of the campaign"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "19d4d643-b40d-40fe-ac85-6f16b36f4a36",
+              "name": "An array of matching uploads. Each entry in the array is a separate upload.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "campaignId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"upl_71be866e430b11e9\",\n    \"accountId\": \"fa9ea650fc7b31a89f92\",\n    \"campaignId\": \"cmp_1933ad629bae1408\",\n    \"mode\": \"test\",\n    \"failuresUrl\": \"https://www.example.com\",\n    \"originalFilename\": \"my_audience.csv\",\n    \"state\": \"Draft\",\n    \"totalMailpieces\": 100,\n    \"failedMailpieces\": 5,\n    \"validatedMailpieces\": 95,\n    \"bytesProcessed\": 17268,\n    \"dateCreated\": \"2017-09-05T17:47:53.767Z\",\n    \"dateModified\": \"2017-09-05T17:47:53.767Z\",\n    \"requiredAddressColumnMapping\": {\n      \"name\": \"recipient_name\",\n      \"address_line1\": \"primary_line\",\n      \"address_city\": \"city\",\n      \"address_state\": \"state\",\n      \"address_zip\": \"zip_code\"\n    },\n    \"optionalAddressColumnMapping\": {\n      \"address_line2\": \"secondary_line\",\n      \"company\": \"company\",\n      \"address_country\": \"country\"\n    },\n    \"mergeVariableColumnMapping\": {\n      \"gift_code\": \"code\"\n    },\n    \"metadata\": {\n      \"columns\": [\n        \"recipient_name\",\n        \"zip_code\"\n      ]\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4b8086b0-afb7-4c65-874e-1dbea23d21ca",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new upload with the provided properties.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campaignId\": \"<string>\",\n  \"requiredAddressColumnMapping\": {\n    \"name\": null,\n    \"address_line1\": null,\n    \"address_city\": null,\n    \"address_state\": null,\n    \"address_zip\": null\n  },\n  \"optionalAddressColumnMapping\": {\n    \"address_line2\": null,\n    \"company\": null,\n    \"address_country\": null\n  },\n  \"metadata\": {\n    \"columns\": []\n  },\n  \"mergeVariableColumnMapping\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cdb214c6-b756-4bd6-b83c-162f6f379953",
+              "name": "Upload created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"campaignId\": \"cmp_1933ad629bae1408\",\n  \"requiredAddressColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"address_line1\": \"primary_line\",\n    \"address_city\": \"city\",\n    \"address_state\": \"state\",\n    \"address_zip\": \"zip_code\"\n  },\n  \"optionalAddressColumnMapping\": {\n    \"address_line2\": \"secondary_line\",\n    \"company\": \"company\",\n    \"address_country\": \"country,\"\n  },\n  \"metadata\": {\n    \"columns\": []\n  },\n  \"mergeVariableColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"gift_code\": \"code\",\n    \"qr_code_redirect_url\": \"redirect_url\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "684fba0a-1eba-46f5-97b8-501510dfb00f",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"campaignId\": \"cmp_1933ad629bae1408\",\n  \"requiredAddressColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"address_line1\": \"primary_line\",\n    \"address_city\": \"city\",\n    \"address_state\": \"state\",\n    \"address_zip\": \"zip_code\"\n  },\n  \"optionalAddressColumnMapping\": {\n    \"address_line2\": \"secondary_line\",\n    \"company\": \"company\",\n    \"address_country\": \"country,\"\n  },\n  \"metadata\": {\n    \"columns\": []\n  },\n  \"mergeVariableColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"gift_code\": \"code\",\n    \"qr_code_redirect_url\": \"redirect_url\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5a4c28bc-107a-4a85-80a0-ce8f0000830e",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing upload. You need only supply the unique upload identifier that was returned upon upload creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads",
+                ":upl_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "upl_id",
+                  "description": "(Required) id of the upload"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "62ad5802-d31a-4216-9bb5-cda1789f508f",
+              "name": "Returns an upload object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) id of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a58e3129-5af0-40cb-bada-6b4cf0c16796",
+              "name": "Not Found Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) id of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"upload not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "397452b7-4ffc-4cdf-9b10-06ca9b671559",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) id of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4ae33b8a-05ac-4399-ad1f-482c8d049733",
+          "name": "Update",
+          "request": {
+            "name": "Update",
+            "description": {
+              "content": "Update the details of an existing upload. You need only supply the unique identifier that was returned upon upload creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads",
+                ":upl_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "upl_id",
+                  "description": "(Required) id of the upload"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "$ref"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"originalFilename\": \"<string>\",\n  \"requiredAddressColumnMapping\": {\n    \"name\": null,\n    \"address_line1\": null,\n    \"address_city\": null,\n    \"address_state\": null,\n    \"address_zip\": null\n  },\n  \"optionalAddressColumnMapping\": {\n    \"address_line2\": null,\n    \"company\": null,\n    \"address_country\": null\n  },\n  \"metadata\": {\n    \"columns\": []\n  },\n  \"mergeVariableColumnMapping\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8b117596-28ce-4249-92a5-a997dea494f5",
+              "name": "Returns an upload object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) id of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "$ref"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"originalFilename\": \"<string>\",\n  \"requiredAddressColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"address_line1\": \"primary_line\",\n    \"address_city\": \"city\",\n    \"address_state\": \"state\",\n    \"address_zip\": \"zip_code\"\n  },\n  \"optionalAddressColumnMapping\": {\n    \"address_line2\": \"secondary_line\",\n    \"company\": \"company\",\n    \"address_country\": \"country,\"\n  },\n  \"metadata\": {\n    \"columns\": []\n  },\n  \"mergeVariableColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"gift_code\": \"code\",\n    \"qr_code_redirect_url\": \"redirect_url\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "$ref"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3a891847-0be0-4abe-a82d-7c19f71bfbc1",
+              "name": "Not Found Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) id of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"originalFilename\": \"<string>\",\n  \"requiredAddressColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"address_line1\": \"primary_line\",\n    \"address_city\": \"city\",\n    \"address_state\": \"state\",\n    \"address_zip\": \"zip_code\"\n  },\n  \"optionalAddressColumnMapping\": {\n    \"address_line2\": \"secondary_line\",\n    \"company\": \"company\",\n    \"address_country\": \"country,\"\n  },\n  \"metadata\": {\n    \"columns\": []\n  },\n  \"mergeVariableColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"gift_code\": \"code\",\n    \"qr_code_redirect_url\": \"redirect_url\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"upload not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "94b88521-b2ab-4eac-8f87-7baffc666242",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) id of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"originalFilename\": \"<string>\",\n  \"requiredAddressColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"address_line1\": \"primary_line\",\n    \"address_city\": \"city\",\n    \"address_state\": \"state\",\n    \"address_zip\": \"zip_code\"\n  },\n  \"optionalAddressColumnMapping\": {\n    \"address_line2\": \"secondary_line\",\n    \"company\": \"company\",\n    \"address_country\": \"country,\"\n  },\n  \"metadata\": {\n    \"columns\": []\n  },\n  \"mergeVariableColumnMapping\": {\n    \"name\": \"recipient_name\",\n    \"gift_code\": \"code\",\n    \"qr_code_redirect_url\": \"redirect_url\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6b6dbcd7-0d16-48bf-ab72-089cb4557232",
+          "name": "Delete",
+          "request": {
+            "name": "Delete",
+            "description": {
+              "content": "Delete an existing upload. You need only supply the unique identifier that was returned upon upload creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads",
+                ":upl_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "upl_id",
+                  "description": "(Required) id of the upload"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9a20a4e2-f321-42d0-b45d-63a2a3feaf24",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) id of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "97fadb12-3989-4d26-a768-985b8dfffb96",
+          "name": "Upload file",
+          "request": {
+            "name": "Upload file",
+            "description": {
+              "content": "Upload an [audience file](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/campaign-audience-guide) and associate it with an upload.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads",
+                ":upl_id",
+                "file"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "upl_id",
+                  "description": "(Required) ID of the upload"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": ""
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f31c7113-dfe7-4fcb-81eb-e4c4e890d094",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id",
+                    "file"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) ID of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"File uploaded successfully\",\n  \"filename\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0b51507f-5e15-49e9-84ae-75234492a7f0",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id",
+                    "file"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) ID of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3bbd32a3-64bd-4a96-a42c-bb42dfd67f0a",
+          "name": "Create Export",
+          "request": {
+            "name": "Create Export",
+            "description": {
+              "content": "Campaign Exports can help you understand exactly which records in a campaign could not be created. By initiating and retrieving an export, you will get row-by-row errors for your campaign. For a step-by-step walkthrough of creating a campaign and exporting failures, see our [Campaigns Guide](https://help.lob.com/print-and-mail/building-a-mail-strategy/campaign-or-triggered-sends/launch-your-first-campaign).\n\nCreate an export file associated with an upload.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads",
+                ":upl_id",
+                "exports"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "upl_id",
+                  "description": "(Required) ID of the upload"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c2870193-a069-480c-84ca-864b0683ac76",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id",
+                    "exports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) ID of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Export is processing\",\n  \"exportId\": \"ex_2dafd758ed3da9c43\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d2cdf1f2-344f-4a37-8804-d52f574d3066",
+              "name": "Create Export Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id",
+                    "exports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) ID of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 400,\n  \"message\": \"Invalid body, check 'errors' property for more info.\",\n  \"errors\": [\n    \"type must be a string\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "85d9c2eb-2adb-4ff8-8fa6-8b36a92fd07c",
+          "name": "Retrieve Line Item Report",
+          "request": {
+            "name": "Retrieve Line Item Report",
+            "description": {
+              "content": "Retrieves the line item data for each row from the csv file associated with the upload id record. NOTE: This endpoint is currently feature flagged. Please reach out to Lob's support team if you  would like access to this API endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads",
+                ":upl_id",
+                "report"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "The status of line items to filter and retrieve. By default all line items are returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "An integer that designates the offset at which to begin returning results. Defaults to 0."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "upl_id",
+                  "description": "(Required) ID of the upload"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "11356175-2ced-4ed3-b13b-ca574b216496",
+              "name": "Returns an report object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id",
+                    "report"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) ID of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ex_6a94fe68fd151e0f8\",\n  \"dateCreated\": \"2021-07-06T22:51:42.838Z\",\n  \"dateModified\": \"2022-07-06T22:51:42.838Z\",\n  \"deleted\": false,\n  \"s3Url\": null,\n  \"state\": \"in_progress\",\n  \"type\": \"failures\",\n  \"uploadId\": \"upl_71be866e430b11e9\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f9989816-bb70-4798-8f24-e15ae119cdd6",
+              "name": "Not Found Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id",
+                    "report"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) ID of the upload"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"upload not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "894e4d47-c293-4fe5-bca2-3413abbc4c69",
+          "name": "Retrieve Export",
+          "request": {
+            "name": "Retrieve Export",
+            "description": {
+              "content": "Retrieves the details of an existing export. You need only supply the unique export identifier that was returned upon export creation. If you try retrieving an export immediately after creating one (i.e., before we're done processing the export), you will get back an export object with `state = in_progress`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "uploads",
+                ":upl_id",
+                "exports",
+                ":ex_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "upl_id",
+                  "description": "(Required) ID of the upload"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "ex_id",
+                  "description": "(Required) ID of the export"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "96be45eb-26f5-4164-9f9d-1eaba0d88cfe",
+              "name": "Returns an export object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "uploads",
+                    ":upl_id",
+                    "exports",
+                    ":ex_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "upl_id",
+                      "description": "(Required) ID of the upload"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "ex_id",
+                      "description": "(Required) ID of the export"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ex_6a94fe68fd151e0f8\",\n  \"dateCreated\": \"2021-07-06T22:51:42.838Z\",\n  \"dateModified\": \"2022-07-06T22:51:42.838Z\",\n  \"deleted\": false,\n  \"s3Url\": null,\n  \"state\": \"in_progress\",\n  \"type\": \"failures\",\n  \"uploadId\": \"upl_71be866e430b11e9\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4982337c-bdf0-4c58-9185-5edc1bfc54cc",
+    "name": "Lob Uploads API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

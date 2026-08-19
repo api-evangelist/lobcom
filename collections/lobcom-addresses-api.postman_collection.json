@@ -1,0 +1,896 @@
+{
+  "item": [
+    {
+      "id": "66d6d617-eefc-4186-9604-3d40a2a93281",
+      "name": "Addresses",
+      "description": {
+        "content": "To add an address to your address book, you create a new address object. You can retrieve and delete individual\naddresses as well as get a list of addresses. Addresses are identified by a unique random ID.\n<div class=\"back-to-top\" ><a href=\"#\" onclick=\"toTopLink()\">back to top</a></div>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b64952e1-7659-4007-8b6f-c36770aa2be8",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Returns a list of your addresses. The addresses are returned sorted by creation date, with the most recently created addresses appearing first.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "addresses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "How many results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "`before` and `after` are both optional but only one of them can be in the query at a time.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "Request that the response include the total count by specifying `include=[\"total_count\"]`.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_0]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_1]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_2]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_3]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                },
+                {
+                  "disabled": false,
+                  "key": "date_created[key_4]",
+                  "value": "<string>",
+                  "description": "Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ \"gt\": \"2012-01-01\", \"lt\": \"2012-01-31T12:34:56Z\" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ddebfb27-b557-4067-a42e-9770abaede13",
+              "name": "A dictionary with a data property that contains an array of up to `limit` addresses. Each entry in the array is a separate address object. The previous and next page of address entries can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more addresses are available beyond the current set of returned results, the `next_url` field will be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_1]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_2]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_3]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_4]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"adr_e68217bd744d65c8\",\n      \"description\": \"Harry - Office\",\n      \"name\": \"HARRY ZHANG\",\n      \"company\": \"LOB\",\n      \"phone\": \"5555555555\",\n      \"email\": \"harry@lob.com\",\n      \"address_line1\": \"210 KING ST STE 6100\",\n      \"address_line2\": null,\n      \"address_city\": \"SAN FRANCISCO\",\n      \"address_state\": \"CA\",\n      \"address_zip\": \"94107-1741\",\n      \"address_country\": \"UNITED STATES\",\n      \"metadata\": {},\n      \"date_created\": \"2019-08-12T00:16:00.361Z\",\n      \"date_modified\": \"2019-08-12T00:16:00.361Z\",\n      \"object\": \"address\"\n    },\n    {\n      \"id\": \"adr_asdi2y3riuasasoi\",\n      \"description\": \"Harry - Office\",\n      \"name\": \"Harry Zhang\",\n      \"company\": \"Lob\",\n      \"phone\": \"5555555555\",\n      \"email\": \"harry@lob.com\",\n      \"metadata\": {},\n      \"address_line1\": \"370 WATER ST\",\n      \"address_line2\": \"\",\n      \"address_city\": \"SUMMERSIDE\",\n      \"address_state\": \"PRINCE EDWARD ISLAND\",\n      \"address_zip\": \"C1N 1C4\",\n      \"address_country\": \"CANADA\",\n      \"date_created\": \"2019-09-20T00:14:00.361Z\",\n      \"date_modified\": \"2019-09-20T00:14:00.361Z\",\n      \"object\": \"address\"\n    }\n  ],\n  \"object\": \"list\",\n  \"next_url\": \"https://api.lob.com/v1/addresses?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wOC0wN1QyMTo1OTo0Ni43NjRaIiwiaWRPZmZzZXQiOiJhZHJfODMwYmYwZWFiZGFhYTQwOSJ9\",\n  \"previous_url\": null,\n  \"count\": 2\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7093f34d-b4bc-4439-9fd2-5ec109040439",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_0]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_1]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_2]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_3]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "date_created[key_4]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8e0b4d30-8ac0-4a9d-98d6-281a413593c8",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Creates a new address given information",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "addresses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "address_line1",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "address_city",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "address_state",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "address_zip",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "address_line2",
+                  "value": "<string,null>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e7de2644-6d9c-44c5-87d7-579846350292",
+              "name": "Echos the writable fields of a newly created address object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Harry - Office"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "name",
+                      "value": "Harry Zhang"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "company",
+                      "value": "Lob"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "email",
+                      "value": "harry@lob.com"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "phone",
+                      "value": "5555555555"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_line1",
+                      "value": "210 King St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_line2",
+                      "value": "# 6100"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_city",
+                      "value": "San Francisco"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_state",
+                      "value": "CA"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_zip",
+                      "value": "94107"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_country",
+                      "value": "US"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The rate limit for a given endpoint.",
+                  "key": "ratelimit-limit",
+                  "value": "150"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the current window.",
+                  "key": "ratelimit-remaining",
+                  "value": "100"
+                },
+                {
+                  "disabled": false,
+                  "description": "The time at which the rate limit window resets in  <a href=\"https://en.wikipedia.org/wiki/Unix_time\" target=\"_blank\">UTC epoch seconds</a>\n",
+                  "key": "ratelimit-reset",
+                  "value": "1528749846"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"adr_d3489cd64c791ab5\",\n  \"description\": \"Harry - Office\",\n  \"name\": \"HARRY ZHANG\",\n  \"company\": \"LOB\",\n  \"phone\": \"5555555555\",\n  \"email\": \"harry@lob.com\",\n  \"address_line1\": \"210 KING ST STE 6100\",\n  \"address_city\": \"SAN FRANCISCO\",\n  \"address_state\": \"CA\",\n  \"address_zip\": \"94107\",\n  \"address_country\": \"UNITED STATES\",\n  \"metadata\": {},\n  \"date_created\": \"2017-09-05T17:47:53.767Z\",\n  \"date_modified\": \"2017-09-05T17:47:53.767Z\",\n  \"object\": \"address\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b838f376-5d63-45bf-8b6d-90eb065d3791",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "description",
+                      "value": "Harry - Office"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "name",
+                      "value": "Harry Zhang"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "company",
+                      "value": "Lob"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "email",
+                      "value": "harry@lob.com"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "phone",
+                      "value": "5555555555"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_line1",
+                      "value": "210 King St"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_line2",
+                      "value": "# 6100"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_city",
+                      "value": "San Francisco"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_state",
+                      "value": "CA"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_zip",
+                      "value": "94107"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "address_country",
+                      "value": "US"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1e559088-4074-430a-8f83-049cb8261236",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieves the details of an existing address. You need only supply the unique identifier that was returned upon address creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "addresses",
+                ":adr_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "adr_id",
+                  "description": "(Required) id of the address"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0bbe80fc-6e27-49ac-8dc2-59d5db116fc5",
+              "name": "Returns an address object if a valid identifier was provided.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses",
+                    ":adr_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adr_id",
+                      "description": "(Required) id of the address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"date_created\": \"1953-08-14T06:24:04.465Z\",\n  \"date_modified\": \"1972-03-18T23:25:15.746Z\",\n  \"object\": \"string\",\n  \"deleted\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "86832fae-cf58-4816-ac63-6d850f8518b3",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses",
+                    ":adr_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adr_id",
+                      "description": "(Required) id of the address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4f638e7f-6081-4013-9a47-d535dd148b0f",
+          "name": "Delete",
+          "request": {
+            "name": "Delete",
+            "description": {
+              "content": "Deletes the details of an existing address. You need only supply the unique identifier that was returned upon address creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "addresses",
+                ":adr_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "adr_id",
+                  "description": "(Required) id of the address"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "17d18955-f0c6-49c2-b033-6b63254301d0",
+              "name": "Deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses",
+                    ":adr_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adr_id",
+                      "description": "(Required) id of the address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"adr_123456789\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c97b813-e4eb-4d22-a873-cbdbf46053a3",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "addresses",
+                    ":adr_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "adr_id",
+                      "description": "(Required) id of the address"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": \"address not found\",\n    \"status_code\": 404\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.lob.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "6657d78a-1245-4d06-b5ee-f7bec8b33768",
+    "name": "Lob Addresses API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>\n\n\nContact Support:\n Name: Lob Developer Experience\n Email: lob-openapi@lob.com",
+      "type": "text/plain"
+    }
+  }
+}

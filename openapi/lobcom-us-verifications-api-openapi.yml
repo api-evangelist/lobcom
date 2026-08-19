@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Lob Accounts US Verifications API
+  title: Lob US Verifications API
   version: 1.22.0
   description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
 
@@ -270,69 +270,61 @@ paths:
         label: CSHARP
 components:
   schemas:
-    urbanization:
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    multiple_components:
+      allOf:
+      - anyOf:
+        - title: US verification object with `city` and `state`
+          required:
+          - city
+          - state
+        - title: US verification object with `zip_code`
+          required:
+          - zip_code
+      - type: object
+        required:
+        - primary_line
+        properties:
+          recipient:
+            $ref: '#/components/schemas/recipient'
+          primary_line:
+            $ref: '#/components/schemas/primary_line_us'
+          secondary_line:
+            $ref: '#/components/schemas/secondary_line'
+          urbanization:
+            $ref: '#/components/schemas/urbanization'
+          city:
+            allOf:
+            - $ref: '#/components/schemas/city_no_description'
+            - type: string
+              description: The name of the city. `city` and `state` are required if no `zip_code` is passed.
+          state:
+            type: string
+            description: The <a href="https://en.wikipedia.org/wiki/ISO_3166-2:US" target="_blank">ISO 3166-2</a> two letter code or subdivision name for the state. `city` and `state` are required if no `zip_code` is passed.
+            maxLength: 50
+          zip_code:
+            allOf:
+            - description: Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).
+            - $ref: '#/components/schemas/zip_code'
+    primary_number:
       type: string
-      description: 'Only present for addresses in Puerto Rico. An urbanization refers to an area, sector, or development within a city. See <a href="https://pe.usps.com/text/pub28/28api_008.htm#:~:text=I51.,-4%20Urbanizations&text=In%20Puerto%20Rico%2C%20identical%20street,placed%20before%20the%20urbanization%20name." target="_blank">USPS documentation</a> for clarification.
+      description: The numeric or alphanumeric part of an address preceding the street name. Often the house, building, or PO Box number.
+    county_fips:
+      type: string
+      description: 'A 5-digit <a href="https://en.wikipedia.org/wiki/FIPS_county_code" target="_blank">FIPS county code</a> which uniquely identifies `components[county]`. It consists of a 2-digit state code and a 3-digit county code.
 
         '
-      maxLength: 200
-    zip_code:
-      type: string
-      pattern: ^\d{5}((-)?\d{4})?$
-    primary_line_us:
-      type: string
-      description: 'The primary delivery line (usually the street address) of the address.
-
-        Combination of the following applicable `components`:
-
-        * `primary_number`
-
-        * `street_predirection`
-
-        * `street_name`
-
-        * `street_suffix`
-
-        * `street_postdirection`
-
-        * `secondary_designator`
-
-        * `secondary_number`
-
-        * `pmb_designator`
-
-        * `pmb_number`
-
-        '
-      maxLength: 200
-    street_name:
-      type: string
-      description: The name of the street.
-    lob_confidence_score:
-      type: object
-      description: Lob Confidence Score is a nested object that provides a numerical value between 0-100 of the likelihood that an address is deliverable based on Lob’s mail delivery data to over half of US households.
-      required:
-      - score
-      - level
-      properties:
-        score:
-          type: number
-          nullable: true
-          format: float
-          description: 'A numerical score between 0 and 100 that represents the percentage of mailpieces Lob has sent to this addresses that have been delivered successfully over the past 2 years. Will be `null` if no tracking data exists for this address.
-
-            '
-          default: null
-          minimum: 0
-          maximum: 100
-        level:
-          type: string
-          enum:
-          - high
-          - medium
-          - low
-          - ''
-          description: "Indicates the likelihood that the address is a valid, mail-receiving address. Possible values are:\n  - `high` — Over 70% of mailpieces Lob has sent to this address were delivered successfully and recent mailings were also successful.\n  - `medium` — Between 40% and 70% of mailpieces Lob has sent to this address were delivered successfully.\n  - `low` — Less than 40% of mailpieces Lob has sent to this address were delivered successfully and recent mailings weren't successful.\n  - `\"\"` — No tracking data exists for this address or lob deliverability was unable to find a corresponding level of mail success.\n"
+      pattern: \d{5}
     us_components:
       type: object
       description: A nested object containing a breakdown of each component of an address.
@@ -524,28 +516,344 @@ components:
 
             '
         latitude:
-          type: number
+          type:
+          - number
+          - 'null'
           format: float
           description: 'A positive or negative decimal indicating the geographic latitude of the address, specifying the north-to-south position of a location. This should be used with `longitude` to pinpoint locations on a map. Will not be returned for undeliverable addresses or military addresses (state is `AA`, `AE`, or `AP`).
 
             '
-          nullable: true
         longitude:
-          type: number
+          type:
+          - number
+          - 'null'
           format: float
           description: 'A positive or negative decimal indicating the geographic longitude of the address, specifying the north-to-south position of a location. This should be used with `latitude` to pinpoint locations on a map. Will not be returned for undeliverable addresses or military addresses (state is `AA`, `AE`, or `AP`).
 
             '
-          nullable: true
-    us_ver_id:
+    county:
       type: string
-      description: Unique identifier prefixed with `us_ver_`.
-      pattern: ^us_ver_[a-zA-Z0-9_]+$
+      description: County name of the address city.
+    lob_confidence_score:
+      type: object
+      description: Lob Confidence Score is a nested object that provides a numerical value between 0-100 of the likelihood that an address is deliverable based on Lob’s mail delivery data to over half of US households.
+      required:
+      - score
+      - level
+      properties:
+        score:
+          type:
+          - number
+          - 'null'
+          format: float
+          description: 'A numerical score between 0 and 100 that represents the percentage of mailpieces Lob has sent to this addresses that have been delivered successfully over the past 2 years. Will be `null` if no tracking data exists for this address.
+
+            '
+          default: null
+          minimum: 0
+          maximum: 100
+        level:
+          type: string
+          enum:
+          - high
+          - medium
+          - low
+          - ''
+          description: "Indicates the likelihood that the address is a valid, mail-receiving address. Possible values are:\n  - `high` — Over 70% of mailpieces Lob has sent to this address were delivered successfully and recent mailings were also successful.\n  - `medium` — Between 40% and 70% of mailpieces Lob has sent to this address were delivered successfully.\n  - `low` — Less than 40% of mailpieces Lob has sent to this address were delivered successfully and recent mailings weren't successful.\n  - `\"\"` — No tracking data exists for this address or lob deliverability was unable to find a corresponding level of mail success.\n"
+    error:
+      type: object
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - message
+          - status_code
+          - code
+          properties:
+            message:
+              type: string
+              description: A human-readable message with more details about the error
+              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
+            status_code:
+              $ref: '#/components/schemas/failure_status_code'
+            code:
+              type: string
+              enum:
+              - bad_request
+              - conflict
+              - feature_limit_reached
+              - internal_server_error
+              - invalid
+              - not_deletable
+              - not_found
+              - request_timeout
+              - service_unavailable
+              - unrecognized_endpoint
+              - unsupported_lob_version
+              - address_length_exceeds_limit
+              - bank_account_already_verified
+              - bank_error
+              - billing_address_required
+              - custom_envelope_inventory_depleted
+              - deleted_bank_account
+              - failed_deliverability_strictness
+              - file_pages_below_min
+              - file_pages_exceed_max
+              - file_size_exceeds_limit
+              - foreign_return_address
+              - inconsistent_page_dimensions
+              - invalid_bank_account
+              - invalid_bank_account_verification
+              - invalid_check_international
+              - invalid_country_covid
+              - invalid_file
+              - invalid_file_dimensions
+              - invalid_file_download_time
+              - invalid_file_url
+              - invalid_image_dpi
+              - invalid_international_feature
+              - invalid_perforation_return_envelope
+              - invalid_template_html
+              - mail_use_type_can_not_be_null
+              - merge_variable_required
+              - merge_variable_whitespace
+              - payment_method_unverified
+              - pdf_encrypted
+              - special_characters_restricted
+              - unembedded_fonts
+              - email_required
+              - invalid_api_key
+              - publishable_key_not_allowed
+              - rate_limit_exceeded
+              - unauthorized
+              - unauthorized_token
+              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
+
+
+                **GENERIC**
+
+                * `bad_request` - 422: an invalid request was made. See error message for details.
+
+                * `conflict` - 409/422: this operation would leave data in a conflicted state.
+
+                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
+
+                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
+
+                * `invalid` - 422: an invalid request was made. See error message for details.
+
+                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
+
+                * `not_found` - 404: the requested resource was not found.
+
+                * `request_timeout` - 408: the request took too long. Please try again.
+
+                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
+
+                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
+
+                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
+
+
+                **ADVANCED**
+
+                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
+
+                * `bank_account_already_verified` - 422: the bank account has already been verified.
+
+                * `bank_error` - 422: there''s an issue with the bank account.
+
+                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
+
+                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
+
+                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
+
+                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
+
+                * `file_pages_below_min` - 422: not enough pages.
+
+                * `file_pages_exceed_max` - 422: too many pages.
+
+                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
+
+                * `foreign_return_address` - 422: the `from` address must be a US address.
+
+                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
+
+                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
+
+                * `invalid_bank_account_verification` - 422: verification amounts do not match.
+
+                * `invalid_check_international` - 422: checks cannot be sent internationally.
+
+                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
+
+                * `invalid_file` - 422: the file is invalid.
+
+                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
+
+                * `invalid_file_download_time` - 422: file download from remote server took too long.
+
+                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
+
+                * `invalid_image_dpi` - 422: DPI must be at least 300.
+
+                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
+
+                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
+
+                * `invalid_template_html` - 422: the provided HTML is invalid.
+
+                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
+
+                * `merge_variable_required` - 422: a required merge variable is missing.
+
+                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
+
+                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
+
+                * `pdf_encrypted` - 422: an encrypted PDF was provided.
+
+                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
+
+                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
+
+
+                **AUTHENTICATION**
+
+                * `email_required` - 401: account must have a verified email address before creating live resources.
+
+                * `invalid_api_key` - 401/403: the API key is invalid.
+
+                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
+
+                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
+
+                * `unauthorized` - 401: the request isn''t authorized.
+
+                * `unauthorized_token` - 401: token isn''t authorized.
+
+                '
+    us_verification:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/us_ver_id'
+        recipient:
+          $ref: '#/components/schemas/recipient'
+        primary_line:
+          $ref: '#/components/schemas/primary_line_us'
+        secondary_line:
+          $ref: '#/components/schemas/secondary_line'
+        urbanization:
+          $ref: '#/components/schemas/urbanization'
+        last_line:
+          type: string
+          description: 'Combination of the following applicable `components`:
+
+            * City (`city`)
+
+            * State (`state`)
+
+            * ZIP code (`zip_code`)
+
+            * ZIP+4 (`zip_code_plus_4`)
+
+            '
+        deliverability:
+          type: string
+          enum:
+          - deliverable
+          - deliverable_unnecessary_unit
+          - deliverable_incorrect_unit
+          - deliverable_missing_unit
+          - undeliverable
+          description: 'Summarizes the deliverability of the `us_verification` object.
+
+            For full details, see the `deliverability_analysis` field. Possible values are:
+
+            * `deliverable` – The address is deliverable by the USPS.
+
+            * `deliverable_unnecessary_unit` – The address is deliverable, but the secondary unit information is unnecessary.
+
+            * `deliverable_incorrect_unit` – The address is deliverable to the building''s default address but the secondary unit provided may not exist. There is a chance the mail will not reach the intended recipient.
+
+            * `deliverable_missing_unit` – The address is deliverable to the building''s default address but is missing secondary unit information. There is a chance the mail will not reach the intended recipient.
+
+            * `undeliverable` – The address is not deliverable according to the USPS.
+
+            '
+        valid_address:
+          type: boolean
+          enum:
+          - true
+          - false
+          description: 'This field indicates whether an address was found in a more comprehensive address dataset that includes sources from the USPS, open source mapping data, and our proprietary mail delivery data.
+
+            This field can be interpreted as a representation of whether an address is a real location or not. Additionally a valid address may contradict the deliverability field since an address can be a real valid location but the USPS may not deliver to that address.
+
+            '
+        components:
+          $ref: '#/components/schemas/us_components'
+        deliverability_analysis:
+          $ref: '#/components/schemas/deliverability_analysis'
+        lob_confidence_score:
+          $ref: '#/components/schemas/lob_confidence_score'
+        object:
+          type: string
+          description: Value is resource type.
+          enum:
+          - us_verification
+          default: us_verification
+    us_verifications:
+      type: object
+      required:
+      - addresses
+      - errors
+      properties:
+        addresses:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/us_verification'
+            - $ref: '#/components/schemas/error'
+        errors:
+          description: Indicates whether any errors occurred during the verification process.
+          type: boolean
+    secondary_line:
+      type: string
+      description: 'The secondary delivery line of the address. This field is typically empty but may contain information if `primary_line` is too long.
+
+        '
+      maxLength: 200
     city:
       allOf:
       - $ref: '#/components/schemas/city_no_description'
       - type: string
         description: The name of the city.
+    us_ver_id:
+      type: string
+      description: Unique identifier prefixed with `us_ver_`.
+      pattern: ^us_ver_[a-zA-Z0-9_]+$
+    recipient:
+      type:
+      - string
+      - 'null'
+      description: The intended recipient, typically a person's or firm's name.
+      maxLength: 500
+    urbanization:
+      type: string
+      description: 'Only present for addresses in Puerto Rico. An urbanization refers to an area, sector, or development within a city. See <a href="https://pe.usps.com/text/pub28/28api_008.htm#:~:text=I51.,-4%20Urbanizations&text=In%20Puerto%20Rico%2C%20identical%20street,placed%20before%20the%20urbanization%20name." target="_blank">USPS documentation</a> for clarification.
+
+        '
+      maxLength: 200
+    city_no_description:
+      type: string
+      maxLength: 200
     deliverability_analysis:
       type: object
       description: A nested object containing a breakdown of the deliverability of an address.
@@ -806,6 +1114,46 @@ components:
 
             '
           example: ''
+    street_name:
+      type: string
+      description: The name of the street.
+    single_line_address:
+      type: object
+      required:
+      - address
+      properties:
+        address:
+          type: string
+          description: 'The entire address in one string (e.g., "210 King Street 94107"). _Does not support a recipient and will error when other payload parameters are provided._
+
+            '
+          maxLength: 500
+    primary_line_us:
+      type: string
+      description: 'The primary delivery line (usually the street address) of the address.
+
+        Combination of the following applicable `components`:
+
+        * `primary_number`
+
+        * `street_predirection`
+
+        * `street_name`
+
+        * `street_suffix`
+
+        * `street_postdirection`
+
+        * `secondary_designator`
+
+        * `secondary_number`
+
+        * `pmb_designator`
+
+        * `pmb_number`
+
+        '
+      maxLength: 200
     dpv_footnote:
       type: string
       enum:
@@ -825,133 +1173,17 @@ components:
       - R7
       - RR
       example: AA
-    us_verification:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/us_ver_id'
-        recipient:
-          $ref: '#/components/schemas/recipient'
-        primary_line:
-          $ref: '#/components/schemas/primary_line_us'
-        secondary_line:
-          $ref: '#/components/schemas/secondary_line'
-        urbanization:
-          $ref: '#/components/schemas/urbanization'
-        last_line:
-          type: string
-          description: 'Combination of the following applicable `components`:
-
-            * City (`city`)
-
-            * State (`state`)
-
-            * ZIP code (`zip_code`)
-
-            * ZIP+4 (`zip_code_plus_4`)
-
-            '
-        deliverability:
-          type: string
-          enum:
-          - deliverable
-          - deliverable_unnecessary_unit
-          - deliverable_incorrect_unit
-          - deliverable_missing_unit
-          - undeliverable
-          description: 'Summarizes the deliverability of the `us_verification` object.
-
-            For full details, see the `deliverability_analysis` field. Possible values are:
-
-            * `deliverable` – The address is deliverable by the USPS.
-
-            * `deliverable_unnecessary_unit` – The address is deliverable, but the secondary unit information is unnecessary.
-
-            * `deliverable_incorrect_unit` – The address is deliverable to the building''s default address but the secondary unit provided may not exist. There is a chance the mail will not reach the intended recipient.
-
-            * `deliverable_missing_unit` – The address is deliverable to the building''s default address but is missing secondary unit information. There is a chance the mail will not reach the intended recipient.
-
-            * `undeliverable` – The address is not deliverable according to the USPS.
-
-            '
-        valid_address:
-          type: boolean
-          enum:
-          - true
-          - false
-          description: 'This field indicates whether an address was found in a more comprehensive address dataset that includes sources from the USPS, open source mapping data, and our proprietary mail delivery data.
-
-            This field can be interpreted as a representation of whether an address is a real location or not. Additionally a valid address may contradict the deliverability field since an address can be a real valid location but the USPS may not deliver to that address.
-
-            '
-        components:
-          $ref: '#/components/schemas/us_components'
-        deliverability_analysis:
-          $ref: '#/components/schemas/deliverability_analysis'
-        lob_confidence_score:
-          $ref: '#/components/schemas/lob_confidence_score'
-        object:
-          type: string
-          description: Value is resource type.
-          enum:
-          - us_verification
-          default: us_verification
-    us_verifications:
+    multiple_components_list:
       type: object
       required:
       - addresses
-      - errors
       properties:
         addresses:
           type: array
+          minItems: 1
+          maxItems: 20
           items:
-            oneOf:
-            - $ref: '#/components/schemas/us_verification'
-            - $ref: '#/components/schemas/error'
-        errors:
-          description: Indicates whether any errors occurred during the verification process.
-          type: boolean
-    city_no_description:
-      type: string
-      maxLength: 200
-    county_fips:
-      type: string
-      description: 'A 5-digit <a href="https://en.wikipedia.org/wiki/FIPS_county_code" target="_blank">FIPS county code</a> which uniquely identifies `components[county]`. It consists of a 2-digit state code and a 3-digit county code.
-
-        '
-      pattern: \d{5}
-    primary_number:
-      type: string
-      description: The numeric or alphanumeric part of an address preceding the street name. Often the house, building, or PO Box number.
-    recipient:
-      type: string
-      description: The intended recipient, typically a person's or firm's name.
-      nullable: true
-      maxLength: 500
-    county:
-      type: string
-      description: County name of the address city.
-    single_line_address:
-      type: object
-      required:
-      - address
-      properties:
-        address:
-          type: string
-          description: 'The entire address in one string (e.g., "210 King Street 94107"). _Does not support a recipient and will error when other payload parameters are provided._
-
-            '
-          maxLength: 500
-    us_verifications_writable:
-      oneOf:
-      - $ref: '#/components/schemas/multiple_components'
-      - $ref: '#/components/schemas/single_line_address'
-    secondary_line:
-      type: string
-      description: 'The secondary delivery line of the address. This field is typically empty but may contain information if `primary_line` is too long.
-
-        '
-      maxLength: 200
+            $ref: '#/components/schemas/multiple_components'
     zip_code_type:
       type: string
       enum:
@@ -965,244 +1197,16 @@ components:
         each ZIP code type, see [US Verification Details](#tag/US-Verification-Types).
 
         '
-    multiple_components:
-      allOf:
-      - anyOf:
-        - title: US verification object with `city` and `state`
-          required:
-          - city
-          - state
-        - title: US verification object with `zip_code`
-          required:
-          - zip_code
-      - type: object
-        required:
-        - primary_line
-        properties:
-          recipient:
-            $ref: '#/components/schemas/recipient'
-          primary_line:
-            $ref: '#/components/schemas/primary_line_us'
-          secondary_line:
-            $ref: '#/components/schemas/secondary_line'
-          urbanization:
-            $ref: '#/components/schemas/urbanization'
-          city:
-            allOf:
-            - $ref: '#/components/schemas/city_no_description'
-            - type: string
-              description: The name of the city. `city` and `state` are required if no `zip_code` is passed.
-          state:
-            type: string
-            description: The <a href="https://en.wikipedia.org/wiki/ISO_3166-2:US" target="_blank">ISO 3166-2</a> two letter code or subdivision name for the state. `city` and `state` are required if no `zip_code` is passed.
-            maxLength: 50
-          zip_code:
-            allOf:
-            - description: Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).
-            - $ref: '#/components/schemas/zip_code'
-    error:
-      type: object
-      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - message
-          - status_code
-          - code
-          properties:
-            message:
-              type: string
-              description: A human-readable message with more details about the error
-              example: Rate limit exceeded. Please wait 5 seconds and try your request again.
-            status_code:
-              $ref: '#/components/schemas/failure_status_code'
-            code:
-              type: string
-              enum:
-              - bad_request
-              - conflict
-              - feature_limit_reached
-              - internal_server_error
-              - invalid
-              - not_deletable
-              - not_found
-              - request_timeout
-              - service_unavailable
-              - unrecognized_endpoint
-              - unsupported_lob_version
-              - address_length_exceeds_limit
-              - bank_account_already_verified
-              - bank_error
-              - billing_address_required
-              - custom_envelope_inventory_depleted
-              - deleted_bank_account
-              - failed_deliverability_strictness
-              - file_pages_below_min
-              - file_pages_exceed_max
-              - file_size_exceeds_limit
-              - foreign_return_address
-              - inconsistent_page_dimensions
-              - invalid_bank_account
-              - invalid_bank_account_verification
-              - invalid_check_international
-              - invalid_country_covid
-              - invalid_file
-              - invalid_file_dimensions
-              - invalid_file_download_time
-              - invalid_file_url
-              - invalid_image_dpi
-              - invalid_international_feature
-              - invalid_perforation_return_envelope
-              - invalid_template_html
-              - mail_use_type_can_not_be_null
-              - merge_variable_required
-              - merge_variable_whitespace
-              - payment_method_unverified
-              - pdf_encrypted
-              - special_characters_restricted
-              - unembedded_fonts
-              - email_required
-              - invalid_api_key
-              - publishable_key_not_allowed
-              - rate_limit_exceeded
-              - unauthorized
-              - unauthorized_token
-              description: 'A pre-defined string identifying an error. Error codes fall into three categories:
-
-
-                **GENERIC**
-
-                * `bad_request` - 422: an invalid request was made. See error message for details.
-
-                * `conflict` - 409/422: this operation would leave data in a conflicted state.
-
-                * `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.
-
-                * `internal_server_error` - 500: an error has occured on Lob''s servers. Please try request again.
-
-                * `invalid` - 422: an invalid request was made. See error message for details.
-
-                * `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.
-
-                * `not_found` - 404: the requested resource was not found.
-
-                * `request_timeout` - 408: the request took too long. Please try again.
-
-                * `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.
-
-                * `unrecognized_endpoint` - 404: the requested endpoint doesn''t exist.
-
-                * `unsupported_lob_version` - 422: an unsupported Lob API version was requested.
-
-
-                **ADVANCED**
-
-                * `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.
-
-                * `bank_account_already_verified` - 422: the bank account has already been verified.
-
-                * `bank_error` - 422: there''s an issue with the bank account.
-
-                * `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.
-
-                * `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.
-
-                * `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.
-
-                * `failed_deliverability_strictness` - 422: the `to` address doesn''t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.
-
-                * `file_pages_below_min` - 422: not enough pages.
-
-                * `file_pages_exceed_max` - 422: too many pages.
-
-                * `file_size_exceeds_limit` - 422: the file size is too large. See description for details.
-
-                * `foreign_return_address` - 422: the `from` address must be a US address.
-
-                * `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.
-
-                * `invalid_bank_account` - 422: the provided bank routing number is invalid.
-
-                * `invalid_bank_account_verification` - 422: verification amounts do not match.
-
-                * `invalid_check_international` - 422: checks cannot be sent internationally.
-
-                * `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.
-
-                * `invalid_file` - 422: the file is invalid.
-
-                * `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.
-
-                * `invalid_file_download_time` - 422: file download from remote server took too long.
-
-                * `invalid_file_url` - 422: the file URL when creating a resource is invalid.
-
-                * `invalid_image_dpi` - 422: DPI must be at least 300.
-
-                * `invalid_international_feature` - 422: the specified product cannot be sent to the destination.
-
-                * `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.
-
-                * `invalid_template_html` - 422: the provided HTML is invalid.
-
-                * `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.
-
-                * `merge_variable_required` - 422: a required merge variable is missing.
-
-                * `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.
-
-                * `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.
-
-                * `pdf_encrypted` - 422: an encrypted PDF was provided.
-
-                * `special_characters_restricted` - 422: cannot use special characters for merge variable names.
-
-                * `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.
-
-
-                **AUTHENTICATION**
-
-                * `email_required` - 401: account must have a verified email address before creating live resources.
-
-                * `invalid_api_key` - 401/403: the API key is invalid.
-
-                * `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.
-
-                * `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.
-
-                * `unauthorized` - 401: the request isn''t authorized.
-
-                * `unauthorized_token` - 401: token isn''t authorized.
-
-                '
-    failure_status_code:
-      type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
     zip_code_plus_4:
       type: string
       pattern: ^\d{4}$
-    multiple_components_list:
-      type: object
-      required:
-      - addresses
-      properties:
-        addresses:
-          type: array
-          minItems: 1
-          maxItems: 20
-          items:
-            $ref: '#/components/schemas/multiple_components'
+    us_verifications_writable:
+      oneOf:
+      - $ref: '#/components/schemas/multiple_components'
+      - $ref: '#/components/schemas/single_line_address'
+    zip_code:
+      type: string
+      pattern: ^\d{5}((-)?\d{4})?$
     state:
       type: string
       description: 'The <a href="https://en.wikipedia.org/wiki/ISO_3166-2" target="_blank">ISO 3166-2</a> two letter code for the state.
@@ -1210,91 +1214,6 @@ components:
         '
       maxLength: 2
   responses:
-    bulk_us_verifications:
-      description: Returns a list of US verification objects.
-      headers:
-        ratelimit-limit:
-          $ref: '#/components/headers/ratelimit-limit'
-        ratelimit-remaining:
-          $ref: '#/components/headers/ratelimit-remaining'
-        ratelimit-reset:
-          $ref: '#/components/headers/ratelimit-reset'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/us_verifications'
-          example:
-            addresses:
-            - id: us_ver_c7cb63d68f8d6
-              recipient: LOB.COM
-              primary_line: 210 KING ST
-              secondary_line: ''
-              urbanization: ''
-              last_line: SAN FRANCISCO CA 94107-1702
-              deliverability: deliverable
-              valid_address: true
-              components:
-                primary_number: '210'
-                street_predirection: ''
-                street_name: KING
-                street_suffix: ST
-                street_postdirection: ''
-                secondary_designator: ''
-                secondary_number: ''
-                pmb_designator: ''
-                pmb_number: ''
-                extra_secondary_designator: ''
-                extra_secondary_number: ''
-                city: SAN FRANCISCO
-                state: CA
-                zip_code: '94107'
-                zip_code_plus_4: '1702'
-                zip_code_type: standard
-                delivery_point_barcode: '941071728506'
-                address_type: commercial
-                record_type: street
-                default_building_address: false
-                county: SAN FRANCISCO
-                county_fips: '06075'
-                carrier_route: C032
-                carrier_route_type: city_delivery
-                po_box_only_flag: N
-                latitude: 37.77597542841264
-                longitude: -122.3929557343685
-              deliverability_analysis:
-                dpv_confirmation: Y
-                dpv_cmra: N
-                dpv_vacant: N
-                dpv_active: Y
-                dpv_inactive_reason: ''
-                dpv_throwback: N
-                dpv_non_delivery_day_flag: N
-                dpv_non_delivery_day_values: ''
-                dpv_no_secure_location: N
-                dpv_door_not_accessible: N
-                dpv_footnotes:
-                - AA
-                - BB
-                ews_match: false
-                lacs_indicator: ''
-                lacs_return_code: ''
-                suite_return_code: ''
-              lob_confidence_score:
-                score: 100
-                level: high
-              object: us_verification
-            errors: false
-    us_verifications_error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: invalid
-              message: primary_line is required or address is required
-              status_code: 422
     us_verifications:
       description: Returns a US verification object.
       headers:
@@ -1426,12 +1345,97 @@ components:
                   lacs_return_code: ''
                   suite_return_code: ''
                 object: us_verification
+    us_verifications_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: invalid
+              message: primary_line is required or address is required
+              status_code: 422
+    bulk_us_verifications:
+      description: Returns a list of US verification objects.
+      headers:
+        ratelimit-limit:
+          $ref: '#/components/headers/ratelimit-limit'
+        ratelimit-remaining:
+          $ref: '#/components/headers/ratelimit-remaining'
+        ratelimit-reset:
+          $ref: '#/components/headers/ratelimit-reset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/us_verifications'
+          example:
+            addresses:
+            - id: us_ver_c7cb63d68f8d6
+              recipient: LOB.COM
+              primary_line: 210 KING ST
+              secondary_line: ''
+              urbanization: ''
+              last_line: SAN FRANCISCO CA 94107-1702
+              deliverability: deliverable
+              valid_address: true
+              components:
+                primary_number: '210'
+                street_predirection: ''
+                street_name: KING
+                street_suffix: ST
+                street_postdirection: ''
+                secondary_designator: ''
+                secondary_number: ''
+                pmb_designator: ''
+                pmb_number: ''
+                extra_secondary_designator: ''
+                extra_secondary_number: ''
+                city: SAN FRANCISCO
+                state: CA
+                zip_code: '94107'
+                zip_code_plus_4: '1702'
+                zip_code_type: standard
+                delivery_point_barcode: '941071728506'
+                address_type: commercial
+                record_type: street
+                default_building_address: false
+                county: SAN FRANCISCO
+                county_fips: '06075'
+                carrier_route: C032
+                carrier_route_type: city_delivery
+                po_box_only_flag: N
+                latitude: 37.77597542841264
+                longitude: -122.3929557343685
+              deliverability_analysis:
+                dpv_confirmation: Y
+                dpv_cmra: N
+                dpv_vacant: N
+                dpv_active: Y
+                dpv_inactive_reason: ''
+                dpv_throwback: N
+                dpv_non_delivery_day_flag: N
+                dpv_non_delivery_day_values: ''
+                dpv_no_secure_location: N
+                dpv_door_not_accessible: N
+                dpv_footnotes:
+                - AA
+                - BB
+                ews_match: false
+                lacs_indicator: ''
+                lacs_return_code: ''
+                suite_return_code: ''
+              lob_confidence_score:
+                score: 100
+                level: high
+              object: us_verification
+            errors: false
   headers:
-    ratelimit-limit:
-      description: The rate limit for a given endpoint.
+    ratelimit-remaining:
+      description: The number of requests remaining in the current window.
       schema:
         type: integer
-        example: 150
+        example: 100
     ratelimit-reset:
       description: 'The time at which the rate limit window resets in  <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank">UTC epoch seconds</a>
 
@@ -1439,36 +1443,15 @@ components:
       schema:
         type: integer
         example: 1528749846
-    ratelimit-remaining:
-      description: The number of requests remaining in the current window.
+    ratelimit-limit:
+      description: The rate limit for a given endpoint.
       schema:
         type: integer
-        example: 100
+        example: 150
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-x-webhooks:
-  events:
-    post:
-      summary: Events
-      description: Information about an event
-      operationId: event
-      tags:
-      - Events
-      responses:
-        '200':
-          $ref: '#/components/responses/events'
-  tracking_events:
-    post:
-      summary: Tracking Events
-      description: Information about tracking events
-      operationId: tracking_event
-      tags:
-      - Tracking Events
-      responses:
-        '200':
-          $ref: '#/components/responses/tracking_events'
 x-tagGroups:
 - name: Overview
   tags:
