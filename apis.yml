@@ -51,6 +51,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -236,6 +238,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Identity  Validation
+  tags_raw:
   - Identity Validation
   properties:
   - type: OpenAPI
@@ -249,6 +253,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Informed  Delivery  Campaign
+  tags_raw:
   - Informed Delivery Campaign
   properties:
   - type: OpenAPI
@@ -322,6 +328,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Intl  Verifications
+  tags_raw:
   - Intl Verifications
   properties:
   - type: OpenAPI
@@ -417,6 +425,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Reverse  Geocode  Lookups
+  tags_raw:
   - Reverse Geocode Lookups
   properties:
   - type: OpenAPI
@@ -433,6 +443,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Self-Mailers
+  tags_raw:
   - Self Mailers
   properties:
   - type: OpenAPI
@@ -443,6 +455,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Snap  Packs
+  tags_raw:
   - Snap Packs
   properties:
   - type: OpenAPI
@@ -457,6 +471,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Template  Versions
+  tags_raw:
   - Template Versions
   properties:
   - type: OpenAPI
@@ -538,6 +554,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - U S  Autocompletions
+  tags_raw:
   - US Autocompletions
   properties:
   - type: OpenAPI
@@ -669,6 +687,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - U S  Verifications
+  tags_raw:
   - US Verifications
   properties:
   - type: OpenAPI
@@ -681,6 +701,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Zip  Lookups
+  tags_raw:
   - Zip Lookups
   properties:
   - type: OpenAPI
@@ -1283,6 +1305,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
