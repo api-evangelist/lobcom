@@ -1534,6 +1534,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Website
+  url: https://www.lob.com/
 - type: License
   name: MIT
   url: https://github.com/lob/lob-openapi/blob/main/LICENSE
