@@ -1,38 +1,43 @@
-# Kin Score artifact — lobcom — 2026-08-14T105006
+# Kin Score artifact — lobcom — 2026-09-14T225847
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: lobcom
-  schema_version: 0.11.0
-  scored_at: '2026-08-14'
-  run_ts: 2026-08-14T105006
-  composite: 69.2
-  band: exemplar
+  schema_version: 0.22.0
+  scored_at: '2026-09-14'
+  run_ts: 2026-09-14T225847
+  composite: 65.6
+  band: strong
   facets:
-    discoverability: 68.5
-    contract_quality: 67.5
-    governance: 11.5
-    operational_transparency: 84.2
-    developer_ergonomics: 73.4
-    commercial_clarity: 92.1
+    discoverability: 51.9
+    contract_quality: 64.9
+    contract_governance: 4.5
+    operational_transparency: 77.6
+    developer_ergonomics: 72.0
+    access_clarity: 85.5
   agent_readiness:
-    score: 57.4
+    score: 43.7
     band: agent-native
     dimensions:
       spec_presence: true
       agentic_access: derived
-      mcp_server: derived
-      auth_clarity: true
-      idempotency: documented
+      reversibility_documented: verified
+      mcp_server: false
+      auth_clarity: bearer
+      idempotency: verified
       error_semantics: documented
       openapi_examples: partial
       rate_limit_signal: verified
       event_surface_described: true
       agent_skills: derived
-      well_known_catalog: true
+      well_known_catalog: false
       consent_identity: false
       agent_card: false
       dry_run_mode: false
+      delegated_identity: false
+      protected_resource_metadata: false
+      dynamic_client_registration: false
+      agentic_commerce: false
   provenance:
     mcp: derived
     skills: derived
