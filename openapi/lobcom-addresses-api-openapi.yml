@@ -2,9 +2,7 @@ openapi: 3.2.0
 info:
   title: Lob Addresses API
   version: 1.22.0
-  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
-
-    '
+  description: The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors.
   license:
     name: MIT
     url: https://mit-license.org/
@@ -24,9 +22,8 @@ tags:
 
     addresses as well as get a list of addresses. Addresses are identified by a unique random ID.
 
-    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
 
-    '
+    back to top'
 paths:
   /addresses:
     get:
@@ -351,67 +348,119 @@ paths:
         label: GO
 components:
   schemas:
-    failure_status_code:
-      type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
-    address_fields_us:
-      type: object
-      required:
-      - address_line1
-      - address_city
-      - address_state
-      - address_zip
-      properties:
-        address_line1:
-          type: string
-          description: The primary number, street name, and directional information.
-          maxLength: 64
-        address_line2:
-          type:
-          - string
-          - 'null'
-          description: An optional field containing any information which can't fit into line 1.
-          maxLength: 64
-        address_city:
-          type: string
-          maxLength: 200
-        address_state:
-          type: string
-          description: 2 letter state short-name code
-          pattern: ^[a-zA-Z]{2}$
-        address_zip:
-          type: string
-          description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+    address_us:
+      allOf:
+      - $ref: '#/components/schemas/lob_base'
+      - type: object
+        required:
+        - id
+        - address_line1
+        - address_city
+        - address_state
+        - address_zip
+        anyOf:
+        - title: address obj with `name` defined
+          required:
+          - name
+        - title: address obj with `company` defined
+          required:
+          - company
+        properties:
+          id:
+            $ref: '#/components/schemas/adr_id'
+          object:
+            type: string
+            description: Value is resource type.
+            enum:
+            - address
+            default: address
+          description:
+            $ref: '#/components/schemas/resource_description'
+          name:
+            type:
+            - string
+            - 'null'
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
 
-            '
-          pattern: ^\d{5}(-\d{4})?$
-    lob_base:
-      type: object
-      required:
-      - date_created
-      - date_modified
-      - object
-      properties:
-        date_created:
-          $ref: '#/components/schemas/date_created'
-        date_modified:
-          $ref: '#/components/schemas/date_modified'
-        deleted:
-          $ref: '#/components/schemas/deleted'
-        object:
-          $ref: '#/components/schemas/object'
-    date_modified:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+              '
+            maxLength: 40
+          company:
+            type:
+            - string
+            - 'null'
+            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+              '
+            maxLength: 40
+          phone:
+            type:
+            - string
+            - 'null'
+            description: Must be no longer than 40 characters.
+            maxLength: 40
+          email:
+            type:
+            - string
+            - 'null'
+            description: Must be no longer than 100 characters.
+            maxLength: 100
+          address_line1:
+            type: string
+            description: The primary number, street name, and directional information.
+            maxLength: 64
+          address_line2:
+            type:
+            - string
+            - 'null'
+            description: An optional field containing any information which can't fit into line 1.
+            maxLength: 64
+          address_city:
+            type: string
+            maxLength: 200
+          address_state:
+            type: string
+            description: 2 letter state short-name code
+            pattern: ^[a-zA-Z]{2}$
+          address_zip:
+            type: string
+            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+              '
+            pattern: ^\d{5}(-\d{4})?$
+          address_country:
+            type: string
+            enum:
+            - UNITED STATES
+            description: Full name of country
+            minLength: 13
+            maxLength: 13
+          metadata:
+            $ref: '#/components/schemas/metadata'
+          recipient_moved:
+            type:
+            - boolean
+            - 'null'
+            description: 'Only returned for accounts on certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print &amp; Mail Editions</a>. Value is `true` if the address was altered because the recipient filed for a <a href="#tag/National-Change-of-Address">National Change of Address Linkage (NCOALink)</a>, `false` if the NCOALink check was run but no altered address was found, and `null` if the NCOALink check was not run. The NCOALink check does not happen for non-US addresses, for non-deliverable US addresses, or for addresses created before the NCOALink feature was added to your account.
+
+              '
+        example:
+          id: adr_e68217bd744d65c8
+          description: Harry - Office
+          name: HARRY ZHANG
+          company: LOB
+          phone: '5555555555'
+          email: harry@lob.com
+          address_line1: 210 KING ST STE 6100
+          address_line2: null
+          address_city: SAN FRANCISCO
+          address_state: CA
+          address_zip: 94107-1741
+          address_country: UNITED STATES
+          metadata: {}
+          recipient_moved: false
+          date_created: '2019-08-12T00:16:00.361Z'
+          date_modified: '2019-08-12T00:16:00.361Z'
+          object: address
     address_editable_intl:
       allOf:
       - $ref: '#/components/schemas/address_fields_intl'
@@ -452,21 +501,262 @@ components:
             $ref: '#/components/schemas/country_extended'
           metadata:
             $ref: '#/components/schemas/metadata'
-    metadata:
+    address_fields_intl:
       type: object
-      additionalProperties:
-        type: string
-      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
-      maxLength: 500
-      pattern: '[^"\\]{0,500}'
-    company:
-      type:
-      - string
-      - 'null'
-      description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
-
-        '
-      maxLength: 40
+      required:
+      - address_line1
+      - address_country
+      properties:
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 200
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 200
+        address_city:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        address_state:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        address_zip:
+          type:
+          - string
+          - 'null'
+          description: Optional postal code.
+          maxLength: 40
+    country_extended:
+      type: string
+      description: Must be a 2 letter country short-name code (ISO 3166). Does not accept `US`, `AS`, `PR`, `FM`, `GU`, `MH`, `MP`, `PW`, or `VI`. For these addresses, please use the US verification API. Also does not accept `PS`, which is not currently supported.
+      enum:
+      - AD
+      - AE
+      - AF
+      - AG
+      - AI
+      - AL
+      - AN
+      - AO
+      - AQ
+      - AR
+      - AT
+      - AU
+      - AW
+      - AZ
+      - BA
+      - BB
+      - BD
+      - BE
+      - BF
+      - BG
+      - BH
+      - BI
+      - BJ
+      - BM
+      - BN
+      - BO
+      - BQ
+      - BR
+      - BS
+      - BT
+      - BW
+      - BY
+      - BZ
+      - CA
+      - CD
+      - CG
+      - CH
+      - CI
+      - CK
+      - CL
+      - CM
+      - CN
+      - CO
+      - CR
+      - CS
+      - CU
+      - CV
+      - CW
+      - CY
+      - CZ
+      - DE
+      - DJ
+      - DK
+      - DM
+      - DO
+      - DZ
+      - EC
+      - EE
+      - EG
+      - EH
+      - ER
+      - ES
+      - ET
+      - FI
+      - FJ
+      - FK
+      - FO
+      - FR
+      - GA
+      - GB
+      - GD
+      - GE
+      - GH
+      - GI
+      - GL
+      - GM
+      - GN
+      - GQ
+      - GR
+      - GS
+      - GT
+      - GW
+      - GY
+      - HK
+      - HN
+      - HR
+      - HT
+      - HU
+      - ID
+      - IE
+      - IL
+      - IN
+      - IO
+      - IQ
+      - IR
+      - IS
+      - IT
+      - JM
+      - JO
+      - JP
+      - KE
+      - KG
+      - KH
+      - KI
+      - KM
+      - KN
+      - KP
+      - KR
+      - KW
+      - KY
+      - KZ
+      - LA
+      - LB
+      - LC
+      - LI
+      - LK
+      - LR
+      - LS
+      - LT
+      - LU
+      - LV
+      - LY
+      - MA
+      - MC
+      - MD
+      - ME
+      - MG
+      - MK
+      - ML
+      - MM
+      - MN
+      - MO
+      - MR
+      - MS
+      - MT
+      - MU
+      - MV
+      - MW
+      - MX
+      - MY
+      - MZ
+      - NA
+      - NE
+      - NF
+      - NG
+      - NI
+      - NL
+      - 'NO'
+      - NP
+      - NR
+      - NU
+      - NZ
+      - OM
+      - PA
+      - PE
+      - PG
+      - PH
+      - PK
+      - PL
+      - PN
+      - PT
+      - PY
+      - QA
+      - RO
+      - RS
+      - RU
+      - RW
+      - SA
+      - SB
+      - SC
+      - SD
+      - SE
+      - SG
+      - SH
+      - SI
+      - SK
+      - SL
+      - SM
+      - SN
+      - SO
+      - SR
+      - SS
+      - ST
+      - SV
+      - SX
+      - SY
+      - SZ
+      - TC
+      - TD
+      - TG
+      - TH
+      - TJ
+      - TK
+      - TL
+      - TM
+      - TN
+      - TO
+      - TR
+      - TT
+      - TV
+      - TW
+      - TZ
+      - UA
+      - UG
+      - UY
+      - UZ
+      - VA
+      - VC
+      - VE
+      - VG
+      - VN
+      - VU
+      - WS
+      - YE
+      - ZA
+      - ZM
+      - ZW
+    count:
+      type: integer
+      description: number of resources in a set
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -645,194 +935,34 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
-    list:
-      type: object
-      description: Multiple items returned in order
-      properties:
-        object:
-          $ref: '#/components/schemas/object'
-        next_url:
-          type:
-          - string
-          - 'null'
-          description: Url of next page of items in list.
-        previous_url:
-          type:
-          - string
-          - 'null'
-          description: Url of previous page of items in list.
-        count:
-          $ref: '#/components/schemas/count'
-        total_count:
-          type: integer
-          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
-    date_filter:
-      type: object
-      additionalProperties:
-        type: string
-      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-    deleted:
-      type: boolean
-      description: Only returned if the resource has been successfully deleted.
-    count:
-      type: integer
-      description: number of resources in a set
-    address_fields_intl:
-      type: object
-      required:
-      - address_line1
-      - address_country
-      properties:
-        address_line1:
-          type: string
-          description: The primary number, street name, and directional information.
-          maxLength: 200
-        address_line2:
-          type:
-          - string
-          - 'null'
-          description: An optional field containing any information which can't fit into line 1.
-          maxLength: 200
-        address_city:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        address_state:
-          type:
-          - string
-          - 'null'
-          maxLength: 200
-        address_zip:
-          type:
-          - string
-          - 'null'
-          description: Optional postal code.
-          maxLength: 40
-    address:
-      oneOf:
-      - $ref: '#/components/schemas/address_us'
-      - $ref: '#/components/schemas/address_intl'
     date_created:
       type: string
       format: date-time
       description: A timestamp in ISO 8601 format of the date the resource was created.
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
     object:
       type: string
       description: Value is resource type.
-    address_us:
-      allOf:
-      - $ref: '#/components/schemas/lob_base'
-      - type: object
-        required:
-        - id
-        - address_line1
-        - address_city
-        - address_state
-        - address_zip
-        anyOf:
-        - title: address obj with `name` defined
-          required:
-          - name
-        - title: address obj with `company` defined
-          required:
-          - company
-        properties:
-          id:
-            $ref: '#/components/schemas/adr_id'
-          object:
-            type: string
-            description: Value is resource type.
-            enum:
-            - address
-            default: address
-          description:
-            $ref: '#/components/schemas/resource_description'
-          name:
-            type:
-            - string
-            - 'null'
-            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address.
-
-              '
-            maxLength: 40
-          company:
-            type:
-            - string
-            - 'null'
-            description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
-
-              '
-            maxLength: 40
-          phone:
-            type:
-            - string
-            - 'null'
-            description: Must be no longer than 40 characters.
-            maxLength: 40
-          email:
-            type:
-            - string
-            - 'null'
-            description: Must be no longer than 100 characters.
-            maxLength: 100
-          address_line1:
-            type: string
-            description: The primary number, street name, and directional information.
-            maxLength: 64
-          address_line2:
-            type:
-            - string
-            - 'null'
-            description: An optional field containing any information which can't fit into line 1.
-            maxLength: 64
-          address_city:
-            type: string
-            maxLength: 200
-          address_state:
-            type: string
-            description: 2 letter state short-name code
-            pattern: ^[a-zA-Z]{2}$
-          address_zip:
-            type: string
-            description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
-
-              '
-            pattern: ^\d{5}(-\d{4})?$
-          address_country:
-            type: string
-            enum:
-            - UNITED STATES
-            description: Full name of country
-            minLength: 13
-            maxLength: 13
-          metadata:
-            $ref: '#/components/schemas/metadata'
-          recipient_moved:
-            type:
-            - boolean
-            - 'null'
-            description: 'Only returned for accounts on certain <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print &amp; Mail Editions</a>. Value is `true` if the address was altered because the recipient filed for a <a href="#tag/National-Change-of-Address">National Change of Address Linkage (NCOALink)</a>, `false` if the NCOALink check was run but no altered address was found, and `null` if the NCOALink check was not run. The NCOALink check does not happen for non-US addresses, for non-deliverable US addresses, or for addresses created before the NCOALink feature was added to your account.
-
-              '
-        example:
-          id: adr_e68217bd744d65c8
-          description: Harry - Office
-          name: HARRY ZHANG
-          company: LOB
-          phone: '5555555555'
-          email: harry@lob.com
-          address_line1: 210 KING ST STE 6100
-          address_line2: null
-          address_city: SAN FRANCISCO
-          address_state: CA
-          address_zip: 94107-1741
-          address_country: UNITED STATES
-          metadata: {}
-          recipient_moved: false
-          date_created: '2019-08-12T00:16:00.361Z'
-          date_modified: '2019-08-12T00:16:00.361Z'
-          object: address
+    address_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/adr_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    address_editable:
+      oneOf:
+      - $ref: '#/components/schemas/address_editable_us'
+      - $ref: '#/components/schemas/address_editable_intl'
+    metadata:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Use metadata to store custom information for tagging and labeling back to your internal systems. Must be an object with up to 20 key-value pairs. Keys must be at most 40 characters and values must be at most 500 characters. Neither can contain the characters `"` and `\`. i.e. ''{"customer_id" : "NEWYORK2015"}'' Nested objects are not supported.  See [Metadata](#section/Metadata) for more information.'
+      maxLength: 500
+      pattern: '[^"\\]{0,500}'
     address_intl:
       allOf:
       - $ref: '#/components/schemas/lob_base'
@@ -1145,6 +1275,45 @@ components:
           address_state: PRINCE EDWARD ISLAND
           address_zip: C1N 1C4
           address_country: CANADA
+    adr_id:
+      type: string
+      description: Unique identifier prefixed with `adr_`.
+      pattern: ^adr_[a-zA-Z0-9]+$
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    date_filter:
+      type: object
+      additionalProperties:
+        type: string
+      description: 'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
     address_editable_us:
       allOf:
       - $ref: '#/components/schemas/address_fields_us'
@@ -1188,242 +1357,14 @@ components:
             default: US
           metadata:
             $ref: '#/components/schemas/metadata'
-    adr_id:
-      type: string
-      description: Unique identifier prefixed with `adr_`.
-      pattern: ^adr_[a-zA-Z0-9]+$
-    address_editable:
-      oneOf:
-      - $ref: '#/components/schemas/address_editable_us'
-      - $ref: '#/components/schemas/address_editable_intl'
-    address_deletion:
-      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
-      properties:
-        id:
-          $ref: '#/components/schemas/adr_id'
-        deleted:
-          $ref: '#/components/schemas/deleted'
-    country_extended:
-      type: string
-      description: Must be a 2 letter country short-name code (ISO 3166). Does not accept `US`, `AS`, `PR`, `FM`, `GU`, `MH`, `MP`, `PW`, or `VI`. For these addresses, please use the US verification API. Also does not accept `PS`, which is not currently supported.
-      enum:
-      - AD
-      - AE
-      - AF
-      - AG
-      - AI
-      - AL
-      - AN
-      - AO
-      - AQ
-      - AR
-      - AT
-      - AU
-      - AW
-      - AZ
-      - BA
-      - BB
-      - BD
-      - BE
-      - BF
-      - BG
-      - BH
-      - BI
-      - BJ
-      - BM
-      - BN
-      - BO
-      - BQ
-      - BR
-      - BS
-      - BT
-      - BW
-      - BY
-      - BZ
-      - CA
-      - CD
-      - CG
-      - CH
-      - CI
-      - CK
-      - CL
-      - CM
-      - CN
-      - CO
-      - CR
-      - CS
-      - CU
-      - CV
-      - CW
-      - CY
-      - CZ
-      - DE
-      - DJ
-      - DK
-      - DM
-      - DO
-      - DZ
-      - EC
-      - EE
-      - EG
-      - EH
-      - ER
-      - ES
-      - ET
-      - FI
-      - FJ
-      - FK
-      - FO
-      - FR
-      - GA
-      - GB
-      - GD
-      - GE
-      - GH
-      - GI
-      - GL
-      - GM
-      - GN
-      - GQ
-      - GR
-      - GS
-      - GT
-      - GW
-      - GY
-      - HK
-      - HN
-      - HR
-      - HT
-      - HU
-      - ID
-      - IE
-      - IL
-      - IN
-      - IO
-      - IQ
-      - IR
-      - IS
-      - IT
-      - JM
-      - JO
-      - JP
-      - KE
-      - KG
-      - KH
-      - KI
-      - KM
-      - KN
-      - KP
-      - KR
-      - KW
-      - KY
-      - KZ
-      - LA
-      - LB
-      - LC
-      - LI
-      - LK
-      - LR
-      - LS
-      - LT
-      - LU
-      - LV
-      - LY
-      - MA
-      - MC
-      - MD
-      - ME
-      - MG
-      - MK
-      - ML
-      - MM
-      - MN
-      - MO
-      - MR
-      - MS
-      - MT
-      - MU
-      - MV
-      - MW
-      - MX
-      - MY
-      - MZ
-      - NA
-      - NE
-      - NF
-      - NG
-      - NI
-      - NL
-      - 'NO'
-      - NP
-      - NR
-      - NU
-      - NZ
-      - OM
-      - PA
-      - PE
-      - PG
-      - PH
-      - PK
-      - PL
-      - PN
-      - PT
-      - PY
-      - QA
-      - RO
-      - RS
-      - RU
-      - RW
-      - SA
-      - SB
-      - SC
-      - SD
-      - SE
-      - SG
-      - SH
-      - SI
-      - SK
-      - SL
-      - SM
-      - SN
-      - SO
-      - SR
-      - SS
-      - ST
-      - SV
-      - SX
-      - SY
-      - SZ
-      - TC
-      - TD
-      - TG
-      - TH
-      - TJ
-      - TK
-      - TL
-      - TM
-      - TN
-      - TO
-      - TR
-      - TT
-      - TV
-      - TW
-      - TZ
-      - UA
-      - UG
-      - UY
-      - UZ
-      - VA
-      - VC
-      - VE
-      - VG
-      - VN
-      - VU
-      - WS
-      - YE
-      - ZA
-      - ZM
-      - ZW
+    company:
+      type:
+      - string
+      - 'null'
+      description: 'Either `name` or `company` is required, you may also add both. Must be no longer than 40 characters. If both `name` and `company` are provided, they will be printed on two separate lines above the rest of the address. This field can be used for any secondary recipient information which is not part of the actual mailing address (Company Name, Department, Attention Line, etc).
+
+        '
+      maxLength: 40
     resource_description:
       type:
       - string
@@ -1432,89 +1373,63 @@ components:
 
         '
       maxLength: 255
-  parameters:
-    date_created:
-      in: query
-      name: date_created
-      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
-      schema:
-        $ref: '#/components/schemas/date_filter'
-      style: deepObject
-      explode: true
-    metadata:
-      in: query
-      name: metadata
-      description: Filter by metadata key-value pair`.
-      schema:
-        $ref: '#/components/schemas/metadata'
-      style: deepObject
-      explode: true
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: How many results to return.
-      schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
-    before_after:
-      in: query
-      name: before/after
-      required: false
-      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
-
-        '
-      schema:
-        allOf:
-        - type: object
-          properties:
-            before:
-              type: string
-              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
-
-                '
-            after:
-              type: string
-              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
-
-                '
-        - oneOf:
-          - required:
-            - before
-          - required:
-            - after
-    include:
-      in: query
-      name: include
-      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
-
-        '
-      schema:
-        type: array
-        items:
-          type: string
-      explode: true
-  responses:
-    address_error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: not_found
-              message: address not found
-              status_code: 404
     address:
-      description: Returns an address object if a valid identifier was provided.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/address'
+      oneOf:
+      - $ref: '#/components/schemas/address_us'
+      - $ref: '#/components/schemas/address_intl'
+    list:
+      type: object
+      description: Multiple items returned in order
+      properties:
+        object:
+          $ref: '#/components/schemas/object'
+        next_url:
+          type:
+          - string
+          - 'null'
+          description: Url of next page of items in list.
+        previous_url:
+          type:
+          - string
+          - 'null'
+          description: Url of previous page of items in list.
+        count:
+          $ref: '#/components/schemas/count'
+        total_count:
+          type: integer
+          description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
+    address_fields_us:
+      type: object
+      required:
+      - address_line1
+      - address_city
+      - address_state
+      - address_zip
+      properties:
+        address_line1:
+          type: string
+          description: The primary number, street name, and directional information.
+          maxLength: 64
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: An optional field containing any information which can't fit into line 1.
+          maxLength: 64
+        address_city:
+          type: string
+          maxLength: 200
+        address_state:
+          type: string
+          description: 2 letter state short-name code
+          pattern: ^[a-zA-Z]{2}$
+        address_zip:
+          type: string
+          description: 'Must follow the ZIP format of `12345` or ZIP+4 format of `12345-1234`.
+
+            '
+          pattern: ^\d{5}(-\d{4})?$
+  responses:
     address_deleted:
       description: Deleted
       content:
@@ -1524,58 +1439,6 @@ components:
           example:
             id: adr_123456789
             deleted: true
-    all_addresses:
-      description: A dictionary with a data property that contains an array of up to `limit` addresses. Each entry in the array is a separate address object. The previous and next page of address entries can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more addresses are available beyond the current set of returned results, the `next_url` field will be empty.
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/list'
-            - type: object
-              properties:
-                data:
-                  type: array
-                  description: list of addresses
-                  items:
-                    $ref: '#/components/schemas/address'
-          example:
-            data:
-            - id: adr_e68217bd744d65c8
-              description: Harry - Office
-              name: HARRY ZHANG
-              company: LOB
-              phone: '5555555555'
-              email: harry@lob.com
-              address_line1: 210 KING ST STE 6100
-              address_line2: null
-              address_city: SAN FRANCISCO
-              address_state: CA
-              address_zip: 94107-1741
-              address_country: UNITED STATES
-              metadata: {}
-              date_created: '2019-08-12T00:16:00.361Z'
-              date_modified: '2019-08-12T00:16:00.361Z'
-              object: address
-            - id: adr_asdi2y3riuasasoi
-              description: Harry - Office
-              name: Harry Zhang
-              company: Lob
-              phone: '5555555555'
-              email: harry@lob.com
-              metadata: {}
-              address_line1: 370 WATER ST
-              address_line2: ''
-              address_city: SUMMERSIDE
-              address_state: PRINCE EDWARD ISLAND
-              address_zip: C1N 1C4
-              address_country: CANADA
-              date_created: '2019-09-20T00:14:00.361Z'
-              date_modified: '2019-09-20T00:14:00.361Z'
-              object: address
-            object: list
-            next_url: https://api.lob.com/v1/addresses?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wOC0wN1QyMTo1OTo0Ni43NjRaIiwiaWRPZmZzZXQiOiJhZHJfODMwYmYwZWFiZGFhYTQwOSJ9
-            previous_url: null
-            count: 2
     post_address:
       description: Echos the writable fields of a newly created address object.
       headers:
@@ -1664,6 +1527,75 @@ components:
                 recipient_moved: true
                 inline: false
                 object: address
+    all_addresses:
+      description: A dictionary with a data property that contains an array of up to `limit` addresses. Each entry in the array is a separate address object. The previous and next page of address entries can be retrieved by calling the endpoint contained in the `previous_url` and `next_url` fields in the API response respectively.<br>If no more addresses are available beyond the current set of returned results, the `next_url` field will be empty.
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/list'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  description: list of addresses
+                  items:
+                    $ref: '#/components/schemas/address'
+          example:
+            data:
+            - id: adr_e68217bd744d65c8
+              description: Harry - Office
+              name: HARRY ZHANG
+              company: LOB
+              phone: '5555555555'
+              email: harry@lob.com
+              address_line1: 210 KING ST STE 6100
+              address_line2: null
+              address_city: SAN FRANCISCO
+              address_state: CA
+              address_zip: 94107-1741
+              address_country: UNITED STATES
+              metadata: {}
+              date_created: '2019-08-12T00:16:00.361Z'
+              date_modified: '2019-08-12T00:16:00.361Z'
+              object: address
+            - id: adr_asdi2y3riuasasoi
+              description: Harry - Office
+              name: Harry Zhang
+              company: Lob
+              phone: '5555555555'
+              email: harry@lob.com
+              metadata: {}
+              address_line1: 370 WATER ST
+              address_line2: ''
+              address_city: SUMMERSIDE
+              address_state: PRINCE EDWARD ISLAND
+              address_zip: C1N 1C4
+              address_country: CANADA
+              date_created: '2019-09-20T00:14:00.361Z'
+              date_modified: '2019-09-20T00:14:00.361Z'
+              object: address
+            object: list
+            next_url: https://api.lob.com/v1/addresses?limit=2&after=eyJkYXRlT2Zmc2V0IjoiMjAxOS0wOC0wN1QyMTo1OTo0Ni43NjRaIiwiaWRPZmZzZXQiOiJhZHJfODMwYmYwZWFiZGFhYTQwOSJ9
+            previous_url: null
+            count: 2
+    address:
+      description: Returns an address object if a valid identifier was provided.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/address'
+    address_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: address not found
+              status_code: 404
   headers:
     ratelimit-remaining:
       description: The number of requests remaining in the current window.
@@ -1682,6 +1614,71 @@ components:
       schema:
         type: integer
         example: 150
+  parameters:
+    include:
+      in: query
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+      explode: true
+    date_created:
+      in: query
+      name: date_created
+      description: 'Filter by date created. Accepted formats are ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.'
+      schema:
+        $ref: '#/components/schemas/date_filter'
+      style: deepObject
+      explode: true
+    before_after:
+      in: query
+      name: before/after
+      required: false
+      description: '`before` and `after` are both optional but only one of them can be in the query at a time.
+
+        '
+      schema:
+        allOf:
+        - type: object
+          properties:
+            before:
+              type: string
+              description: 'A reference to a list entry used for paginating to the previous set of entries. This field is pre-populated in the `previous_url` field in the return response.
+
+                '
+            after:
+              type: string
+              description: 'A reference to a list entry used for paginating to the next set of entries. This field is pre-populated in the `next_url` field in the return response.
+
+                '
+        - oneOf:
+          - required:
+            - before
+          - required:
+            - after
+    metadata:
+      in: query
+      name: metadata
+      description: Filter by metadata key-value pair`.
+      schema:
+        $ref: '#/components/schemas/metadata'
+      style: deepObject
+      explode: true
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: How many results to return.
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
   securitySchemes:
     basicAuth:
       type: http

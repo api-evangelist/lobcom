@@ -1,7 +1,9 @@
 {
   "provider": "lobcom",
   "sources": [
-    "lobcom-openapi-original.yml"
+    "_original/lobcom-openapi-original.yml",
+    "lobcom-events-api-openapi.yml",
+    "lobcom-tracking-events-api-openapi.yml"
   ],
   "outputs": [
     "lobcom-accounts-api-openapi.yml",
@@ -38,17 +40,55 @@
     "lobcom-zip-lookups-api-openapi.yml"
   ],
   "archived": [
-    "archived openapi/lobcom-openapi-original.yml"
+    "deleted 2 superseded output(s) from the previous generation"
   ],
   "errors": [],
-  "warnings": [],
+  "warnings": [
+    "lobcom-events-api-openapi.yml: previously refined output kept for 1 operation(s) no archived document covers (e.g. webhook:events post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "lobcom-tracking-events-api-openapi.yml: previously refined output kept for 1 operation(s) no archived document covers (e.g. webhook:tracking_events post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth."
+  ],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "lobcom-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0; promoted x-webhooks (2) to the standard `webhooks` key",
     "lobcom-openapi-original.yml: declared missing tag: Accounts",
     "lobcom-openapi-original.yml: declared missing tag: Booklets",
     "lobcom-openapi-original.yml: declared missing tag: Lob Credits",
     "lobcom-openapi-original.yml: declared missing tag: Snap Packs",
+    "tag 'Events' spans 2 source specs (lobcom-openapi-original.yml, lobcom-events-api-openapi.yml): per-path servers applied",
+    "tag 'Tracking Events' spans 2 source specs (lobcom-openapi-original.yml, lobcom-tracking-events-api-openapi.yml): per-path servers applied",
+    "superseded outputs removed: lobcom-u-s-autocompletions-api-openapi.yml, lobcom-u-s-verifications-api-openapi.yml",
     "apis.yml register: written (+2 apis, 32 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "lobcom-accounts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-addresses-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-bank-accounts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-billing-groups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-booklets-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-buckslip-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-buckslips-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-campaigns-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-card-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-cards-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-checks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-creatives-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-identity-validation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-informed-delivery-campaign-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-intl-verifications-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-letters-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-lob-credits-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-postcards-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-qr-codes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-resource-proofs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-reverse-geocode-lookups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-self-mailers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-snap-packs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-template-versions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-templates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-u-s-autocompletions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-u-s-verifications-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-uploads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-url-shortener-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lobcom-zip-lookups-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

@@ -242,6 +242,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - Creative
+  tags_raw:
   - Creatives
   properties:
   - type: OpenAPI
@@ -540,6 +542,8 @@ apis:
   humanURL: https://docs.lob.com/
   baseURL: https://api.lob.com/v1
   tags:
+  - URL Shorteners
+  tags_raw:
   - URL Shortener
   properties:
   - type: OpenAPI

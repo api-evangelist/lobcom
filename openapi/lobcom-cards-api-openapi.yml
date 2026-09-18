@@ -2,9 +2,7 @@ openapi: 3.2.0
 info:
   title: Lob Cards API
   version: 1.22.0
-  description: 'The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors. <p>
-
-    '
+  description: The Lob API is organized around REST. Our API is designed to have predictable, resource-oriented URLs and uses HTTP response codes to indicate any API errors.
   license:
     name: MIT
     url: https://mit-license.org/
@@ -24,9 +22,8 @@ tags:
 
     The API provides endpoints for creating cards, retrieving individual cards, creating card orders, and retrieving a list of cards.
 
-    <div class="back-to-top" ><a href="#" onclick="toTopLink()">back to top</a></div>
 
-    '
+    back to top'
 paths:
   /cards:
     get:
@@ -278,139 +275,7 @@ paths:
         source: "var context = context.Background()\ncontext = context.WithValue(suite.ctx, lob.ContextBasicAuth, lob.BasicAuth{UserName: os.Getenv(\"<YOUR_API_KEY>\")})\n\nvar apiClient = *lob.NewAPIClient(configuration)\n\ndeletedCard, _, err := apiClient.CardsApi.Delete(context, \"card_6afffd19045076c\").Execute()\n\nif err != nil {\n    return err\n}\n"
         label: GO
 components:
-  mediaTypes:
-    card:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/card'
-        examples:
-          basic:
-            value:
-              id: card_7a6d73c5c8457fc
-              account_id: fa9ea650fc7b31a89f92
-              description: Test card
-              url: https://lob-assets.com/cards/card_c51ae96f5cebf3e.pdf?version=v1&expires=1636910992&signature=mnsDH2DAxdkN9VibdlLMxJC86sME5WYDqkNtmvGwdNsAaUWfbnv0rJhJ1mR8Ol4uxQq61j5wYZ0r3s-lBkQfDA
-              size: 2.125x3.375
-              auto_reorder: false
-              reorder_quantity: null
-              raw_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
-              front_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
-              back_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
-              thumbnails:
-              - small: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_small_1.png?version=v1&expires=1636910992&signature=mrv8JDvpZK4I8WUGH0tPdtK-My5oes0Ltj_gL7BDw96SpCTTeZFHkz81SzclyFP9dQRtlsvAsjcuGcTBvCvOCg
-                medium: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_medium_1.png?version=v1&expires=1636910992&signature=VgL_2Ckm_kxKiWGgWtdNoy9HHOn8dGYSVOn7UqyCbwdbVlUtx28TRN4Bo8Iru3n0keKp9He0YhKT1ILotznMDA
-                large: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_large_1.png?version=v1&expires=1636910992&signature=FKSzymA13j-CQ0uk20cGHZTzT3vimzNBYrgp-xifLFg4mMdo1BZALR5O0aF_jVhsX614hKP35ONdYl47TQxXAw
-              - small: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_small_2.png?version=v1&expires=1636910992&signature=IWsmPa_ULlv2yyqjX564d_YfHHY_M7i9YxDnw-WXDr2jtOFcArmRZQbnHeE9g_rYxnddJbgosuv8-c2utiu7Cg
-                medium: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_medium_2.png?version=v1&expires=1636910992&signature=zxK7VKGiTvz5Ywrkaydd0v3GcYf58R7A08J4tNfI7-aiNODDcTF3l0MqY13n9Pyc8RXSdD0XVBY-OpbA1VM-Ag
-                large: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_large_2.png?version=v1&expires=1636910992&signature=r0OFUhh315ZwN0raMZdIwJd2oCIEYsz0BABaMxIuO1PKTD0ckGWrhcGdzk2dlWQ6vSvp0CUQ5k1RXGqkIIqkDw
-              available_quantity: 10000
-              pending_quantity: 0
-              countries: null
-              status: rendered
-              mode: test
-              orientation: horizontal
-              threshold_amount: 0
-              date_created: '2021-03-24T22:51:42.838Z'
-              date_modified: '2021-03-24T22:51:42.838Z'
-              send_date: '2021-03-24T22:51:42.838Z'
-              object: card
-    all_cards:
-      application/json:
-        schema:
-          allOf:
-          - $ref: '#/components/schemas/list'
-          - type: object
-            properties:
-              data:
-                type: array
-                description: list of cards
-                items:
-                  $ref: '#/components/schemas/card'
-        example:
-          data:
-          - id: card_7a6d73c5c8457fc
-            account_id: fa9ea650fc7b31a89f92
-            description: null
-            url: https://lob-assets.com/cards/card_c51ae96f5cebf3e.pdf?version=v1&expires=1636910992&signature=mnsDH2DAxdkN9VibdlLMxJC86sME5WYDqkNtmvGwdNsAaUWfbnv0rJhJ1mR8Ol4uxQq61j5wYZ0r3s-lBkQfDA
-            size: 2.125x3.375
-            auto_reorder: false
-            reorder_quantity: null
-            raw_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
-            front_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
-            back_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
-            thumbnails:
-            - small: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_small_1.png?version=v1&expires=1636910992&signature=mrv8JDvpZK4I8WUGH0tPdtK-My5oes0Ltj_gL7BDw96SpCTTeZFHkz81SzclyFP9dQRtlsvAsjcuGcTBvCvOCg
-              medium: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_medium_1.png?version=v1&expires=1636910992&signature=VgL_2Ckm_kxKiWGgWtdNoy9HHOn8dGYSVOn7UqyCbwdbVlUtx28TRN4Bo8Iru3n0keKp9He0YhKT1ILotznMDA
-              large: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_large_1.png?version=v1&expires=1636910992&signature=FKSzymA13j-CQ0uk20cGHZTzT3vimzNBYrgp-xifLFg4mMdo1BZALR5O0aF_jVhsX614hKP35ONdYl47TQxXAw
-            available_quantity: 10000
-            pending_quantity: 0
-            countries: null
-            status: rendered
-            mode: test
-            orientation: horizontal
-            threshold_amount: 0
-            date_created: '2021-03-24T22:51:42.838Z'
-            date_modified: '2021-03-24T22:51:42.838Z'
-            send_date: '2021-03-24T22:51:42.838Z'
-            object: card
-          object: list
-          previous_url: null
-          next_url: null
-          count: 1
   schemas:
-    failure_status_code:
-      type: integer
-      enum:
-      - 401
-      - 403
-      - 404
-      - 413
-      - 422
-      - 429
-      - 500
-      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
-    thumbnail:
-      type: object
-      properties:
-        small:
-          $ref: '#/components/schemas/signed_link'
-        medium:
-          $ref: '#/components/schemas/signed_link'
-        large:
-          $ref: '#/components/schemas/signed_link'
-    signed_link:
-      type: string
-      description: A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.
-      pattern: ^https://lob-assets.com/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+
-    remote_file_url:
-      type: string
-      description: 'The location of a remote file. Remote URLs have a 5 MB file size limit and must be downloaded within 40 seconds.
-
-        '
-      pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
-    lob_base:
-      type: object
-      required:
-      - date_created
-      - date_modified
-      - object
-      properties:
-        date_created:
-          $ref: '#/components/schemas/date_created'
-        date_modified:
-          $ref: '#/components/schemas/date_modified'
-        deleted:
-          $ref: '#/components/schemas/deleted'
-        object:
-          $ref: '#/components/schemas/object'
-    date_modified:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was last modified.
-    local_file_path:
-      type: string
-      description: The path to a local file.
-      pattern: ^(?!https://)[a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
     card:
       allOf:
       - $ref: '#/components/schemas/lob_base'
@@ -508,13 +373,21 @@ components:
       type: string
       description: Unique identifier prefixed with `card_`.
       pattern: ^card_[a-zA-Z0-9]+$
-    card_deletion:
-      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+    card_base:
+      type: object
       properties:
-        id:
-          $ref: '#/components/schemas/card_id'
-        deleted:
-          $ref: '#/components/schemas/deleted'
+        description:
+          $ref: '#/components/schemas/card_description'
+        size:
+          description: The size of the card
+          enum:
+          - 3.375x2.125
+          - 2.125x3.375
+          type: string
+          default: 2.125x3.375
+    count:
+      type: integer
+      description: number of resources in a set
     error:
       type: object
       description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
@@ -693,6 +566,20 @@ components:
                 * `unauthorized_token` - 401: token isn''t authorized.
 
                 '
+    date_created:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was created.
+    deleted:
+      type: boolean
+      description: Only returned if the resource has been successfully deleted.
+    object:
+      type: string
+      description: Value is resource type.
+    signed_link:
+      type: string
+      description: A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.
+      pattern: ^https://lob-assets.com/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+
     card_updatable:
       type: object
       properties:
@@ -706,6 +593,86 @@ components:
           type: number
           minimum: 10000
           maximum: 10000000
+    local_file_path:
+      type: string
+      description: The path to a local file.
+      pattern: ^(?!https://)[a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+    remote_file_url:
+      type: string
+      description: 'The location of a remote file. Remote URLs have a 5 MB file size limit and must be downloaded within 40 seconds.
+
+        '
+      pattern: ^https://[-a-zA-Z0-9@:%._+~#=/]{1,256}.(html?|pdf|png|jpg)$
+    card_description:
+      type:
+      - string
+      - 'null'
+      description: Description of the card.
+      maxLength: 255
+    date_modified:
+      type: string
+      format: date-time
+      description: A timestamp in ISO 8601 format of the date the resource was last modified.
+    card_deletion:
+      description: Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.
+      properties:
+        id:
+          $ref: '#/components/schemas/card_id'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+    failure_status_code:
+      type: integer
+      enum:
+      - 401
+      - 403
+      - 404
+      - 413
+      - 422
+      - 429
+      - 500
+      description: "A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n"
+    lob_base:
+      type: object
+      required:
+      - date_created
+      - date_modified
+      - object
+      properties:
+        date_created:
+          $ref: '#/components/schemas/date_created'
+        date_modified:
+          $ref: '#/components/schemas/date_modified'
+        deleted:
+          $ref: '#/components/schemas/deleted'
+        object:
+          $ref: '#/components/schemas/object'
+    thumbnail:
+      type: object
+      properties:
+        small:
+          $ref: '#/components/schemas/signed_link'
+        medium:
+          $ref: '#/components/schemas/signed_link'
+        large:
+          $ref: '#/components/schemas/signed_link'
+    card_editable:
+      allOf:
+      - $ref: '#/components/schemas/card_base'
+      - type: object
+        required:
+        - front
+        properties:
+          front:
+            description: A PDF template for the front of the card
+            oneOf:
+            - $ref: '#/components/schemas/remote_file_url'
+            - $ref: '#/components/schemas/local_file_path'
+          back:
+            description: A PDF template for the back of the card
+            oneOf:
+            - $ref: '#/components/schemas/remote_file_url'
+            - $ref: '#/components/schemas/local_file_path'
+            default: https://s3.us-west-2.amazonaws.com/public.lob.com/assets/card_blank_horizontal.pdf
     list:
       type: object
       description: Multiple items returned in order
@@ -727,67 +694,118 @@ components:
         total_count:
           type: integer
           description: Indicates the total number of records. Provided when the request specifies an "include" query parameter
-    card_editable:
-      allOf:
-      - $ref: '#/components/schemas/card_base'
-      - type: object
-        required:
-        - front
-        properties:
-          front:
-            description: A PDF template for the front of the card
-            oneOf:
-            - $ref: '#/components/schemas/remote_file_url'
-            - $ref: '#/components/schemas/local_file_path'
-          back:
-            description: A PDF template for the back of the card
-            oneOf:
-            - $ref: '#/components/schemas/remote_file_url'
-            - $ref: '#/components/schemas/local_file_path'
-            default: https://s3.us-west-2.amazonaws.com/public.lob.com/assets/card_blank_horizontal.pdf
-    deleted:
-      type: boolean
-      description: Only returned if the resource has been successfully deleted.
-    count:
-      type: integer
-      description: number of resources in a set
-    date_created:
-      type: string
-      format: date-time
-      description: A timestamp in ISO 8601 format of the date the resource was created.
-    object:
-      type: string
-      description: Value is resource type.
-    card_description:
-      type:
-      - string
-      - 'null'
-      description: Description of the card.
-      maxLength: 255
-    card_base:
-      type: object
-      properties:
-        description:
-          $ref: '#/components/schemas/card_description'
-        size:
-          description: The size of the card
-          enum:
-          - 3.375x2.125
-          - 2.125x3.375
-          type: string
-          default: 2.125x3.375
+  mediaTypes:
+    card:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/card'
+        examples:
+          basic:
+            value:
+              id: card_7a6d73c5c8457fc
+              account_id: fa9ea650fc7b31a89f92
+              description: Test card
+              url: https://lob-assets.com/cards/card_c51ae96f5cebf3e.pdf?version=v1&expires=1636910992&signature=mnsDH2DAxdkN9VibdlLMxJC86sME5WYDqkNtmvGwdNsAaUWfbnv0rJhJ1mR8Ol4uxQq61j5wYZ0r3s-lBkQfDA
+              size: 2.125x3.375
+              auto_reorder: false
+              reorder_quantity: null
+              raw_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
+              front_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
+              back_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
+              thumbnails:
+              - small: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_small_1.png?version=v1&expires=1636910992&signature=mrv8JDvpZK4I8WUGH0tPdtK-My5oes0Ltj_gL7BDw96SpCTTeZFHkz81SzclyFP9dQRtlsvAsjcuGcTBvCvOCg
+                medium: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_medium_1.png?version=v1&expires=1636910992&signature=VgL_2Ckm_kxKiWGgWtdNoy9HHOn8dGYSVOn7UqyCbwdbVlUtx28TRN4Bo8Iru3n0keKp9He0YhKT1ILotznMDA
+                large: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_large_1.png?version=v1&expires=1636910992&signature=FKSzymA13j-CQ0uk20cGHZTzT3vimzNBYrgp-xifLFg4mMdo1BZALR5O0aF_jVhsX614hKP35ONdYl47TQxXAw
+              - small: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_small_2.png?version=v1&expires=1636910992&signature=IWsmPa_ULlv2yyqjX564d_YfHHY_M7i9YxDnw-WXDr2jtOFcArmRZQbnHeE9g_rYxnddJbgosuv8-c2utiu7Cg
+                medium: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_medium_2.png?version=v1&expires=1636910992&signature=zxK7VKGiTvz5Ywrkaydd0v3GcYf58R7A08J4tNfI7-aiNODDcTF3l0MqY13n9Pyc8RXSdD0XVBY-OpbA1VM-Ag
+                large: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_large_2.png?version=v1&expires=1636910992&signature=r0OFUhh315ZwN0raMZdIwJd2oCIEYsz0BABaMxIuO1PKTD0ckGWrhcGdzk2dlWQ6vSvp0CUQ5k1RXGqkIIqkDw
+              available_quantity: 10000
+              pending_quantity: 0
+              countries: null
+              status: rendered
+              mode: test
+              orientation: horizontal
+              threshold_amount: 0
+              date_created: '2021-03-24T22:51:42.838Z'
+              date_modified: '2021-03-24T22:51:42.838Z'
+              send_date: '2021-03-24T22:51:42.838Z'
+              object: card
+    all_cards:
+      application/json:
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/list'
+          - type: object
+            properties:
+              data:
+                type: array
+                description: list of cards
+                items:
+                  $ref: '#/components/schemas/card'
+        example:
+          data:
+          - id: card_7a6d73c5c8457fc
+            account_id: fa9ea650fc7b31a89f92
+            description: null
+            url: https://lob-assets.com/cards/card_c51ae96f5cebf3e.pdf?version=v1&expires=1636910992&signature=mnsDH2DAxdkN9VibdlLMxJC86sME5WYDqkNtmvGwdNsAaUWfbnv0rJhJ1mR8Ol4uxQq61j5wYZ0r3s-lBkQfDA
+            size: 2.125x3.375
+            auto_reorder: false
+            reorder_quantity: null
+            raw_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
+            front_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
+            back_original_url: https://lob-assets.com/cards/card_c51ae96f5cebf3e_raw.pdf?version=v1&expires=1636910992&signature=-bZo31FMAp2vmNaZKyXn_Qa4APqwtNinw76FrQ7uyQejFZw6VBQQYfoiQ642iXh0H2K5i2aOo8_BAkt3UJdVDw
+            thumbnails:
+            - small: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_small_1.png?version=v1&expires=1636910992&signature=mrv8JDvpZK4I8WUGH0tPdtK-My5oes0Ltj_gL7BDw96SpCTTeZFHkz81SzclyFP9dQRtlsvAsjcuGcTBvCvOCg
+              medium: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_medium_1.png?version=v1&expires=1636910992&signature=VgL_2Ckm_kxKiWGgWtdNoy9HHOn8dGYSVOn7UqyCbwdbVlUtx28TRN4Bo8Iru3n0keKp9He0YhKT1ILotznMDA
+              large: https://lob-assets.com/cards/card_c51ae96f5cebf3e_thumb_large_1.png?version=v1&expires=1636910992&signature=FKSzymA13j-CQ0uk20cGHZTzT3vimzNBYrgp-xifLFg4mMdo1BZALR5O0aF_jVhsX614hKP35ONdYl47TQxXAw
+            available_quantity: 10000
+            pending_quantity: 0
+            countries: null
+            status: rendered
+            mode: test
+            orientation: horizontal
+            threshold_amount: 0
+            date_created: '2021-03-24T22:51:42.838Z'
+            date_modified: '2021-03-24T22:51:42.838Z'
+            send_date: '2021-03-24T22:51:42.838Z'
+            object: card
+          object: list
+          previous_url: null
+          next_url: null
+          count: 1
+  responses:
+    mailpiece_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+          example:
+            error:
+              code: not_found
+              message: to address not found
+              status_code: 404
+    card_deleted:
+      description: Deleted the card
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/card_deletion'
+          example:
+            id: card_123456789
+            deleted: true
   parameters:
-    limit:
+    include:
       in: query
-      name: limit
-      required: false
-      description: How many results to return.
+      name: include
+      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
+
+        '
       schema:
-        type: integer
-        minimum: 1
-        default: 10
-        maximum: 100
-        example: 10
+        type: array
+        items:
+          type: string
+      explode: true
     before_after:
       in: query
       name: before/after
@@ -814,38 +832,17 @@ components:
             - before
           - required:
             - after
-    include:
+    limit:
       in: query
-      name: include
-      description: 'Request that the response include the total count by specifying `include=["total_count"]`.
-
-        '
+      name: limit
+      required: false
+      description: How many results to return.
       schema:
-        type: array
-        items:
-          type: string
-      explode: true
-  responses:
-    mailpiece_error:
-      description: Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-          example:
-            error:
-              code: not_found
-              message: to address not found
-              status_code: 404
-    card_deleted:
-      description: Deleted the card
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/card_deletion'
-          example:
-            id: card_123456789
-            deleted: true
+        type: integer
+        minimum: 1
+        default: 10
+        maximum: 100
+        example: 10
   securitySchemes:
     basicAuth:
       type: http

@@ -52,14 +52,10 @@ tools:
   source_operation: openapi/lobcom-openapi-original.yml#get_lob_credits_balance
 deployment:
   mode: none
-  endpoint: null
-  install: null
-  package: null
-  auth: api-key
-  verified: searched
+  verified: derived
   tools: 12
-  checked: '2026-08-13'
-  source: Lob docs + help.lob.com + github.com/lob + MCP registry search
+  checked: '2026-08-12'
+  source: catalog MCP census
 crosswalk: mcp/lobcom-tool-crosswalk.yml
 third_party_servers:
 - name: MCPBundles Lob bundle
